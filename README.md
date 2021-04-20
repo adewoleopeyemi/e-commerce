@@ -1,1 +1,2 @@
-# e-commerce web app
+# AmatNowAndroidFoodiesCustomer
+ Android App for AmatNow Customers side
