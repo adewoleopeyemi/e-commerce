@@ -24,26 +24,24 @@ import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class DealsDetailFragment extends RootFragment {
 
-    ImageView back_icon,close_icon;
-    SimpleDraweeView deals_bg_img;
+    ImageView backIcon, closeIcon;
+    SimpleDraweeView dealsBgImg;
 
-    Button increament_btn,decrement_btn;
-    TextView inc_dec_tv;
-    int present_count = 1;
+    Button increamentBtn, decrementBtn;
+    TextView incDecTv;
+    int presentCount = 1;
     SharedPreferences dealsDetailPref;
-    String deals_name,deals_desc,deals_price,deals_hotel_name,deals_image,deals_symbol;
-    TextView deals_menu_item_title_tv,deal_name_tv,deal_amount_tv,deal_hotel_name_tv,deal_desc_tv;
-    RelativeLayout deals_order_now_div;
-    public static boolean FLAG_DEALS_DETAIL_FRAGMENT;
+    String dealsName, dealsDesc, dealsPrice, dealsHotelName, dealsImage, dealsSymbol;
+    TextView dealsMenuItemTitleTv, dealNameTv, dealAmountTv, dealHotelNameTv, dealDescTv;
+    RelativeLayout dealsOrderNowDiv;
 
 
     DealsModel dealsModel;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_deals_main, container, false);
@@ -71,53 +69,59 @@ public class DealsDetailFragment extends RootFragment {
 
     }
 
+
     public void init(View v){
-        deals_desc = dealsModel.deal_desc;
-        deals_name =dealsModel.deal_name;
-        deals_price =dealsModel.deal_price;
-        deals_hotel_name =dealsModel.restaurant_name;
-        deals_image =dealsModel.deal_image;
-        deals_symbol =dealsModel.deal_symbol;
+        dealsDesc = dealsModel.deal_desc;
+        dealsName =dealsModel.deal_name;
+        dealsPrice =dealsModel.deal_price;
+        dealsHotelName =dealsModel.restaurant_name;
+        dealsImage =dealsModel.deal_image;
+        dealsSymbol =dealsModel.deal_symbol;
 
-        deals_menu_item_title_tv = v.findViewById(R.id.deals_menu_item_title_tv);
-        deal_name_tv = v.findViewById(R.id.deal_name_tv);
-        deal_amount_tv = v.findViewById(R.id.deal_amount_tv);
-        deal_hotel_name_tv = v.findViewById(R.id.deal_hotel_name_tv);
-        deal_desc_tv = v.findViewById(R.id.deal_desc_tv);
-        deals_bg_img = v.findViewById(R.id.deals_bg_img);
+        dealsMenuItemTitleTv = v.findViewById(R.id.deals_menu_item_title_tv);
+        dealNameTv = v.findViewById(R.id.deal_name_tv);
+        dealAmountTv = v.findViewById(R.id.deal_amount_tv);
+        dealHotelNameTv = v.findViewById(R.id.deal_hotel_name_tv);
+        dealDescTv = v.findViewById(R.id.deal_desc_tv);
+        dealsBgImg = v.findViewById(R.id.deals_bg_img);
 
-        deal_desc_tv.setText(deals_desc);
-        deal_amount_tv.setText(deals_symbol+""+deals_price);
-        deal_hotel_name_tv.setText(deals_hotel_name);
-        deal_name_tv.setText(deals_name);
-        deals_menu_item_title_tv.setText(deals_name);
-
-
-        Uri uri = Uri.parse(Config.imgBaseURL+deals_image);
-        deals_bg_img.setImageURI(uri);
+        dealDescTv.setText(dealsDesc);
+        dealAmountTv.setText(dealsSymbol +""+ dealsPrice);
+        dealHotelNameTv.setText(dealsHotelName);
+        dealNameTv.setText(dealsName);
+        dealsMenuItemTitleTv.setText(dealsName);
 
 
-
-        back_icon = v.findViewById(R.id.back_icon);
-        close_icon = v.findViewById(R.id.clos_menu_deals_detail);
-        increament_btn = v.findViewById(R.id.plus_btn);
-        decrement_btn = v.findViewById(R.id.minus_btn);
-        inc_dec_tv = v.findViewById(R.id.inc_dec_tv);
-        deals_order_now_div = v.findViewById(R.id.deals_order_now_div);
+        Uri uri = Uri.parse(Config.imgBaseURL+ dealsImage);
+        dealsBgImg.setImageURI(uri);
 
 
-        increament_btn.setOnClickListener(new View.OnClickListener() {
+
+        backIcon = v.findViewById(R.id.back_icon);
+        closeIcon = v.findViewById(R.id.clos_menu_deals_detail);
+        increamentBtn = v.findViewById(R.id.plus_btn);
+        decrementBtn = v.findViewById(R.id.minus_btn);
+        incDecTv = v.findViewById(R.id.inc_dec_tv);
+        dealsOrderNowDiv = v.findViewById(R.id.deals_order_now_div);
+
+
+        increamentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try
-                {
-                    String presentValStr=inc_dec_tv.getText().toString();
-                    present_count=Integer.parseInt(presentValStr);
-                    present_count++;
-                    inc_dec_tv.setText(String.valueOf(present_count));
+                try {
+
+
+                    String presentValStr= incDecTv.getText().toString();
+                    presentCount =Integer.parseInt(presentValStr);
+                    presentCount++;
+                    incDecTv.setText(String.valueOf(presentCount));
+
+
                     SharedPreferences.Editor editor = dealsDetailPref.edit();
-                    editor.putInt(PreferenceClass.DEALS_QUANTITY,present_count).commit();
+                    editor.putInt(PreferenceClass.DEALS_QUANTITY, presentCount).commit();
+
                 }
+
                 catch(Exception e)
                 {
                     e.printStackTrace();
@@ -125,28 +129,28 @@ public class DealsDetailFragment extends RootFragment {
             }
         });
 
-        decrement_btn.setOnClickListener(new View.OnClickListener() {
+        decrementBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try
                 {
-                    String presentValStr=inc_dec_tv.getText().toString();
-                    present_count=Integer.parseInt(presentValStr);
-                    if(presentValStr.equalsIgnoreCase(String.valueOf(Integer.parseInt("1")))) {
-                      //  Toast.makeText(getContext(),"Can not Less than 1",Toast.LENGTH_LONG).show();
+
+                    String presentValStr= incDecTv.getText().toString();
+                    presentCount =Integer.parseInt(presentValStr);
+                    if(!presentValStr.equalsIgnoreCase(String.valueOf(Integer.parseInt("1")))) {
+
+                        presentCount--;
                     }
-                    else {
-                        present_count--;
-                    }
-                    inc_dec_tv.setText(String.valueOf(present_count));
+                    incDecTv.setText(String.valueOf(presentCount));
+
                     SharedPreferences.Editor editor = dealsDetailPref.edit();
-                    editor.putInt(PreferenceClass.DEALS_QUANTITY,present_count).commit();
+                    editor.putInt(PreferenceClass.DEALS_QUANTITY, presentCount).commit();
+
 
                 }
                 catch(Exception e)
                 {
                     e.printStackTrace();
-                 //   Toast.makeText(getContext(),"Some error :(",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -154,11 +158,11 @@ public class DealsDetailFragment extends RootFragment {
 
 
         if(DealsFragment.FLAG_DEAL_FRAGMENT){
-            back_icon.setVisibility(View.VISIBLE);
-            close_icon.setVisibility(View.GONE);
+            backIcon.setVisibility(View.VISIBLE);
+            closeIcon.setVisibility(View.GONE);
             DealsFragment.FLAG_DEAL_FRAGMENT = false;
         }
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -167,7 +171,7 @@ public class DealsDetailFragment extends RootFragment {
             }
         });
 
-        deals_order_now_div.setOnClickListener(new View.OnClickListener() {
+        dealsOrderNowDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -178,9 +182,10 @@ public class DealsDetailFragment extends RootFragment {
                 dealOrderFragment.setArguments(bundle);
                 transaction.addToBackStack(null);
                 transaction.add(R.id.deals_main_container, dealOrderFragment,"parent").commit();
-                FLAG_DEALS_DETAIL_FRAGMENT = true;
             }
         });
 
     }
+
+
 }

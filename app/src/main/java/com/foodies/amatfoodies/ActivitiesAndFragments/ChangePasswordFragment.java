@@ -32,18 +32,18 @@ import org.json.JSONObject;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class ChangePasswordFragment extends RootFragment {
 
-    ImageView back_icon;
-    EditText old_password,new_password,confirm_password;
-    Button btn_change_pass;
+    ImageView backIcon;
+    EditText oldPassword, newPassword, confirmPassword;
+    Button btnChangePass;
     SharedPreferences sharedPreferences;
 
     CamomileSpinner changePassProgress;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
@@ -66,47 +66,25 @@ public class ChangePasswordFragment extends RootFragment {
         changePassProgress = v.findViewById(R.id.changePassProgress);
         changePassProgress.start();
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
-        btn_change_pass = v.findViewById(R.id.btn_change_pass);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
+        btnChangePass = v.findViewById(R.id.btn_change_pass);
 
-        old_password = v.findViewById(R.id.ed_old_pass);
-        new_password = v.findViewById(R.id.ed_new_pass);
-        confirm_password = v.findViewById(R.id.ed_confirm_pass);
+        oldPassword = v.findViewById(R.id.ed_old_pass);
+        newPassword = v.findViewById(R.id.ed_new_pass);
+        confirmPassword = v.findViewById(R.id.ed_confirm_pass);
 
-        btn_change_pass.setOnClickListener(new View.OnClickListener() {
+        btnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (old_password.getText().toString().trim().equals("") || old_password.getText().toString().length()<6) {
-
-                    Toast.makeText(getContext(), "Check password length can not be shorter than 6!", Toast.LENGTH_SHORT).show();
-                    old_password.setError("Check password length can not be shorter than 6!");
-
-                } else if (new_password.getText().toString().trim().equals("") || new_password.getText().toString().length()<6) {
-
-                    Toast.makeText(getContext(), "Check password length can not be shorter than 6!", Toast.LENGTH_SHORT).show();
-                    new_password.setError("Check password length can not be shorter than 6!");
-                }else if (confirm_password.getText().toString().trim().equals("") || confirm_password.getText().toString().length()<6) {
-
-                    Toast.makeText(getContext(), "Check password length can not be shorter than 6!", Toast.LENGTH_SHORT).show();
-                    confirm_password.setError("Check password length can not be shorter than 6!");
-                }
-        else {
-                    if (new_password.getText().toString().equals(confirm_password.getText().toString())) {
-
-                        changePasswordVollyRequest();
-                    } else {
-                        Toast.makeText(getContext(), "Password does not match", Toast.LENGTH_LONG).show();
-                        confirm_password.setError("Password does not match");
-                        new_password.setError("Password does not match");
-                        //passwords not matching.please try again
-                    }
-                }
+               if(checkValidations()){
+                   changePasswordVollyRequest();
+               }
             }
         });
-        back_icon = v.findViewById(R.id.back_icon);
+        backIcon = v.findViewById(R.id.back_icon);
 
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -128,28 +106,70 @@ public class ChangePasswordFragment extends RootFragment {
 
     }
 
+    public boolean checkValidations(){
+        if (oldPassword.getText().toString().trim().equals("") || oldPassword.getText().toString().length()<6) {
+
+            Toast.makeText(getContext(), "Check password length can not be shorter than 6!", Toast.LENGTH_SHORT).show();
+            oldPassword.setError("Check password length can not be shorter than 6!");
+            return false;
+
+        }
+
+
+        else if (newPassword.getText().toString().trim().equals("") || newPassword.getText().toString().length()<6) {
+
+            Toast.makeText(getContext(), "Check password length can not be shorter than 6!", Toast.LENGTH_SHORT).show();
+            newPassword.setError("Check password length can not be shorter than 6!");
+            return false;
+        }
+
+        else if (confirmPassword.getText().toString().trim().equals("") || confirmPassword.getText().toString().length()<6) {
+
+            Toast.makeText(getContext(), "Check password length can not be shorter than 6!", Toast.LENGTH_SHORT).show();
+            confirmPassword.setError("Check password length can not be shorter than 6!");
+            return false;
+        }
+
+        else if(!newPassword.getText().toString().equals(confirmPassword.getText().toString())){
+            confirmPassword.setError("Password does not match");
+            newPassword.setError("Password does not match");
+            return false;
+        }
+
+        else if(newPassword.getText().toString().equals(oldPassword.getText().toString())) {
+            Toast.makeText(context, "Old password and new password can't same", Toast.LENGTH_SHORT).show();
+
+            return false;
+        }
+        else {
+            return true;
+        }
+
+
+    }
+
   public void changePasswordVollyRequest(){
         String getUser_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
        JSONObject jsonObject = new JSONObject();
       try {
           jsonObject.put("user_id",getUser_id);
-          jsonObject.put("old_password",old_password.getText().toString());
-          jsonObject.put("new_password",new_password.getText().toString());
+          jsonObject.put("old_password", oldPassword.getText().toString());
+          jsonObject.put("new_password", newPassword.getText().toString());
       } catch (JSONException e) {
           e.printStackTrace();
       }
 
 
       TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-      transparent_layer.setVisibility(View.VISIBLE);
+      transparentLayer.setVisibility(View.VISIBLE);
       progressDialog.setVisibility(View.VISIBLE);
 
-      ApiRequest.Call_Api(context, Config.CHANGE_PASSWORD, jsonObject, new Callback() {
+      ApiRequest.callApi(context, Config.CHANGE_PASSWORD, jsonObject, new Callback() {
           @Override
-          public void Responce(String resp) {
+          public void onResponce(String resp) {
 
               TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-              transparent_layer.setVisibility(View.GONE);
+              transparentLayer.setVisibility(View.GONE);
               progressDialog.setVisibility(View.GONE);
 
               try {

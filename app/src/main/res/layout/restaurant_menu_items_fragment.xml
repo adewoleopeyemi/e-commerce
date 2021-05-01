@@ -14,11 +14,9 @@
         android:orientation="vertical">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp"
-        android:paddingStart="5dp">
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height">
 
 
         <TextView
@@ -27,16 +25,20 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/options"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/rastaurant_menu_item_title_tv"
             android:textSize="15sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingEnd="50dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/back_arrow"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
             android:id="@+id/back_icon_menu_option" />
 
         <ImageView
@@ -45,7 +47,7 @@
             android:paddingEnd="15dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/info"
+            android:src="@drawable/info_img"
             android:id="@+id/about_icon" />
 
     </RelativeLayout>
@@ -103,26 +105,24 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1.3"
+            android:layout_weight="1.4"
             android:id="@+id/upper_header">
 
-            <androidx.percentlayout.widget.PercentRelativeLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="177dp"
-                android:background="@color/img_bg"
-                >
+                android:layout_height="match_parent">
             <com.facebook.drawee.view.SimpleDraweeView
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/cover_image"
                 fresco:placeholderImage="@drawable/unknown_img"/>
 
-            </androidx.percentlayout.widget.PercentRelativeLayout>
+            </RelativeLayout>
 
-            <androidx.percentlayout.widget.PercentRelativeLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="177dp"
-                android:background="@color/transparentColor">
+                android:layout_height="match_parent"
+                android:background="@color/color_light_black">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -132,7 +132,7 @@
                     fresco:placeholderImage="@drawable/image_placeholder"
                     app:roundAsCircle="true"
                     android:layout_centerHorizontal="true"
-                    app:layout_marginTopPercent="5%"
+                    android:layout_marginTop="@dimen/_5sdp"
                     />
 
 
@@ -177,8 +177,8 @@
                     android:numStars="5"
                     android:rating="3"
                     android:stepSize="0.5"
-                    android:progressTint="@color/ratingBar"
-                    android:secondaryProgressTint="@android:color/white"
+                    android:progressTint="@color/colorRatingBar"
+                    android:secondaryProgressTint="@color/colorWhite"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@+id/miles_desc_tv"
                     android:layout_marginTop="3dp"
@@ -186,7 +186,7 @@
 
                     />
 
-            </androidx.percentlayout.widget.PercentRelativeLayout>
+            </RelativeLayout>
 
 
         </RelativeLayout>

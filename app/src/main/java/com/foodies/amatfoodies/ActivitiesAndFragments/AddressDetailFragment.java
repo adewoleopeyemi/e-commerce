@@ -18,12 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
@@ -31,8 +30,6 @@ import com.foodies.amatfoodies.Utils.TabLayoutUtils;
 import com.foodies.amatfoodies.GoogleMapWork.MapsActivity;
 import com.foodies.amatfoodies.R;
 import com.gmail.samehadar.iosdialog.CamomileSpinner;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,24 +39,24 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class AddressDetailFragment extends RootFragment implements GoogleApiClient.OnConnectionFailedListener {
+public class AddressDetailFragment extends RootFragment  {
 
-    Button cancle_add_address_btn,save_address_btn;
-    ImageView back_icon;
+    Button cancleAddAddressBtn, saveAddressBtn;
+    ImageView backIcon;
     CamomileSpinner pbHeaderProgress;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
     SharedPreferences sharedPreferences;
-    EditText st_address,add_city,add_instructions;
-    String add_state;
+    EditText stAddress, addCity, addInstructions;
+    String addState;
     String latitude,longitude;
 
 
-    RelativeLayout add_loc_div;
-    public static TextView add_loc_tv;
+    RelativeLayout addLocDiv;
+    TextView addLocTv;
 
     View view;
     Context context;
@@ -69,8 +66,8 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
     }
 
-    Fragment_Callback fragment_callback;
-    public  AddressDetailFragment(Fragment_Callback fragment_callback){
+    FragmentCallback fragment_callback;
+    public  AddressDetailFragment(FragmentCallback fragment_callback){
         this.fragment_callback=fragment_callback;
     }
 
@@ -92,7 +89,7 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
         initUI(view);
 
-       add_city.setFocusable(false);
+       addCity.setFocusable(false);
 
         return view;
     }
@@ -100,33 +97,32 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
     public void initUI(View v){
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
-        st_address = v.findViewById(R.id.st_address);
-        add_city = v.findViewById(R.id.add_city);
-        add_instructions = v.findViewById(R.id.add_instructions);
-        add_loc_div = v.findViewById(R.id.add_loc_div);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
+        stAddress = v.findViewById(R.id.st_address);
+        addCity = v.findViewById(R.id.add_city);
+        addInstructions = v.findViewById(R.id.add_instructions);
+        addLocDiv = v.findViewById(R.id.add_loc_div);
 
-        add_loc_tv  = v.findViewById(R.id.add_loc_tv);
+        addLocTv = v.findViewById(R.id.add_loc_tv);
 
         if(SearchFragment.FLAG_COUNTRY_NAME) {
 
-            st_address.setText(sharedPreferences.getString(PreferenceClass.STREET,""));
+            stAddress.setText(sharedPreferences.getString(PreferenceClass.STREET,""));
 
 
-            add_state = sharedPreferences.getString(PreferenceClass.STATE,"");
-             add_instructions.setText(sharedPreferences.getString(PreferenceClass.INSTRUCTIONS,""));
+            addState = sharedPreferences.getString(PreferenceClass.STATE,"");
+             addInstructions.setText(sharedPreferences.getString(PreferenceClass.INSTRUCTIONS,""));
             SearchFragment.FLAG_COUNTRY_NAME=false;
         }
-        else {
-        }
 
-        cancle_add_address_btn = v.findViewById(R.id.cancle_add_address_btn);
-        back_icon = v.findViewById(R.id.back_icon);
-        save_address_btn = v.findViewById(R.id.save_address_btn);
+
+        cancleAddAddressBtn = v.findViewById(R.id.cancle_add_address_btn);
+        backIcon = v.findViewById(R.id.back_icon);
+        saveAddressBtn = v.findViewById(R.id.save_address_btn);
         pbHeaderProgress = v.findViewById(R.id.pbHeaderProgress);
         pbHeaderProgress.start();
 
-        save_address_btn.setOnClickListener(new View.OnClickListener() {
+        saveAddressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -135,12 +131,12 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
         });
 
         if(AddressListFragment.FLAG_ADDRESS_LIST){
-            cancle_add_address_btn.setVisibility(View.GONE);
-            back_icon.setVisibility(View.VISIBLE);
+            cancleAddAddressBtn.setVisibility(View.GONE);
+            backIcon.setVisibility(View.VISIBLE);
             AddressListFragment.FLAG_ADDRESS_LIST = false;
             UserAccountFragment.FLAG_DELIVER_ADDRESS = true;
 
-            back_icon.setOnClickListener(new View.OnClickListener() {
+            backIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -150,7 +146,7 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
                 }
             });
 
-            add_loc_div.setOnClickListener(new View.OnClickListener() {
+            addLocDiv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -160,7 +156,7 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
         }
 
-        cancle_add_address_btn.setOnClickListener(new View.OnClickListener() {
+        cancleAddAddressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
@@ -180,13 +176,13 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
         try {
             jsonObject.put("user_id", user_id);
             jsonObject.put("default","1");
-            jsonObject.put("street",st_address.getText().toString());
+            jsonObject.put("street", stAddress.getText().toString());
             jsonObject.put("apartment","0");
-            jsonObject.put("city",add_city.getText().toString());
+            jsonObject.put("city", addCity.getText().toString());
             jsonObject.put("state","state");
             jsonObject.put("country","0");
             jsonObject.put("zip","0");
-            jsonObject.put("instruction",add_instructions.getText().toString());
+            jsonObject.put("instruction", addInstructions.getText().toString());
             jsonObject.put("lat",""+latitude);
             jsonObject.put("long",""+longitude);
         } catch (JSONException e) {
@@ -195,15 +191,15 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.ADD_DELIVERY_ADDRESS, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.ADD_DELIVERY_ADDRESS, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
                 try {
@@ -214,7 +210,7 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
                     if(code_id == 200) {
 
                         if(fragment_callback!=null)
-                            fragment_callback.Responce(new Bundle());
+                            fragment_callback.onResponce(new Bundle());
 
                         getActivity().onBackPressed();
 
@@ -259,12 +255,12 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
                 String address = city + " " + country;
 
-                add_loc_tv.setText(latitude+","+longitude);
+                addLocTv.setText(latitude+","+longitude);
 
 
 
-                st_address.setText(locationAddress.getAddressLine(0));
-                add_city.setText(city);
+                stAddress.setText(locationAddress.getAddressLine(0));
+                addCity.setText(city);
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(PreferenceClass.LATITUDE,latitude);
@@ -296,11 +292,5 @@ public class AddressDetailFragment extends RootFragment implements GoogleApiClie
 
     }
 
-
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(),"On Failed",Toast.LENGTH_SHORT).show();
-    }
 
    }

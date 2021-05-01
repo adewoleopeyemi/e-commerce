@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by Dinosoftlabs on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class MapsActivity extends AppCompatActivity
@@ -82,9 +85,14 @@ public class MapsActivity extends AppCompatActivity
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
-
-
         sPredMap = getSharedPreferences(PreferenceClass.user,MODE_PRIVATE);
         lat = sPredMap.getString(PreferenceClass.LATITUDE,"");
         long_ = sPredMap.getString(PreferenceClass.LONGITUDE,"");
@@ -186,20 +194,19 @@ public class MapsActivity extends AppCompatActivity
             if (ActivityCompat.checkSelfPermission(getApplicationContext()
                     , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext()
                     , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
+               return;
             }
             mGoogleMap.setMyLocationEnabled(true);
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         }
         mGoogleMap.setOnCameraIdleListener(onCameraIdleListener);
+
+        if(new DarkModePrefManager(this).isNightMode()){
+            googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.map_night_style));
+        }
 
     }
 

@@ -18,11 +18,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 import com.foodies.amatfoodies.Utils.TabLayoutUtils;
@@ -38,17 +36,17 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class AddPaymentDetailFragment extends RootFragment {
 
     private SharedPreferences sharedPreferences;
     String month,year;
-    ImageView back_icon;
-    Button cancle_credit_card_btn,save_payment_method_btn;
+    ImageView backIcon;
+    Button cancleCreditCardBtn, savePaymentMethodBtn;
     private Calendar myCalendar;
-    private EditText card_number_editText,card_validity,name_on_card,cvv,billing_address_card,city_card,card_state,card_zip;
+    private EditText cardNumberEdittext, cardValidity, nameOnCard,cvv;
     CamomileSpinner pbHeaderProgress;
     RelativeLayout transparent_layer,progressDialog;
 
@@ -60,8 +58,8 @@ public class AddPaymentDetailFragment extends RootFragment {
 
     }
 
-    Fragment_Callback fragment_callback;
-    public  AddPaymentDetailFragment(Fragment_Callback fragment_callback){
+    FragmentCallback fragment_callback;
+    public  AddPaymentDetailFragment(FragmentCallback fragment_callback){
         this.fragment_callback=fragment_callback;
     }
 
@@ -81,24 +79,21 @@ public class AddPaymentDetailFragment extends RootFragment {
 
     public void init(View v){
         myCalendar = Calendar.getInstance();
-        back_icon = v.findViewById(R.id.back_icon);
+        backIcon = v.findViewById(R.id.back_icon);
         pbHeaderProgress = v.findViewById(R.id.pbHeaderProgress);
         pbHeaderProgress.start();
         progressDialog = v.findViewById(R.id.progressDialog);
         transparent_layer = v.findViewById(R.id.transparent_layer);
 
-        cancle_credit_card_btn = v.findViewById(R.id.cancle_credit_card_btn);
-        card_number_editText = v.findViewById(R.id.card_number_editText);
-        card_validity = v.findViewById(R.id.card_validity);
-        name_on_card = v.findViewById(R.id.name_on_card);
+        cancleCreditCardBtn = v.findViewById(R.id.cancle_credit_card_btn);
+        cardNumberEdittext = v.findViewById(R.id.card_number_editText);
+        cardValidity = v.findViewById(R.id.card_validity);
+        nameOnCard = v.findViewById(R.id.name_on_card);
         cvv = v.findViewById(R.id.cvv);
-        billing_address_card = v.findViewById(R.id.billing_address_card);
-        city_card = v.findViewById(R.id.city_card);
-        card_state = v.findViewById(R.id.card_state);
-        card_zip = v.findViewById(R.id.card_zip);
-        save_payment_method_btn = v.findViewById(R.id.save_payment_method_btn);
 
-        save_payment_method_btn.setOnClickListener(new View.OnClickListener() {
+        savePaymentMethodBtn = v.findViewById(R.id.save_payment_method_btn);
+
+        savePaymentMethodBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitCard(view);
@@ -109,12 +104,12 @@ public class AddPaymentDetailFragment extends RootFragment {
         });
 
         if (AddPaymentFragment.FLAG_FRAGMENT){
-            back_icon.setVisibility(View.VISIBLE);
-            cancle_credit_card_btn.setVisibility(View.GONE);
+            backIcon.setVisibility(View.VISIBLE);
+            cancleCreditCardBtn.setVisibility(View.GONE);
             AddPaymentFragment.FLAG_FRAGMENT = false;
         }
 
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -122,7 +117,7 @@ public class AddPaymentDetailFragment extends RootFragment {
             }
         });
 
-        card_number_editText.addTextChangedListener(new PaymentMethodActivity.FourDigitCardFormatWatcher());
+        cardNumberEdittext.addTextChangedListener(new PaymentMethodActivity.FourDigitCardFormatWatcher());
 
         datePickerDialog();
 
@@ -136,7 +131,6 @@ public class AddPaymentDetailFragment extends RootFragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -145,12 +139,11 @@ public class AddPaymentDetailFragment extends RootFragment {
 
         };
 
-        card_validity.setInputType(0);
-        card_validity.setOnClickListener(new View.OnClickListener() {
+        cardValidity.setInputType(0);
+        cardValidity.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 new DatePickerDialog(getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -162,37 +155,34 @@ public class AddPaymentDetailFragment extends RootFragment {
     private void updateLabel() {
         String myFormat = "MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        card_validity.setText(sdf.format(myCalendar.getTime()));
+        cardValidity.setText(sdf.format(myCalendar.getTime()));
     }
 
 
     public void submitCard(View view) {
-
-
         try{
 
+        if(cardNumberEdittext.getText().toString().isEmpty()){
 
-        if(card_number_editText.getText().toString().isEmpty()){
-
-            card_number_editText.setError(getString(R.string.not_be_empty));
+            cardNumberEdittext.setError(getString(R.string.not_be_empty));
         }
-        else if(name_on_card.getText().toString().isEmpty()){
-            name_on_card.setError(getString(R.string.not_be_empty));
+        else if(nameOnCard.getText().toString().isEmpty()){
+            nameOnCard.setError(getString(R.string.not_be_empty));
         }
         else if(cvv.getText().toString().isEmpty()){
             cvv.setError(getString(R.string.not_be_empty));
         }
-        else if(card_validity.getText().toString().isEmpty()){
+        else if(cardValidity.getText().toString().isEmpty()){
             Toast.makeText(getContext(), R.string.select_the_card_validity, Toast.LENGTH_SHORT).show();
         }
         else {
 
 
-            String monthField = card_validity.getText().toString();
+            String monthField = cardValidity.getText().toString();
             if (!monthField.isEmpty()) {
                 month = monthField.substring(0, 2);
             }
-            String yearField = card_validity.getText().toString();
+            String yearField = cardValidity.getText().toString();
             if (!yearField.isEmpty()) {
                 year = yearField.substring(3, 5);
             }
@@ -201,7 +191,7 @@ public class AddPaymentDetailFragment extends RootFragment {
         }
 
     }catch (Exception e){
-            Toast.makeText(context, "Wrong data enter! Please check again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, getString(R.string.wrong_data_enter_please_try_again), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -214,14 +204,12 @@ public class AddPaymentDetailFragment extends RootFragment {
         progressDialog.setVisibility(View.VISIBLE);
 
         String user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
-        String card_number = card_number_editText.getText().toString();
-
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String card_number = cardNumberEdittext.getText().toString();
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("user_id", user_id);
-            jsonObject.put("name",name_on_card.getText().toString());
+            jsonObject.put("name", nameOnCard.getText().toString());
             jsonObject.put("card",card_number.replace(" ",""));
             jsonObject.put("cvc",cvv.getText().toString());
             jsonObject.put("exp_month",month);
@@ -231,9 +219,9 @@ public class AddPaymentDetailFragment extends RootFragment {
             e.printStackTrace();
         }
 
-        ApiRequest.Call_Api(context, Config.ADD_PAYMENT_METHOD, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.ADD_PAYMENT_METHOD, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
@@ -248,7 +236,7 @@ public class AddPaymentDetailFragment extends RootFragment {
                     if(code_id == 200) {
 
                         if(fragment_callback!=null){
-                            fragment_callback.Responce(new Bundle());
+                            fragment_callback.onResponce(new Bundle());
                         }
                         getActivity().onBackPressed();
 

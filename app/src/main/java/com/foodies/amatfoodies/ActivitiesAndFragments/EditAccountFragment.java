@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 import com.foodies.amatfoodies.Utils.TabLayoutUtils;
@@ -30,19 +30,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class EditAccountFragment extends RootFragment {
 
-    ImageView back_icon;
-    EditText first_name,last_name,phone_number,ed_email;
-    Button btn_edit_done;
-    String first_name_str,last_name_str,user_id,email,phone;
+    ImageView backIcon;
+    EditText firstName, lastName, phoneNumber, edEmail;
+    Button btnEditDone;
+    String firstNameStr, lastNameStr, userId,email,phone;
     SharedPreferences sharedPreferences;
 
     CamomileSpinner editAccountProgress;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
@@ -52,9 +52,9 @@ public class EditAccountFragment extends RootFragment {
 
     }
 
-    Fragment_Callback fragment_callback;
-    public EditAccountFragment(Fragment_Callback fragment_callback){
-        this.fragment_callback=fragment_callback;
+    FragmentCallback fragmentCallback;
+    public EditAccountFragment(FragmentCallback fragmentCallback){
+        this.fragmentCallback = fragmentCallback;
     }
 
     @Nullable
@@ -73,35 +73,35 @@ public class EditAccountFragment extends RootFragment {
         editAccountProgress = v.findViewById(R.id.editAccountProgress);
         editAccountProgress.start();
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
-        first_name = v.findViewById(R.id.first_name);
-        last_name = v.findViewById(R.id.last_name);
-        phone_number = v.findViewById(R.id.ed_phone_number);
-        ed_email = v.findViewById(R.id.ed_edit_email);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
+        firstName = v.findViewById(R.id.first_name);
+        lastName = v.findViewById(R.id.last_name);
+        phoneNumber = v.findViewById(R.id.ed_phone_number);
+        edEmail = v.findViewById(R.id.ed_edit_email);
 
-        btn_edit_done = v.findViewById(R.id.btn_edit_done);
-        btn_edit_done.setOnClickListener(new View.OnClickListener() {
+        btnEditDone = v.findViewById(R.id.btn_edit_done);
+        btnEditDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 editUserProfile();
             }
         });
 
-        first_name_str = sharedPreferences.getString(PreferenceClass.pre_first,"");
-        last_name_str = sharedPreferences.getString(PreferenceClass.pre_last,"");
-        user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
+        firstNameStr = sharedPreferences.getString(PreferenceClass.pre_first,"");
+        lastNameStr = sharedPreferences.getString(PreferenceClass.pre_last,"");
+        userId = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
         email = sharedPreferences.getString(PreferenceClass.pre_email,"");
         phone = sharedPreferences.getString(PreferenceClass.pre_contact,"");
 
 
-        first_name.setText(first_name_str);
-        last_name.setText(last_name_str);
-        ed_email.setText(email);
-        phone_number.setText(phone);
+        firstName.setText(firstNameStr);
+        lastName.setText(lastNameStr);
+        edEmail.setText(email);
+        phoneNumber.setText(phone);
 
 
-        back_icon = v.findViewById(R.id.back_icon);
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon = v.findViewById(R.id.back_icon);
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                getActivity().onBackPressed();
@@ -114,25 +114,25 @@ public class EditAccountFragment extends RootFragment {
 
     public void editUserProfile(){
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
         JSONObject params = new JSONObject();
 
         try {
 
-            params.put("user_id",user_id);
-            if(first_name.getText().toString().isEmpty()){
-                params.put("first_name",first_name_str);
+            params.put("user_id", userId);
+            if(firstName.getText().toString().isEmpty()){
+                params.put("first_name", firstNameStr);
             }
             else {
-                params.put("first_name", first_name.getText().toString());
+                params.put("first_name", firstName.getText().toString());
             }
-            if(last_name.getText().toString().isEmpty()) {
-                params.put("last_name", last_name_str);
+            if(lastName.getText().toString().isEmpty()) {
+                params.put("last_name", lastNameStr);
             }
             else {
-                params.put("last_name", last_name.getText().toString());
+                params.put("last_name", lastName.getText().toString());
             }
             params.put("email",email);
         } catch (JSONException e) {
@@ -140,12 +140,12 @@ public class EditAccountFragment extends RootFragment {
         }
 
 
-        ApiRequest.Call_Api(context, Config.EDIT_PROFILE, params, new Callback() {
+        ApiRequest.callApi(context, Config.EDIT_PROFILE, params, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
                 try {
@@ -160,14 +160,14 @@ public class EditAccountFragment extends RootFragment {
                         JSONObject json1 = new JSONObject(resultObj.toString());
                         JSONObject resultObj1 = json1.getJSONObject("UserInfo");
 
-                        Toast.makeText(getContext(),"Profile updated successfully",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.profile_update_successfully),Toast.LENGTH_LONG).show();
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(PreferenceClass.pre_first,resultObj1.optString("first_name"));
                         editor.putString(PreferenceClass.pre_last,resultObj1.optString("last_name"));
                         editor.commit();
 
-                        if(fragment_callback!=null)
-                        fragment_callback.Responce(new Bundle());
+                        if(fragmentCallback !=null)
+                        fragmentCallback.onResponce(new Bundle());
 
 
                         getActivity().onBackPressed();

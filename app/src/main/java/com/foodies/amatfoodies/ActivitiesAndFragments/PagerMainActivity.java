@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.foodies.amatfoodies.Adapters.AdapterPager;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
@@ -38,13 +40,6 @@ public class PagerMainActivity extends RootFragment {
 
     Context context;
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,7 +71,7 @@ public class PagerMainActivity extends RootFragment {
     private void setupTabIcons() {
         View view1 = LayoutInflater.from(context).inflate(R.layout.item_menu_tablayout_item, null);
         ImageView imageView1= view1.findViewById(R.id.image);
-        imageView1.setImageDrawable(getResources().getDrawable(R.drawable.ic_res_fill));
+        imageView1.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_res_fill,null));
         TextView textView1=view1.findViewById(R.id.text);
         textView1.setText(R.string.restuarents);
         textView1.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -84,7 +79,7 @@ public class PagerMainActivity extends RootFragment {
 
         View view2 = LayoutInflater.from(context).inflate(R.layout.item_menu_tablayout_item, null);
         ImageView imageView2= view2.findViewById(R.id.image);
-        imageView2.setImageDrawable(getResources().getDrawable(R.drawable.ic_order_not_fil));
+        imageView2.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_order_not_fil,null));
         TextView textView=view2.findViewById(R.id.text);
         textView.setText(R.string.orders);
         textView.setTextColor(getResources().getColor(R.color.dark_gray));
@@ -93,7 +88,7 @@ public class PagerMainActivity extends RootFragment {
 
         View view3 = LayoutInflater.from(context).inflate(R.layout.item_menu_tablayout_item, null);
         ImageView imageView3= view3.findViewById(R.id.image);
-        imageView3.setImageDrawable(getResources().getDrawable(R.drawable.ic_cart_not_fil));
+        imageView3.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_cart_not_fil,null));
         TextView textView3=view3.findViewById(R.id.text);
         textView3.setText(R.string.cart);
         textView3.setTextColor(getResources().getColor(R.color.dark_gray));
@@ -102,7 +97,7 @@ public class PagerMainActivity extends RootFragment {
 
         View view4 = LayoutInflater.from(context).inflate(R.layout.item_menu_tablayout_item, null);
         ImageView imageView4= view4.findViewById(R.id.image);
-        imageView4.setImageDrawable(getResources().getDrawable(R.drawable.ic_acc_not_fil));
+        imageView4.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_acc_not_fil,null));
         TextView textView4=view4.findViewById(R.id.text);
         textView4.setText(R.string.accounts);
         textView4.setTextColor(getResources().getColor(R.color.dark_gray));
@@ -117,17 +112,17 @@ public class PagerMainActivity extends RootFragment {
                 ImageView image=v.findViewById(R.id.image);
                 switch (tab.getPosition()){
                     case 0:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_res_fill));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_res_fill,null));
                         break;
                     case 1:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_order_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_order_fil,null));
                         break;
                     case 2:
 
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_cart_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_cart_fil,null));
                         break;
                     case 3:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_acc_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_acc_fil,null));
                         break;
                 }
                 TextView tv =v.findViewById(R.id.text);
@@ -141,16 +136,16 @@ public class PagerMainActivity extends RootFragment {
                 ImageView image=v.findViewById(R.id.image);
                 switch (tab.getPosition()){
                     case 0:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_res_not_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_res_not_fil,null));
                         break;
                     case 1:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_order_not_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_order_not_fil,null));
                         break;
                     case 2:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_cart_not_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_cart_not_fil,null));
                         break;
                     case 3:
-                        image.setImageDrawable(getResources().getDrawable(R.drawable.ic_acc_not_fil));
+                        image.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_acc_not_fil,null));
                         break;
                 }
                 TextView tv =v.findViewById(R.id.text);
@@ -177,6 +172,7 @@ public class PagerMainActivity extends RootFragment {
             badgeText.setVisibility(View.GONE);
             badgeText.setText(""+count);
         }
+
         else
         if(getIfCarExist==1){
 
@@ -206,11 +202,7 @@ public class PagerMainActivity extends RootFragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
 
-    }
 
     @Override
     public void onResume() {
@@ -248,7 +240,6 @@ public class PagerMainActivity extends RootFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            //  updateUI(intent);
             count = sPref.getInt("count",0);
             TabLayout.Tab tab = tabLayout.getTabAt(2); // fourth tab
             View tabView = tab.getCustomView();
@@ -270,6 +261,9 @@ public class PagerMainActivity extends RootFragment {
         }
 
     }
+
+
+
 
 }
 

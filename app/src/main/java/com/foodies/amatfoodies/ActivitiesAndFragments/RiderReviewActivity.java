@@ -3,6 +3,8 @@ package com.foodies.amatfoodies.ActivitiesAndFragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,39 +13,45 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.gmail.samehadar.iosdialog.CamomileSpinner;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class RiderReviewActivity extends AppCompatActivity {
+public class RiderReviewActivity extends AppCompatActivity implements View.OnClickListener {
     SharedPreferences sPref;
-    TextView rest_name;
-    String restaurant_id,rider_user_id,order_id,rider_name,user_id;
+    TextView restName;
+    String riderUserId, orderId, riderName, userId;
     RatingBar reviewRatingBar;
-    EditText ed_message;
+    EditText edMessage;
     RelativeLayout submitBtn;
-    private static boolean RIDER_REVIEW;
-    float rating_;
-    ImageView clos_menu_items_detail;
-    CircleImageView rest_img;
+    float rating;
+    ImageView closMenuItemsDetail;
+    SimpleDraweeView restImg;
     CamomileSpinner progress;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rating_review_alert);
         initUI();
@@ -52,84 +60,87 @@ public class RiderReviewActivity extends AppCompatActivity {
     public void initUI(){
         sPref = getSharedPreferences(PreferenceClass.user,MODE_PRIVATE);
         submitBtn = findViewById(R.id.submitBtn);
-        ed_message = findViewById(R.id.ed_message);
+        edMessage = findViewById(R.id.ed_message);
         reviewRatingBar = findViewById(R.id.reviewRatingBar);
-        clos_menu_items_detail = findViewById(R.id.clos_menu_items_detail);
-        rest_img = findViewById(R.id.rest_img);
+        closMenuItemsDetail = findViewById(R.id.clos_menu_items_detail);
+        restImg = findViewById(R.id.rest_img);
 
         progressDialog = findViewById(R.id.progressDialog);
-        transparent_layer = findViewById(R.id.transparent_layer);
+        transparentLayer = findViewById(R.id.transparent_layer);
 
         progress = findViewById(R.id.addToCartProgress);
         progress.start();
 
-        user_id = sPref.getString(PreferenceClass.pre_user_id,"");
-       // String type = sPref.getString(PreferenceClass.REVIEW_TYPE,"");
+        userId = sPref.getString(PreferenceClass.pre_user_id,"");
 
-        clos_menu_items_detail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        closMenuItemsDetail.setOnClickListener(this::onClick);
+
+
+            riderName = sPref.getString(PreferenceClass.RIDER_NAME_NOTIFY,"");
+            riderUserId = sPref.getString(PreferenceClass.RIDER_USER_ID_NOTIFY,"");
+            orderId = sPref.getString(PreferenceClass.ORDER_ID_NOTIFY,"");
+
+            restName = findViewById(R.id.rest_name);
+            restName.setText(riderName);
+
+
+        reviewRatingBar.setOnClickListener(this::onClick);
+
+        submitBtn.setOnClickListener(this::onClick);
+
+
+    }
+
+
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.reviewRatingBar:
+                rating = reviewRatingBar.getRating();
+                break;
+
+            case R.id.clos_menu_items_detail:
                 RiderReviewActivity.this.finish();
                 SharedPreferences.Editor editor = sPref.edit();
                 editor.putBoolean("isOpen",true).commit();
-            }
-        });
+                break;
 
-
-            rider_name = sPref.getString(PreferenceClass.RIDER_NAME_NOTIFY,"");
-            rider_user_id = sPref.getString(PreferenceClass.RIDER_USER_ID_NOTIFY,"");
-            order_id = sPref.getString(PreferenceClass.ORDER_ID_NOTIFY,"");
-
-            rest_name = findViewById(R.id.rest_name);
-            rest_name.setText(rider_name);
-
-
-        reviewRatingBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rating_ = reviewRatingBar.getRating();
-            }
-        });
-
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+            case R.id.submitBtn:
                 if(reviewRatingBar.getRating()>0){
                     postReview();
-
                 }
                 else {
                     Toast.makeText(RiderReviewActivity.this,"Please select at-least ONE star.",Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
+                break;
+        }
 
     }
 
     public void postReview(){
 
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
         JSONObject jsonObject = new JSONObject();
 
 
         try {
-            jsonObject.put("user_id",user_id);
-            jsonObject.put("rider_user_id",""+rider_user_id);
-            jsonObject.put("comment",ed_message.getText().toString());
-            jsonObject.put("order_id",""+order_id);
+            jsonObject.put("user_id", userId);
+            jsonObject.put("rider_user_id",""+ riderUserId);
+            jsonObject.put("comment", edMessage.getText().toString());
+            jsonObject.put("order_id",""+ orderId);
             jsonObject.put("star",""+reviewRatingBar.getRating());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-        ApiRequest.Call_Api(this, Config.GiveRatingsToRider, jsonObject, new Callback() {
+        ApiRequest.callApi(this, Config.GiveRatingsToRider, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
 
                 try {
@@ -141,18 +152,18 @@ public class RiderReviewActivity extends AppCompatActivity {
                         RiderReviewActivity.this.finish();
                         SharedPreferences.Editor editor = sPref.edit();
                         editor.putBoolean("isOpen",true).commit();
-                        transparent_layer.setVisibility(View.GONE);
+                        transparentLayer.setVisibility(View.GONE);
                         progressDialog.setVisibility(View.GONE);
                     }
                     else {
 
                         // Else Part
-                        transparent_layer.setVisibility(View.GONE);
+                        transparentLayer.setVisibility(View.GONE);
                         progressDialog.setVisibility(View.GONE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    transparent_layer.setVisibility(View.GONE);
+                    transparentLayer.setVisibility(View.GONE);
                     progressDialog.setVisibility(View.GONE);
                 }
 

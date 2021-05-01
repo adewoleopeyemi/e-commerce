@@ -23,7 +23,7 @@ import com.foodies.amatfoodies.Adapters.AddressListAdapter;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.AddressListModel;
@@ -40,25 +40,25 @@ import java.util.ArrayList;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class AddressListFragment extends RootFragment {
 
     Button cancel;
-    ImageView back_icon;
-    RelativeLayout add_address_div;
-    public static boolean FLAG_ADDRESS_LIST,FLAG_NO_ADRESS_CHOSE,CART_NOT_LOAD;
+    ImageView backIcon;
+    RelativeLayout addAddressDiv;
+    public static boolean FLAG_ADDRESS_LIST,CART_NOT_LOAD;
     SharedPreferences sharedPreferences;
 
     ArrayList<AddressListModel> arrayListAddress;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     AddressListAdapter recyclerViewadapter;
-    RecyclerView recycler_view;
+    RecyclerView recyclerView;
     CamomileSpinner addresListProgress;
-    FrameLayout address_list_container;
+    FrameLayout addressListContainer;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
@@ -71,8 +71,8 @@ public class AddressListFragment extends RootFragment {
 
     }
 
-    Fragment_Callback fragment_callback;
-    public AddressListFragment(Fragment_Callback fragment_callback){
+    FragmentCallback fragment_callback;
+    public AddressListFragment(FragmentCallback fragment_callback){
         this.fragment_callback=fragment_callback;
     }
 
@@ -86,8 +86,8 @@ public class AddressListFragment extends RootFragment {
          bundle=getArguments();
 
          sharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
-        address_list_container = view.findViewById(R.id.address_list_container);
-        address_list_container.setOnTouchListener(new View.OnTouchListener() {
+        addressListContainer = view.findViewById(R.id.address_list_container);
+        addressListContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
@@ -107,16 +107,16 @@ public class AddressListFragment extends RootFragment {
     public void initUI(View v){
 
         progressDialog = v.findViewById(R.id.progressDialog_address);
-        transparent_layer = v.findViewById(R.id.transparent_layer_address);
+        transparentLayer = v.findViewById(R.id.transparent_layer_address);
         addresListProgress = v.findViewById(R.id.addresListProgress);
         addresListProgress.start();
-        recycler_view = v.findViewById(R.id.list_address);
+        recyclerView = v.findViewById(R.id.list_address);
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        recycler_view.setLayoutManager(recyclerViewlayoutManager);
+        recyclerView.setLayoutManager(recyclerViewlayoutManager);
 
         cancel = v.findViewById(R.id.cancle_address_btn);
-        back_icon = v.findViewById(R.id.back_icon);
-        add_address_div = v.findViewById(R.id.add_address_div);
+        backIcon = v.findViewById(R.id.back_icon);
+        addAddressDiv = v.findViewById(R.id.add_address_div);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,13 +125,13 @@ public class AddressListFragment extends RootFragment {
             }
         });
 
-        add_address_div.setOnClickListener(new View.OnClickListener() {
+        addAddressDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Fragment restaurantMenuItemsFragment = new AddressDetailFragment(new Fragment_Callback() {
+                Fragment restaurantMenuItemsFragment = new AddressDetailFragment(new FragmentCallback() {
                     @Override
-                    public void Responce(Bundle bundle) {
+                    public void onResponce(Bundle bundle) {
                         getAddressList();
                     }
                 });
@@ -144,10 +144,10 @@ public class AddressListFragment extends RootFragment {
         });
 
         if(UserAccountFragment.FLAG_DELIVER_ADDRESS || DealOrderFragment.DEAL_ADDRESS){
-            back_icon.setVisibility(View.VISIBLE);
+            backIcon.setVisibility(View.VISIBLE);
             cancel.setVisibility(View.GONE);
             UserAccountFragment.FLAG_DELIVER_ADDRESS = false;
-            back_icon.setOnClickListener(new View.OnClickListener() {
+            backIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -164,7 +164,7 @@ public class AddressListFragment extends RootFragment {
     String res_id="",sub_total="";
     public void getAddressList(){
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
         arrayListAddress = new ArrayList<>();
         String user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
@@ -188,9 +188,9 @@ public class AddressListFragment extends RootFragment {
         }
 
 
-        ApiRequest.Call_Api(context, Config.GET_DELIVERY_ADDRESES, addressJsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.GET_DELIVERY_ADDRESES, addressJsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -208,37 +208,13 @@ public class AddressListFragment extends RootFragment {
                             JSONObject jsonObjAdd = addressJson.getJSONObject("Address");
 
                             AddressListModel addressListModel = new AddressListModel();
-
-                            if(jsonObjAdd.optString("apartment").isEmpty()){
-                                addressListModel.setApartment("");
-                            }
-                            else {
-                                addressListModel.setApartment(jsonObjAdd.optString("apartment"));
-                            }
-
-                            if(jsonObjAdd.optString("city").isEmpty()){
-                                addressListModel.setCity("");
-                            }
-                            else {
-                                addressListModel.setCity(jsonObjAdd.optString("city"));
-                            }
-                            if(jsonObjAdd.optString("state").isEmpty()){
-                                addressListModel.setState("");
-                            }
-                            else {
-                                addressListModel.setState(jsonObjAdd.optString("state"));
-                            }
-                            if(jsonObjAdd.optString("street").isEmpty()){
-                                addressListModel.setStreet("");
-                            }
-                            else {
-                                addressListModel.setStreet(jsonObjAdd.optString("street"));
-                            }
+                            addressListModel.setApartment(jsonObjAdd.optString("apartment"));
+                            addressListModel.setCity(jsonObjAdd.optString("city"));
+                            addressListModel.setState(jsonObjAdd.optString("state"));
+                            addressListModel.setStreet(jsonObjAdd.optString("street"));
                             addressListModel.setAddress_id(jsonObjAdd.optString("id"));
                             addressListModel.setDelivery_fee(jsonObjAdd.optString("delivery_fee"));
-                            String del = jsonObjAdd.optString("delivery_fee");
-
-
+                            addressListModel.setInstruction(jsonObjAdd.optString("instructions"));
                             arrayListAddress.add(addressListModel);
 
                         }
@@ -246,7 +222,7 @@ public class AddressListFragment extends RootFragment {
                         if(arrayListAddress!=null) {
 
                             recyclerViewadapter = new AddressListAdapter(arrayListAddress, getActivity());
-                            recycler_view.setAdapter(recyclerViewadapter);
+                            recyclerView.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
                             recyclerViewadapter.setOnItemClickListner(new AddressListAdapter.OnItemClickListner() {
                                 @Override
@@ -257,7 +233,7 @@ public class AddressListFragment extends RootFragment {
                                     if(fragment_callback!=null){
                                         Bundle bundle = new Bundle();
                                         bundle.putSerializable("data",addressListModel);
-                                        fragment_callback.Responce(bundle);
+                                        fragment_callback.onResponce(bundle);
                                         getActivity().onBackPressed();
                                     }
 
@@ -276,7 +252,7 @@ public class AddressListFragment extends RootFragment {
                 }
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
             }

@@ -2,10 +2,9 @@ package com.foodies.amatfoodies.GoogleMapWork;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Typeface;
+
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.style.CharacterStyle;
-import android.text.style.StyleSpan;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.foodies.amatfoodies.R;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,35 +29,30 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
- * Created by Dinosoftlabs on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 public class PlaceAutocompleteAdapter extends RecyclerView.Adapter<PlaceAutocompleteAdapter.PlaceViewHolder> implements Filterable {
 
     public interface PlaceAutoCompleteInterface{
-        public void onPlaceClick(ArrayList<PlaceAutocomplete> mResultList, int position);
+         void onPlaceClick(ArrayList<PlaceAutocomplete> mResultList, int position);
     }
 
     Context mContext;
     PlaceAutoCompleteInterface mListener;
-    private static final String TAG = "PlaceAutocompleteAdapter";
-    private static final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
+
     ArrayList<PlaceAutocomplete> mResultList;
 
 
-    private LatLngBounds mBounds;
+
 
     private int layout;
 
-    private AutocompleteFilter mPlaceFilter;
 
 
 
-    public PlaceAutocompleteAdapter(Context context, int resource, GoogleApiClient googleApiClient,
-                                    LatLngBounds bounds, AutocompleteFilter filter){
+    public PlaceAutocompleteAdapter(Context context, int resource){
         this.mContext = context;
         layout = resource;
-        mBounds = bounds;
-        mPlaceFilter = filter;
         this.mListener = (PlaceAutoCompleteInterface)mContext;
     }
 
@@ -74,13 +65,6 @@ public class PlaceAutocompleteAdapter extends RecyclerView.Adapter<PlaceAutocomp
         }
     }
 
-
-    /**
-     * Sets the bounds for all subsequent queries.
-     */
-    public void setBounds(LatLngBounds bounds) {
-        mBounds = bounds;
-    }
 
 
     @Override

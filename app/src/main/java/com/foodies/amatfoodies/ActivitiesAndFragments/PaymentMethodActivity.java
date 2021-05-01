@@ -2,6 +2,8 @@ package com.foodies.amatfoodies.ActivitiesAndFragments;
 
 import android.app.DatePickerDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.R;
 
 import java.text.SimpleDateFormat;
@@ -20,22 +23,29 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class PaymentMethodActivity extends AppCompatActivity {
 
-    private Button cancle_payment_method_btn,cancle_credit_card_btn;
-    private RelativeLayout add_payment_method_div;
+    private Button canclePaymentMethodBtn, cancleCreditCardBtn;
+    private RelativeLayout addPaymentMethodDiv;
 
-    private LinearLayout select_payment_method_layout,add_card_detail_layout;
+    private LinearLayout selectPaymentMethodLayout, addCardDetailLayout;
 
-    private EditText card_number_editText,card_validity;
+    private EditText cardNumberEdittext, cardValidity;
 
     private Calendar myCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_method);
         myCalendar = Calendar.getInstance();
@@ -44,40 +54,40 @@ public class PaymentMethodActivity extends AppCompatActivity {
 
     private void initUI(){
 
-        cancle_payment_method_btn = findViewById(R.id.cancle_payment_method_btn);
-        cancle_payment_method_btn.setOnClickListener(new View.OnClickListener() {
+        canclePaymentMethodBtn = findViewById(R.id.cancle_payment_method_btn);
+        canclePaymentMethodBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        cancle_credit_card_btn = findViewById(R.id.cancle_credit_card_btn);
-        add_card_detail_layout = findViewById(R.id.add_card_detail_layout);
-        select_payment_method_layout = findViewById(R.id.select_payment_method_layout);
-        add_payment_method_div = findViewById(R.id.add_payment_method_div);
-        card_number_editText = findViewById(R.id.card_number_editText);
-        card_validity = findViewById(R.id.card_validity);
+        cancleCreditCardBtn = findViewById(R.id.cancle_credit_card_btn);
+        addCardDetailLayout = findViewById(R.id.add_card_detail_layout);
+        selectPaymentMethodLayout = findViewById(R.id.select_payment_method_layout);
+        addPaymentMethodDiv = findViewById(R.id.add_payment_method_div);
+        cardNumberEdittext = findViewById(R.id.card_number_editText);
+        cardValidity = findViewById(R.id.card_validity);
         datePickerDialog();
 
-        add_payment_method_div.setOnClickListener(new View.OnClickListener() {
+        addPaymentMethodDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                select_payment_method_layout.setVisibility(View.GONE);
-                add_card_detail_layout.setVisibility(View.VISIBLE);
+                selectPaymentMethodLayout.setVisibility(View.GONE);
+                addCardDetailLayout.setVisibility(View.VISIBLE);
 
             }
         });
 
-        cancle_credit_card_btn.setOnClickListener(new View.OnClickListener() {
+        cancleCreditCardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                select_payment_method_layout.setVisibility(View.VISIBLE);
-                add_card_detail_layout.setVisibility(View.GONE);
+                selectPaymentMethodLayout.setVisibility(View.VISIBLE);
+                addCardDetailLayout.setVisibility(View.GONE);
             }
         });
 
-        card_number_editText.addTextChangedListener(new FourDigitCardFormatWatcher());
+        cardNumberEdittext.addTextChangedListener(new FourDigitCardFormatWatcher());
 
 
 
@@ -109,7 +119,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
             }
             if (s.length() > 0 && (s.length() % 5) == 0) {
                 char c = s.charAt(s.length() - 1);
-                // Only if its a digit where there should be a space we insert a space
+
                 if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(space)).length <= 3) {
                     s.insert(s.length() - 1, String.valueOf(space));
                 }
@@ -125,8 +135,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
+               myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabel();
@@ -134,12 +143,11 @@ public class PaymentMethodActivity extends AppCompatActivity {
 
         };
 
-        card_validity.setInputType(0);
-        card_validity.setOnClickListener(new View.OnClickListener() {
+        cardValidity.setInputType(0);
+        cardValidity.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 new DatePickerDialog(PaymentMethodActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -149,10 +157,12 @@ public class PaymentMethodActivity extends AppCompatActivity {
     }
 
     private void updateLabel() {
-        String myFormat = "dd/yy"; //In which you need put here
+        String myFormat = "dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        card_validity.setText(sdf.format(myCalendar.getTime()));
+        cardValidity.setText(sdf.format(myCalendar.getTime()));
     }
+
+
 
 }

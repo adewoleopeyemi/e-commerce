@@ -1,90 +1,73 @@
 package com.foodies.amatfoodies.ActivitiesAndFragments;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.core.content.ContextCompat;
 
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.foodies.amatfoodies.Adapters.ExpandableListAdapter;
+import com.foodies.amatfoodies.Chat_Module.Chat_A;
 import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
-import com.foodies.amatfoodies.GoogleMapWork.TrackingActivity;
+import com.foodies.amatfoodies.GoogleMapWork.OrderTracking_A;
 import com.foodies.amatfoodies.Models.MenuItemExtraModel;
 import com.foodies.amatfoodies.Models.MenuItemModel;
-import com.foodies.amatfoodies.Models.NewOrderModelClass;
 import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.Utils.CustomExpandableListView;
 import com.foodies.amatfoodies.Utils.FontHelper;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 import com.foodies.amatfoodies.Utils.TabLayoutUtils;
 import com.gmail.samehadar.iosdialog.CamomileSpinner;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class OrderDetailFragment extends RootFragment {
+public class OrderDetailFragment extends RootFragment implements View.OnClickListener{
 
-    ImageView back_icon;
-    TextView order_title_tv,inst_tv,hotel_name_tv,hotel_phone_number_tv,hotel_add_tv,total_amount_tv,payment_method_tv,total_tip_tv,
-            order_user_name_tv,order_user_address_tv,order_user_number_tv,total_delivery_fee_tv,tax_tv,total_tex_tv,total_discount_tv,sub_total_amount_tv;
+    ImageView backIcon;
+    TextView orderTitleTv, instTv, hotelNameTv, hotelPhoneNumberTv, hotelAddTv, totalAmountTv, paymentMethodTv, totalTipTv,
+            orderUserNameTv, orderUserAddressTv, orderUserNumberTv, totalDeliveryFeeTv, taxTv, totalTexTv, totalDiscountTv, subTotalAmountTv;
     SharedPreferences orderSharedPreferences;
     ExpandableListAdapter listAdapter;
     CustomExpandableListView customExpandableListView;
     ArrayList<MenuItemModel> listDataHeader;
     ArrayList<MenuItemExtraModel> listChildData;
-    private ArrayList<ArrayList<MenuItemExtraModel>> ListChild;
-    String order_id,user_id;
+    private ArrayList<ArrayList<MenuItemExtraModel>> listChild;
+    String orderId, userId;
 
+    TextView riderInsTv;
 
-    private RelativeLayout track_order_div,accept_div,decline_div;
-    public static boolean FLAG_ACCEPT;
-    private static int pick_up;
+    private RelativeLayout trackOrderDiv;
+    private  int pickUp;
     String order_status="";
     ScrollView scrolView;
     CamomileSpinner orderProgress;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
     String delivery;
-    public static boolean CALLBACK_ORDERFRAG,ACCPT_DEC_FLAG;
-    public static String serverkey;
 
 
     View view;
@@ -105,11 +88,11 @@ public class OrderDetailFragment extends RootFragment {
                 return true;
             }
         });
-        pick_up = 0;
-        order_id = orderSharedPreferences.getString(PreferenceClass.ORDER_ID,"");
-        user_id = orderSharedPreferences.getString(PreferenceClass.pre_user_id,"");
+
+        pickUp = 0;
+        orderId = orderSharedPreferences.getString(PreferenceClass.ORDER_ID,"");
+        userId = orderSharedPreferences.getString(PreferenceClass.pre_user_id,"");
         init(view);
-        getserverkey();
         getOrderDetailItems();
 
 
@@ -121,7 +104,7 @@ public class OrderDetailFragment extends RootFragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
-                return true; // This way the expander cannot be collapsed
+                return true;
             }
         });
 
@@ -131,114 +114,117 @@ public class OrderDetailFragment extends RootFragment {
     @SuppressLint("ResourceAsColor")
     public void init(View v){
 
-        sub_total_amount_tv = v.findViewById(R.id.sub_total_amount_tv);
+        subTotalAmountTv = v.findViewById(R.id.sub_total_amount_tv);
         orderProgress = v.findViewById(R.id.orderProgress);
         orderProgress.start();
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
         String order_title = orderSharedPreferences.getString(PreferenceClass.ORDER_HEADER,"");
         String order_inst = orderSharedPreferences.getString(PreferenceClass.ORDER_INS,"");
         delivery = orderSharedPreferences.getString("delivery_","");
-        order_title_tv = v.findViewById(R.id.order_title_tv);
+        orderTitleTv = v.findViewById(R.id.order_title_tv);
 
-        track_order_div = v.findViewById(R.id.track_order_div);
+        trackOrderDiv = v.findViewById(R.id.track_order_div);
 
-        order_title_tv.setText(order_title.replaceAll("&amp;", "&"));
+        orderTitleTv.setText(order_title.replaceAll("&amp;", "&"));
 
-        accept_div = v.findViewById(R.id.accept_div);
-        decline_div = v.findViewById(R.id.decline_div);
+
         scrolView = v.findViewById(R.id.scrolView);
-        /// All Text from API
-        hotel_name_tv = v.findViewById(R.id.order_hotel_name);
-        hotel_add_tv = v.findViewById(R.id.order_hotel_address);
-        hotel_phone_number_tv = v.findViewById(R.id.order_hotel_number);
-        payment_method_tv = v.findViewById(R.id.payment_method_tv);
-        total_amount_tv = v.findViewById(R.id.total_amount_tv);
-        inst_tv = v.findViewById(R.id.inst_tv);
-        inst_tv.setText(order_inst);
-        order_user_name_tv = v.findViewById(R.id.order_user_name_tv);
-        order_user_address_tv = v.findViewById(R.id.order_user_address_tv);
-        order_user_number_tv = v.findViewById(R.id.order_user_number_tv);
-        total_delivery_fee_tv = v.findViewById(R.id.total_delivery_fee_tv);
-        total_tip_tv = v.findViewById(R.id.total_tip_tv);
-        tax_tv = v.findViewById(R.id.tax_tv);
-        total_tex_tv = v.findViewById(R.id.total_tex_tv);
-        total_discount_tv=v.findViewById(R.id.total_discount_tv);
+        hotelNameTv = v.findViewById(R.id.order_hotel_name);
+        hotelAddTv = v.findViewById(R.id.order_hotel_address);
+        hotelPhoneNumberTv = v.findViewById(R.id.order_hotel_number);
+        paymentMethodTv = v.findViewById(R.id.payment_method_tv);
+        totalAmountTv = v.findViewById(R.id.total_amount_tv);
+        instTv = v.findViewById(R.id.inst_tv);
+        instTv.setText(order_inst);
+        orderUserNameTv = v.findViewById(R.id.order_user_name_tv);
+        orderUserAddressTv = v.findViewById(R.id.order_user_address_tv);
+        orderUserNumberTv = v.findViewById(R.id.order_user_number_tv);
+        totalDeliveryFeeTv = v.findViewById(R.id.total_delivery_fee_tv);
+        totalTipTv = v.findViewById(R.id.total_tip_tv);
+        taxTv = v.findViewById(R.id.tax_tv);
+        totalTexTv = v.findViewById(R.id.total_tex_tv);
+        totalDiscountTv =v.findViewById(R.id.total_discount_tv);
 
-        /// End
-        track_order_div.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(pick_up==1 || (order_status!=null && order_status.equals("2"))){
-                 }
-                else {
-                    getActivity().startActivity(new Intent(getContext(), TrackingActivity.class));
-                }
-            }
-        });
+        trackOrderDiv.setOnClickListener(this);
+
+        riderInsTv =view.findViewById(R.id.rider_ins_tv);
+
+        backIcon = v.findViewById(R.id.back_icon);
+        backIcon.setOnClickListener(this);
 
 
 
-
-        back_icon = v.findViewById(R.id.back_icon);
-        back_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                getActivity().onBackPressed();
-
-            }
-        });
-
-
-        accept_div.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                FLAG_ACCEPT = true;
-                customDialog();
-                ACCPT_DEC_FLAG = true;
-
-            }
-        });
-
-        decline_div.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                FLAG_ACCEPT = false;
-                customDialog();
-                ACCPT_DEC_FLAG = true;
-
-
-            }
-        });
-
+        v.findViewById(R.id.cancel_order_div).setOnClickListener(this);
 
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.back_icon:
+                getActivity().onBackPressed();
+                break;
+
+            case R.id.track_order_div:
+                if(pickUp ==1 || (order_status!=null && order_status.equals("2"))){
+                }
+                else {
+                    Open_tracking();
+                }
+                break;
+
+            case R.id.cancel_order_div:
+                METHOD_openChat();
+                break;
+
+        }
+    }
+
+
+    public void Open_tracking(){
+        Intent intent=new Intent(getActivity(), OrderTracking_A.class);
+        intent.putExtra("order_id", orderId);
+        startActivity(intent);
+    }
+
+
+    private void METHOD_openChat() {
+
+        Intent intent=new Intent(getActivity(),Chat_A.class);
+        intent.putExtra("Receiverid", "0");
+        intent.putExtra("Receiver_name", "Admin");
+        intent.putExtra("Receiver_pic", "");
+        intent.putExtra("Order_id", orderId);
+        intent.putExtra("senderid", PreferenceClass.sharedPreferences.getString(PreferenceClass.pre_first,"")+
+                PreferenceClass.sharedPreferences.getString(PreferenceClass.pre_last,""));
+        startActivity(intent);
+    }
+
     public void getOrderDetailItems(){
 
         listDataHeader = new ArrayList<MenuItemModel>();
-        ListChild = new ArrayList<>();
+        listChild = new ArrayList<>();
 
          JSONObject orderJsonObject = new JSONObject();
         try {
-            orderJsonObject.put("order_id",order_id);
+            orderJsonObject.put("order_id", orderId);
 
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             e.printStackTrace();
         }
 
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_ORDER_DETAIL, orderJsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_ORDER_DETAIL, orderJsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -264,57 +250,61 @@ public class OrderDetailFragment extends RootFragment {
 
                             String first_name = userInfoObj.optString("first_name");
                             String last_name = userInfoObj.optString("last_name");
-                            order_user_name_tv.setText(first_name+" "+last_name);
-                            order_user_number_tv.setText(userInfoObj.optString("phone"));
+                            orderUserNameTv.setText(first_name+" "+last_name);
+                            orderUserNumberTv.setText(userInfoObj.optString("phone"));
                             String street_user = userAddressObj.optString("street");
                             String city_user = userAddressObj.optString("city");
 
 
 
                             if(delivery.equalsIgnoreCase("0")){
-                                order_user_address_tv.setText("Pick Up");
+                                orderUserAddressTv.setText("Pick Up");
                             }
                             else {
-                                order_user_address_tv.setText(street_user + ", " + city_user);
+                                orderUserAddressTv.setText(street_user + ", " + city_user);
                             }
 
                             order_status=orderJsonObject.optString("status","");
-                            if(order_user_address_tv.getText().toString().equalsIgnoreCase("Pick Up")){
-                                track_order_div.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trackColor));
-                                pick_up = 1;
+                            if(orderUserAddressTv.getText().toString().equalsIgnoreCase("Pick Up")){
+                                trackOrderDiv.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trackColor));
+                                pickUp = 1;
                             }
 
                             else if(order_status.equals("2")){
-                                track_order_div.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trackColor));
+                                trackOrderDiv.setVisibility(View.GONE);
+                                view.findViewById(R.id.cancel_order_div).setVisibility(View.GONE);
 
                             }
 
 
-                            inst_tv.setText(orderJsonObject.optString("instructions"));
-                            total_amount_tv.setText(currency_symbol+orderJsonObject.optString("price"));
+                            instTv.setText(orderJsonObject.optString("restaurant_instruction"));
+                            riderInsTv.setText(orderJsonObject.optString("rider_instruction"));
+
+
+                            totalAmountTv.setText(currency_symbol+orderJsonObject.optString("price"));
 
                             String getPaymentMethodTV = orderJsonObject.optString("cod");
                             if(getPaymentMethodTV.equalsIgnoreCase("0")) {
-                                payment_method_tv.setText("Credit Card");
+                                paymentMethodTv.setText("Credit Card");
                             }
                             else {
-                                payment_method_tv.setText("Cash On Delivery");
+                                paymentMethodTv.setText("Cash On Delivery");
                             }
 
-                            hotel_name_tv.setText(restaurantJsonObject.optString("name"));
-                            hotel_phone_number_tv.setText(restaurantJsonObject.optString("phone"));
+                            hotelNameTv.setText(restaurantJsonObject.optString("name"));
+                            hotelPhoneNumberTv.setText(restaurantJsonObject.optString("phone"));
                             JSONObject restaurantAddress = restaurantJsonObject.getJSONObject("RestaurantLocation");
                             String street = restaurantAddress.optString("street");
                             String city = restaurantAddress.optString("city");
 
-                            hotel_add_tv.setText(street+", "+city);
+                            hotelAddTv.setText(street+", "+city);
 
                             String tax = orderJsonObject.optString("tax");
 
-                            total_discount_tv.setText(currency_symbol+""+orderJsonObject.optString("discount"));
+                            totalDiscountTv.setText(currency_symbol+""+orderJsonObject.optString("discount"));
 
                             String delivery_fee = orderJsonObject.optString("delivery_fee");
-                            total_delivery_fee_tv.setText(currency_symbol+delivery_fee);
+                            totalDeliveryFeeTv.setText(currency_symbol+delivery_fee);
                             String tax_free = restaurantJsonObject.optString("tax_free");
                             String rider_tip = orderJsonObject.optString("rider_tip");
                             if(rider_tip.equalsIgnoreCase("")){
@@ -322,17 +312,17 @@ public class OrderDetailFragment extends RootFragment {
                             }
                             String taxPercent = taxObj.optString("tax");
                             if(tax_free.equalsIgnoreCase("1")) {
-                                tax_tv.setText("(" + "0" + "%)");
-                                total_tex_tv.setText(currency_symbol+" 0.0");
+                                taxTv.setText("(" + "0" + "%)");
+                                totalTexTv.setText(currency_symbol+" 0.0");
                             }
                             else {
-                                tax_tv.setText("(" + taxPercent + "%)");
-                                total_tex_tv.setText(currency_symbol+" "+tax);
+                                taxTv.setText("(" + taxPercent + "%)");
+                                totalTexTv.setText(currency_symbol+" "+tax);
                             }
 
                             String subTotal = orderJsonObject.optString("sub_total");
-                            sub_total_amount_tv.setText(currency_symbol+" "+subTotal);
-                            total_tip_tv.setText(currency_symbol+" "+rider_tip);
+                            subTotalAmountTv.setText(currency_symbol+" "+subTotal);
+                            totalTipTv.setText(currency_symbol+" "+rider_tip);
 
 
                             JSONArray menuItemArray = allJsonObject.getJSONArray("OrderMenuItem");
@@ -370,212 +360,44 @@ public class OrderDetailFragment extends RootFragment {
                                     }
 
                                 }
-                                ListChild.add(listChildData);
+                                listChild.add(listChildData);
                             }
+
+
                         }
 
-                        listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, ListChild);
-
-
+                        listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listChild);
                         customExpandableListView.setAdapter(listAdapter);
+
                         for(int l=0; l < listAdapter.getGroupCount(); l++)
-                            if(ListChild.size()!=0) {
+                            if(listChild.size()!=0) {
                                 customExpandableListView.expandGroup(l);
                             }
+
+
                     }
 
-                }catch (Exception e){
+                }
+
+                catch (Exception e){
                     e.getMessage();
 
                 }
 
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
             }
         });
 
-    }
-
-
-    public void getserverkey(){
-        DatabaseReference mref= FirebaseDatabase.getInstance().getReference();
-
-        final Query query2 =mref.child("restaurant").child(user_id).child("CurrentOrders").orderByChild("order_id").equalTo(order_id);
-        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot nodeDataSnapshot : dataSnapshot.getChildren()) {
-                    serverkey = nodeDataSnapshot.getKey(); // this key is `K1NRz9l5PU_0CFDtgXz`
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 
 
-    public void customDialog(){
-
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.custom_dialog);
-
-
-        final EditText reasonTxt = (EditText)dialog.findViewById(R.id.ed_message);
-        Button done_btn = (Button)dialog.findViewById(R.id.done_btn);
-        Button cancel_btn = (Button)dialog.findViewById(R.id.cancel_btn);
-
-        if(FLAG_ACCEPT){
-            reasonTxt.setHint("Type rider instructions (Optional)");
-        }
-        else {
-            reasonTxt.setHint("Type rider instructions");
-        }
-
-        done_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
 
 
-                if (!FLAG_ACCEPT) {
-                    FLAG_ACCEPT = false;
-                    if(reasonTxt.getText().toString().isEmpty()){
-
-                        Toast.makeText(getContext(),"Type rider instructions",Toast.LENGTH_LONG).show();
-
-                    }
-                    else {
-                        DatabaseReference delete_order=FirebaseDatabase.getInstance().getReference();
-
-                        delete_order.child("restaurant").child(user_id).child("CurrentOrders").child(serverkey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-
-                                setAccDecStatus(reasonTxt.getText().toString());
-                                dialog.dismiss();
-                            }
-                        });
-                    }
-                }
-                else {
-                    final DatabaseReference add_to_onother=FirebaseDatabase.getInstance().getReference()
-                            .child("restaurant").child(user_id);
-                    add_to_onother.child("CurrentOrders").child(serverkey).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            NewOrderModelClass modelClass=dataSnapshot.getValue(NewOrderModelClass.class);
-                            HashMap<String,String> map=new HashMap<>();
-                            map.put("deal",modelClass.getDeal());
-                            map.put("order_id",modelClass.getOrder_id());
-                            map.put("status",modelClass.getStatus());
-
-                            add_to_onother.child("PendingOrders").child(serverkey)
-                                    .setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-
-                                    add_to_onother.child("CurrentOrders").child(serverkey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            setAccDecStatus(reasonTxt.getText().toString());
-                                            dialog.dismiss(); }
-                                    });
-
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-            }
-        });
-
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                FLAG_ACCEPT = false;
-                ACCPT_DEC_FLAG = false;
-            }
-        });
-
-        dialog.show();
-
-    }
-
-    public void setAccDecStatus(String text){
-
-        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
-        progressDialog.setVisibility(View.VISIBLE);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss");
-        String currentDateandTime = sdf.format(new Date());
-
-        JSONObject jsonObject = new JSONObject();
-
-        try {
-            jsonObject.put("order_id", order_id);
-            jsonObject.put("key",serverkey);
-            jsonObject.put("time", currentDateandTime);
-            if (FLAG_ACCEPT) {
-                jsonObject.put("status", "1");
-                jsonObject.put("rejected_reason", "");
-                jsonObject.put("accepted_reason", text);
-
-            }
-            else {
-                jsonObject.put("status", "2");
-                jsonObject.put("rejected_reason", text);
-                jsonObject.put("accepted_reason", "");
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        ApiRequest.Call_Api(context, Config.ACCEPT_DECLINE_STATUS, jsonObject, new Callback() {
-            @Override
-            public void Responce(String resp) {
-
-
-                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
-                progressDialog.setVisibility(View.GONE);
-
-                try {
-                    JSONObject jsonObject1 = new JSONObject(resp);
-
-                    int code = Integer.parseInt(jsonObject1.optString("code"));
-
-                    if(code==200){
-
-                        scrolView.setVisibility(View.GONE);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                       }
-            }
-        });
-
-    }
 
 
 }

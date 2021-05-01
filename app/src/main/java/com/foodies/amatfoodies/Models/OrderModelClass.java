@@ -1,7 +1,7 @@
 package com.foodies.amatfoodies.Models;
 
 /**
- * Created by qboxus on 12/26/2017.
+ * Created by foodies on 12/26/2017.
  */
 
 public class OrderModelClass {
@@ -87,6 +87,11 @@ public class OrderModelClass {
     String  currency_symbol= "";
     String  restaurant_name= "";
     String  order_extra_item_name= "";
+    String status;
+    String order_number="";
+    String instructions ="";
+    String delivery="";
+    String deal_id = "";
 
     public String getDeal_id() {
         return deal_id;
@@ -96,7 +101,6 @@ public class OrderModelClass {
         this.deal_id = deal_id;
     }
 
-    String deal_id = "";
 
     public String getDelivery() {
         return delivery;
@@ -106,7 +110,6 @@ public class OrderModelClass {
         this.delivery = delivery;
     }
 
-    String delivery="";
 
     public String getInstructions() {
         return instructions;
@@ -116,7 +119,6 @@ public class OrderModelClass {
         this.instructions = instructions;
     }
 
-    String instructions ="";
 
     public String getOrder_number() {
         return order_number;
@@ -126,6 +128,11 @@ public class OrderModelClass {
         this.order_number = order_number;
     }
 
-    String order_number="";
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

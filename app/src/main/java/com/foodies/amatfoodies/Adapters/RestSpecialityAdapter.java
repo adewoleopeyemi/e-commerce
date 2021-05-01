@@ -7,20 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.foodies.amatfoodies.Models.SpecialityModel;
 import com.foodies.amatfoodies.R;
+import com.foodies.amatfoodies.ViewHolders.RestSpecialityViewHolder;
 
 
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class RestSpecialityAdapter extends RecyclerView.Adapter<RestSpecialityAdapter.ViewHolder> implements Filterable {
+public class RestSpecialityAdapter extends RecyclerView.Adapter<RestSpecialityViewHolder> implements Filterable {
 
     ArrayList<SpecialityModel> getDataAdapter;
     private ArrayList<SpecialityModel> mFilteredList;
@@ -37,21 +36,21 @@ public class RestSpecialityAdapter extends RecyclerView.Adapter<RestSpecialityAd
     }
 
     @Override
-    public RestSpecialityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RestSpecialityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item_rest_speciality, parent, false);
 
-        RestSpecialityAdapter.ViewHolder viewHolder = new RestSpecialityAdapter.ViewHolder(v);
+        RestSpecialityViewHolder viewHolder = new RestSpecialityViewHolder(v);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RestSpecialityAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RestSpecialityViewHolder holder, final int position) {
 
 
-        holder.name_tv.setText(mFilteredList.get(position).getName());
+        holder.nameTv.setText(mFilteredList.get(position).getName());
 
-        holder.main_speciality.setOnClickListener(new View.OnClickListener() {
+        holder.mainSpeciality.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -106,21 +105,6 @@ public class RestSpecialityAdapter extends RecyclerView.Adapter<RestSpecialityAd
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder{
-
-     TextView name_tv;
-     RelativeLayout main_speciality;
-
-        public ViewHolder(View itemView) {
-
-            super(itemView);
-
-           name_tv = itemView.findViewById(R.id.name_tv);
-            main_speciality = itemView.findViewById(R.id.main_speciality);
-
-
-        }
-    }
 
     public interface OnItemClickListner {
         void OnItemClicked(View view, int position);

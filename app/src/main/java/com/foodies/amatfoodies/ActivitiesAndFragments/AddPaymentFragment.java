@@ -19,7 +19,7 @@ import com.foodies.amatfoodies.Adapters.CreditCardDetailAdapter;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.CardDetailModel;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
@@ -34,23 +34,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 public class AddPaymentFragment extends RootFragment {
 
-    RelativeLayout add_payment_method_div,cash_on_delivery_div;
-    ImageView back_icon;
-    public static boolean FLAG_FRAGMENT,FLAG_PAYMENT_METHOD,FLAG_CASH_ON_DELIVERY,FLAG_ADD_PAYMENT;
+    RelativeLayout addPaymentMethodDiv, cashOnDeliveryDiv;
+    ImageView backIcon;
+    public static boolean FLAG_FRAGMENT,FLAG_PAYMENT_METHOD,FLAG_ADD_PAYMENT;
 
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     CreditCardDetailAdapter recyclerViewadapter;
-    RecyclerView card_recycler_view;
+    RecyclerView cardRecyclerView;
     SharedPreferences sharedPreferences;
 
     ArrayList<CardDetailModel> cardDetailModelArrayList;
     CamomileSpinner pbHeaderProgress;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
@@ -60,8 +60,8 @@ public class AddPaymentFragment extends RootFragment {
     public AddPaymentFragment (){
     }
 
-    Fragment_Callback fragment_callback;
-    public AddPaymentFragment (Fragment_Callback fragment_callback){
+    FragmentCallback fragment_callback;
+    public AddPaymentFragment (FragmentCallback fragment_callback){
         this.fragment_callback=fragment_callback;
     }
 
@@ -85,25 +85,25 @@ public class AddPaymentFragment extends RootFragment {
 
     public void initUI(View v){
         progressDialog = v.findViewById(R.id.progressDialog_payment);
-        transparent_layer = v.findViewById(R.id.transparent_layer_payment);
-        cash_on_delivery_div = v.findViewById(R.id.cash_on_delivery_div);
-        add_payment_method_div = v.findViewById(R.id.add_payment_method_div);
+        transparentLayer = v.findViewById(R.id.transparent_layer_payment);
+        cashOnDeliveryDiv = v.findViewById(R.id.cash_on_delivery_div);
+        addPaymentMethodDiv = v.findViewById(R.id.add_payment_method_div);
         pbHeaderProgress = v.findViewById(R.id.paymentListProgress);
         pbHeaderProgress.start();
-        back_icon=v.findViewById(R.id.back_icon);
-        card_recycler_view = v.findViewById(R.id.paymenth_recycler);
+        backIcon =v.findViewById(R.id.back_icon);
+        cardRecyclerView = v.findViewById(R.id.paymenth_recycler);
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        card_recycler_view.setLayoutManager(recyclerViewlayoutManager);
+        cardRecyclerView.setLayoutManager(recyclerViewlayoutManager);
 
 
 
-        add_payment_method_div.setOnClickListener(new View.OnClickListener() {
+        addPaymentMethodDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                AddPaymentDetailFragment addPaymentDetailFragment = new AddPaymentDetailFragment(new Fragment_Callback() {
+                AddPaymentDetailFragment addPaymentDetailFragment = new AddPaymentDetailFragment(new FragmentCallback() {
                     @Override
-                    public void Responce(Bundle bundle) {
+                    public void onResponce(Bundle bundle) {
                         getPaymentList();
                     }
                 });
@@ -116,13 +116,13 @@ public class AddPaymentFragment extends RootFragment {
         });
 
         if(fragment_callback!=null){
-            cash_on_delivery_div.setVisibility(View.VISIBLE);
+            cashOnDeliveryDiv.setVisibility(View.VISIBLE);
         }
         else {
-            cash_on_delivery_div.setVisibility(View.GONE);
+            cashOnDeliveryDiv.setVisibility(View.GONE);
         }
 
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -131,7 +131,7 @@ public class AddPaymentFragment extends RootFragment {
             }
         });
 
-        cash_on_delivery_div.setOnClickListener(new View.OnClickListener() {
+        cashOnDeliveryDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -140,7 +140,7 @@ public class AddPaymentFragment extends RootFragment {
                     bundle.putString("card_name","");
                     bundle.putString("card_number","Cash on delivery");
                     bundle.putString("card_id","0");
-                    fragment_callback.Responce(bundle);
+                    fragment_callback.onResponce(bundle);
                     getActivity().onBackPressed();
                 }
             }
@@ -164,12 +164,12 @@ public class AddPaymentFragment extends RootFragment {
 
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.GET_PAYMENT_METHID, params, new Callback() {
+        ApiRequest.callApi(context, Config.GET_PAYMENT_METHID, params, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
                 try {
                     JSONObject  jsonResponse = new JSONObject(resp);
 
@@ -198,7 +198,7 @@ public class AddPaymentFragment extends RootFragment {
 
                         if(cardDetailModelArrayList!=null) {
                             recyclerViewadapter = new CreditCardDetailAdapter(cardDetailModelArrayList, getActivity());
-                            card_recycler_view.setAdapter(recyclerViewadapter);
+                            cardRecyclerView.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
 
                             recyclerViewadapter.setOnItemClickListner(new CreditCardDetailAdapter.OnItemClickListner() {
@@ -212,7 +212,7 @@ public class AddPaymentFragment extends RootFragment {
                                     bundle.putString("card_id",cardDetailModel.getPayment_id());
 
                                     if(fragment_callback!=null){
-                                        fragment_callback.Responce(bundle);
+                                        fragment_callback.onResponce(bundle);
                                         getActivity().onBackPressed();
                                     }
 
@@ -233,7 +233,7 @@ public class AddPaymentFragment extends RootFragment {
 
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
             }
         });

@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Models.CartChildModel;
 import com.foodies.amatfoodies.Models.CartParentModel;
 import com.foodies.amatfoodies.R;
@@ -18,26 +18,20 @@ import com.foodies.amatfoodies.R;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class AddToCartExpandable extends BaseExpandableListAdapter {
 
     Context context;
-    ArrayList<CartParentModel> ListTerbaru;
-    ArrayList<ArrayList<CartChildModel>> ListChildTerbaru;
-    private RadioButton lastCheckedRB = null;
-    private int selectedPosition = -1;
-    public static boolean FLAG_CHECKBOX;
-    private int selectedIndex = -1;
-    private int mSelectedVariation;
+    ArrayList<CartParentModel> listTerbaru;
+    ArrayList<ArrayList<CartChildModel>> listChildTerbaru;
+    public boolean flagCheckbox;
 
     public AddToCartExpandable (Context context, ArrayList<CartParentModel>ListTerbaru, ArrayList<ArrayList<CartChildModel>> ListChildTerbaru){
         this.context=context;
-        this.ListTerbaru=ListTerbaru;
-        this.ListChildTerbaru=ListChildTerbaru;
-//      this.count=ListTerbaru.size();
-//      this.count=ListChildTerbaru.size();
+        this.listTerbaru =ListTerbaru;
+        this.listChildTerbaru =ListChildTerbaru;
     }
     @Override
     public boolean areAllItemsEnabled()
@@ -48,7 +42,7 @@ public class AddToCartExpandable extends BaseExpandableListAdapter {
 
     @Override
     public CartChildModel getChild(int groupPosition, int childPosition) {
-        return ListChildTerbaru.get(groupPosition).get(childPosition);
+        return listChildTerbaru.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -72,12 +66,20 @@ public class AddToCartExpandable extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.row_item_add_to_cart_child, null);
 
             holder=new AddToCartExpandable.ViewHolder();
-            holder.radio_btn_item_name=(TextView)convertView.findViewById(R.id.radio_btn_item_name);
-            holder.item_price_tv=(TextView)convertView.findViewById(R.id.item_price_tv);
+            holder.radioBtnItemName =(TextView)convertView.findViewById(R.id.radio_btn_item_name);
+            holder.itemPriceTv =(TextView)convertView.findViewById(R.id.item_price_tv);
 
-            holder.radio_btn = convertView.findViewById(R.id.radio_btn);
-         //  holder.radio_btn_group = convertView.findViewById(R.id.radio_btn_group);
-           holder.check_btn = convertView.findViewById(R.id.check_btn);
+            if(new DarkModePrefManager(context).isNightMode()) {
+                holder.radioBtnItemName.setTextColor(context.getResources().getColor(R.color.bg_top_color));
+                holder.itemPriceTv.setTextColor(context.getResources().getColor(R.color.bg_top_color));
+            }
+            else {
+                holder.radioBtnItemName.setTextColor(context.getResources().getColor(R.color.bg_light_top_color));
+                holder.itemPriceTv.setTextColor(context.getResources().getColor(R.color.bg_light_top_color));
+            }
+
+            holder.radioBtn = convertView.findViewById(R.id.radio_btn);
+            holder.checkBtn = convertView.findViewById(R.id.check_btn);
 
 
             convertView.setTag(holder);
@@ -86,50 +88,50 @@ public class AddToCartExpandable extends BaseExpandableListAdapter {
             holder=(ViewHolder)convertView.getTag();
         }
 
+        holder.radioBtnItemName.setText(childTerbaru.getChild_item_name());
+        holder.itemPriceTv.setText("+ "+childTerbaru.getSymbol()+childTerbaru.getChild_item_price());
+        if (childTerbaru.isCheckedddd()) {
+                holder.radioBtn.setChecked(true);
 
-        holder.radio_btn_item_name.setText(childTerbaru.getChild_item_name());
-        holder.item_price_tv.setText("+ "+childTerbaru.getSymbol()+childTerbaru.getChild_item_price());
-
-            if (childTerbaru.isCheckedddd()) {
-                holder.radio_btn.setChecked(true);
-
-            } else {
-                holder.radio_btn.setChecked(false);
             }
 
+        else {
+                holder.radioBtn.setChecked(false);
+            }
 
-        if(FLAG_CHECKBOX){
+        if(flagCheckbox){
             childTerbaru.setCheckRequired(false);
-            holder.radio_btn.setVisibility(View.INVISIBLE);
-            holder.check_btn.setVisibility(View.VISIBLE);
+            holder.radioBtn.setVisibility(View.INVISIBLE);
+            holder.checkBtn.setVisibility(View.VISIBLE);
         }
         else {
             childTerbaru.setCheckRequired(true);
-            holder.radio_btn.setVisibility(View.VISIBLE);
-            holder.check_btn.setVisibility(View.GONE);
+            holder.radioBtn.setVisibility(View.VISIBLE);
+            holder.checkBtn.setVisibility(View.GONE);
         }
 
 
         return convertView;
     }
+
     @Override
     public int getChildrenCount(int groupPosition) {
-        return ListChildTerbaru.get(groupPosition).size();
+        return listChildTerbaru.get(groupPosition).size();
     }
 
     public ArrayList<CartChildModel> getChilderns(int groupPos){
 
-        return ListChildTerbaru.get(groupPos);
+        return listChildTerbaru.get(groupPos);
     }
 
     @Override
     public CartParentModel getGroup(int groupPosition) {
-        return ListTerbaru.get(groupPosition);
+        return listTerbaru.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return ListTerbaru.size();
+        return listTerbaru.size();
     }
 
     @Override
@@ -147,7 +149,7 @@ public class AddToCartExpandable extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.row_item_add_to_cart_parent, null);
 
             holder=new AddToCartExpandable.ViewHolder();
-            holder.parent_tv=(TextView)convertView.findViewById(R.id.parent_tv);
+            holder.parentTv =(TextView)convertView.findViewById(R.id.parent_tv);
 
             convertView.setTag(holder);
 
@@ -160,12 +162,12 @@ public class AddToCartExpandable extends BaseExpandableListAdapter {
         String checkRequired = terbaruModel.getRequired();
         if (checkRequired.equalsIgnoreCase("1")) {
 
-            holder.parent_tv.setText(terbaruModel.getParentName() + " (Required)");
-            FLAG_CHECKBOX = false;
+            holder.parentTv.setText(terbaruModel.getParentName() + " (Required)");
+            flagCheckbox = false;
         }
         else {
-            holder.parent_tv.setText(terbaruModel.getParentName());
-            FLAG_CHECKBOX = true;
+            holder.parentTv.setText(terbaruModel.getParentName());
+            flagCheckbox = true;
         }
 
 
@@ -185,10 +187,9 @@ public class AddToCartExpandable extends BaseExpandableListAdapter {
 
 
     static class ViewHolder{
-        TextView parent_tv,radio_btn_item_name,item_price_tv;
-        RadioButton radio_btn;
-        CheckBox check_btn;
-       RadioGroup radio_btn_group;
+        TextView parentTv, radioBtnItemName, itemPriceTv;
+        RadioButton radioBtn;
+        CheckBox checkBtn;
     }
 
 

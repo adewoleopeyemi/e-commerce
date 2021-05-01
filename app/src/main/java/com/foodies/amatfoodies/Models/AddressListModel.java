@@ -3,12 +3,18 @@ package com.foodies.amatfoodies.Models;
 import java.io.Serializable;
 
 /**
- * Created by qboxus on 1/4/2018.
+ * Created by foodies on 1/4/2018.
  */
 
 public class AddressListModel implements Serializable {
 
     String street;
+    String apartment;
+    String city;
+    String state;
+    String address_id;
+    String delivery_fee;
+    String instruction;
 
     public String getStreet() {
         return street;
@@ -42,9 +48,6 @@ public class AddressListModel implements Serializable {
         this.state = state;
     }
 
-    String apartment;
-    String city;
-    String state;
 
     public String getAddress_id() {
         return address_id;
@@ -54,7 +57,6 @@ public class AddressListModel implements Serializable {
         this.address_id = address_id;
     }
 
-    String address_id;
 
     public String getDelivery_fee() {
         return delivery_fee;
@@ -64,5 +66,12 @@ public class AddressListModel implements Serializable {
         this.delivery_fee = delivery_fee;
     }
 
-    String delivery_fee;
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
+    }
 }

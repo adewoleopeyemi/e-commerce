@@ -38,31 +38,31 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class ReviewListFragment extends RootFragment {
 
-    ImageView back_icon;
+    ImageView backIcon;
     SharedPreferences sPref;
     ArrayList<RatingListModel> listDataReview;
 
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     ShowReviewListAdapter recyclerViewadapter;
-    RecyclerView review_recycler_view;
-    SwipeRefreshLayout refresh_layout;
+    RecyclerView reviewRecyclerView;
+    SwipeRefreshLayout refreshLayout;
 
     CamomileSpinner progressBar;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
-    TextView total_review_tv;
+    TextView totalReviewTv;
 
 
     View view;
     Context context;
 
 
-    RestaurantsModel item_model;
+    RestaurantsModel itemModel;
 
     @Nullable
     @Override
@@ -72,7 +72,7 @@ public class ReviewListFragment extends RootFragment {
 
         Bundle bundle=getArguments();
         if(bundle!=null){
-            item_model=(RestaurantsModel) bundle.get("data");
+            itemModel =(RestaurantsModel) bundle.get("data");
         }
 
         FrameLayout frameLayout = view.findViewById(R.id.review_list_main);
@@ -80,7 +80,7 @@ public class ReviewListFragment extends RootFragment {
         FontHelper.applyFont(getContext(),frameLayout, AllConstants.verdana);
 
         sPref = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
-        total_review_tv = view.findViewById(R.id.total_review_tv);
+        totalReviewTv = view.findViewById(R.id.total_review_tv);
         initUI(view);
         showRatingList();
 
@@ -89,31 +89,31 @@ public class ReviewListFragment extends RootFragment {
 
     public void initUI(View v){
 
-        review_recycler_view = v.findViewById(R.id.review_list_recycler_view);
+        reviewRecyclerView = v.findViewById(R.id.review_list_recycler_view);
         progressBar = v.findViewById(R.id.reviewProgress);
          progressBar.start();
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
 
-        review_recycler_view.setHasFixedSize(true);
+        reviewRecyclerView.setHasFixedSize(true);
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        review_recycler_view.setLayoutManager(recyclerViewlayoutManager);
+        reviewRecyclerView.setLayoutManager(recyclerViewlayoutManager);
 
-        refresh_layout = v.findViewById(R.id.swipe_refresh);
-        refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        refreshLayout = v.findViewById(R.id.swipe_refresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
                 showRatingList();
 
-                refresh_layout.setRefreshing(false);
+                refreshLayout.setRefreshing(false);
             }
         });
 
 
 
-        back_icon = v.findViewById(R.id.back_icon_review_list);
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon = v.findViewById(R.id.back_icon_review_list);
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -134,7 +134,7 @@ public class ReviewListFragment extends RootFragment {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("restaurant_id", item_model.restaurant_id);
+            jsonObject.put("restaurant_id", itemModel.restaurant_id);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -142,12 +142,12 @@ public class ReviewListFragment extends RootFragment {
 
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOE_TOTAL_RATINGS, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOE_TOTAL_RATINGS, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -190,10 +190,10 @@ public class ReviewListFragment extends RootFragment {
                             view.findViewById(R.id.no_job_div).setVisibility(View.GONE);
 
                             recyclerViewadapter = new ShowReviewListAdapter(listDataReview, getContext());
-                            review_recycler_view.setAdapter(recyclerViewadapter);
+                            reviewRecyclerView.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
 
-                            total_review_tv.setText(String.valueOf(listDataReview.size()) + " REVIEWS");
+                            totalReviewTv.setText(String.valueOf(listDataReview.size()) + " REVIEWS");
                         }else {
                             view.findViewById(R.id.no_job_div).setVisibility(View.VISIBLE);
                         }
@@ -211,7 +211,7 @@ public class ReviewListFragment extends RootFragment {
                 }
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
             }
         });

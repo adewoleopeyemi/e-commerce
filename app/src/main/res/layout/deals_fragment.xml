@@ -11,22 +11,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height"
         android:paddingEnd="15dp">
 
         <ImageView
+
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/back_icon"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-           android:paddingEnd="70dp"
+            android:paddingEnd="50dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:id="@+id/back_icon"
             android:visibility="gone"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/back_icon"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
             />
 
         <TextView
@@ -35,11 +39,11 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/deals"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/title_city_tv"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,23 +68,21 @@
 
     </LinearLayout>
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar_div"
         android:id="@+id/no_job_div"
         android:visibility="gone"
-        android:layout_marginTop="55dp"
-        android:background="@color/colorBG">
+        android:layout_marginTop="@dimen/toolbar_height"
+        android:background="@color/colorBg">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/_120sdp"
             android:id="@+id/img_no_job"
             android:layout_centerInParent="true"
-            android:src="@drawable/no_job_today"
-            app:layout_widthPercent = "40%"
-            app:layout_heightPercent = "40%"/>
+            android:src="@drawable/no_job_today" />
 
         <TextView
             android:layout_height="wrap_content"
@@ -103,7 +105,7 @@
             android:textSize="14sp"/>
 
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
     <RelativeLayout

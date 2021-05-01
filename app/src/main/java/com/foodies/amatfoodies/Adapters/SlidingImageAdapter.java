@@ -19,19 +19,17 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class SlidingImageAdapter extends PagerAdapter {
 
-    private ArrayList<ImageSliderModel> IMAGES;
+    private ArrayList<ImageSliderModel> images;
     private LayoutInflater inflater;
-    private Context context;
 
 
-    public SlidingImageAdapter(Context context,ArrayList<ImageSliderModel> IMAGES) {
-        this.context = context;
-        this.IMAGES=IMAGES;
+    public SlidingImageAdapter(Context context,ArrayList<ImageSliderModel> images) {
+        this.images = images;
         inflater = LayoutInflater.from(context);
     }
 
@@ -42,7 +40,7 @@ public class SlidingImageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return IMAGES.size();
+        return images.size();
     }
 
     @Override
@@ -52,7 +50,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         assert imageLayout != null;
         final SimpleDraweeView imageView = (SimpleDraweeView) imageLayout
                 .findViewById(R.id.image_slider);
-        ImageSliderModel imageSliderModel = IMAGES.get(position);
+        ImageSliderModel imageSliderModel = images.get(position);
 
         Uri uri = Uri.parse(Config.imgBaseURL+imageSliderModel.getSliderImageUrl());
         imageView.setImageURI(uri);

@@ -24,11 +24,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
-import com.foodies.amatfoodies.Constants.Callback;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
-import com.foodies.amatfoodies.Constants.Functions;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Utils.FontHelper;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 import com.facebook.login.LoginManager;
@@ -50,16 +50,17 @@ import static com.foodies.amatfoodies.ActivitiesAndFragments.DealOrderFragment.D
 
 public class UserAccountFragment extends RootFragment implements View.OnClickListener{
 
-    ImageView back_icon_user_account;
-    public static boolean FLAG_CART_USER_FRAGMENT;
-    private LinearLayout user_login_div,user_not_login_div;
-    private RelativeLayout user_log_out_div,user_sign_in_div,change_password_div,user_name_div,payment_method_div,
-            dilervery_address_div,favourites_div,sign_up_div,terms_condition_div,terms_div,uan_div,uan_div2;
+    ImageView backIconUserAccount;
+    private LinearLayout userLoginDiv, userNotLoginDiv;
+    private RelativeLayout userLogOutDiv, userSignInDiv, changePasswordDiv, userNameDiv, paymentMethodDiv,
+            dilerveryAddressDiv, favouritesDiv, signUpDiv, termsConditionDiv, termsDiv, uanDiv, uanDiv2;
     SharedPreferences sharedPreferences;
-    private TextView user_name,language_txt,language_txt2;
-    FrameLayout user_frag_main_container;
+    private TextView userName, languageTxt, languageTxt2;
+    FrameLayout userFragMainContainer;
 
-    public static boolean LOG_IN_FLAG,LOG_OUT_FLAG,FLAG_DELIVER_ADDRESS;
+    public static boolean FLAG_DELIVER_ADDRESS;
+
+    Switch darkmodeSwitch, darkmodeSwitch2;
     View view;
 
     @Override
@@ -80,14 +81,14 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
     }
 
     private void initUI(View v){
-        uan_div = v.findViewById(R.id.uan_div);
-        uan_div2 = v.findViewById(R.id.uan_div2);
-        terms_div = v.findViewById(R.id.terms_div);
-        terms_condition_div = v.findViewById(R.id.terms_condition_div);
-        back_icon_user_account = v.findViewById(R.id.back_icon_user_account);
-        user_frag_main_container = v.findViewById(R.id.user_frag_main_container);
-        FontHelper.applyFont(getContext(),user_frag_main_container, AllConstants.verdana);
-        user_frag_main_container.setOnTouchListener(new View.OnTouchListener() {
+        uanDiv = v.findViewById(R.id.uan_div);
+        uanDiv2 = v.findViewById(R.id.uan_div2);
+        termsDiv = v.findViewById(R.id.terms_div);
+        termsConditionDiv = v.findViewById(R.id.terms_condition_div);
+        backIconUserAccount = v.findViewById(R.id.back_icon_user_account);
+        userFragMainContainer = v.findViewById(R.id.user_frag_main_container);
+        FontHelper.applyFont(getContext(), userFragMainContainer, AllConstants.verdana);
+        userFragMainContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
@@ -96,9 +97,9 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
 
 
         if(DEAL_ADDRESS||DEAL_PAYMENT_METHOD){
-            back_icon_user_account.setVisibility(View.VISIBLE);
+            backIconUserAccount.setVisibility(View.VISIBLE);
 
-            back_icon_user_account.setOnClickListener(new View.OnClickListener() {
+            backIconUserAccount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -108,57 +109,56 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
         }
 
 
-        user_name = v.findViewById(R.id.user_name);
-        String first_name = sharedPreferences.getString(PreferenceClass.pre_first, "");
-        String last_name = sharedPreferences.getString(PreferenceClass.pre_last,"");
-        user_name.setText(first_name + " "+ last_name);
+        userName = v.findViewById(R.id.user_name);
+        String firstName = sharedPreferences.getString(PreferenceClass.pre_first, "");
+        String lastName = sharedPreferences.getString(PreferenceClass.pre_last,"");
+        userName.setText(firstName + " "+ lastName);
 
 
-        dilervery_address_div = v.findViewById(R.id.dilervery_address_div);
-        user_login_div = v.findViewById(R.id.user_log_in_div);
-        user_not_login_div = v.findViewById(R.id.user_not_log_in_div);
-        user_log_out_div = v.findViewById(R.id.log_out_div);
-        user_sign_in_div = v.findViewById(R.id.sign_in_div);
-        change_password_div = v.findViewById(R.id.change_password_div);
-        user_name_div = v.findViewById(R.id.user_name_div);
-        payment_method_div= v.findViewById(R.id.payment_method_div);
-        favourites_div = v.findViewById(R.id.favourites_div);
-        sign_up_div = v.findViewById(R.id.sign_up_div);
+        dilerveryAddressDiv = v.findViewById(R.id.dilervery_address_div);
+        userLoginDiv = v.findViewById(R.id.user_log_in_div);
+        userNotLoginDiv = v.findViewById(R.id.user_not_log_in_div);
+        userLogOutDiv = v.findViewById(R.id.log_out_div);
+        userSignInDiv = v.findViewById(R.id.sign_in_div);
+        changePasswordDiv = v.findViewById(R.id.change_password_div);
+        userNameDiv = v.findViewById(R.id.user_name_div);
+        paymentMethodDiv = v.findViewById(R.id.payment_method_div);
+        favouritesDiv = v.findViewById(R.id.favourites_div);
+        signUpDiv = v.findViewById(R.id.sign_up_div);
 
-        sign_up_div.setOnClickListener(this::onClick);
+        signUpDiv.setOnClickListener(this::onClick);
 
-        favourites_div.setOnClickListener(this::onClick);
+        favouritesDiv.setOnClickListener(this::onClick);
 
-        dilervery_address_div.setOnClickListener(this::onClick);
+        dilerveryAddressDiv.setOnClickListener(this::onClick);
 
-        payment_method_div.setOnClickListener(this::onClick);
+        paymentMethodDiv.setOnClickListener(this::onClick);
 
-        user_name_div.setOnClickListener(this::onClick);
+        userNameDiv.setOnClickListener(this::onClick);
 
-        change_password_div.setOnClickListener(this::onClick);
+        changePasswordDiv.setOnClickListener(this::onClick);
 
-        user_sign_in_div.setOnClickListener(new View.OnClickListener() {
+        userSignInDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment restaurantMenuItemsFragment = new LoginAcitvity();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
                 transaction.add(R.id.user_frag_main_container, restaurantMenuItemsFragment,"ParentFragment").commit();
-                LOG_IN_FLAG = true;
             }
         });
 
-        terms_condition_div.setOnClickListener(this::onClick);
-        terms_div.setOnClickListener(this::onClick);
+        termsConditionDiv.setOnClickListener(this::onClick);
+        termsDiv.setOnClickListener(this::onClick);
 
-        uan_div.setOnClickListener(this::onClick);
-        uan_div2.setOnClickListener(this::onClick);
+        uanDiv.setOnClickListener(this::onClick);
+        uanDiv2.setOnClickListener(this::onClick);
 
-        user_log_out_div.setOnClickListener(this::onClick);
+        userLogOutDiv.setOnClickListener(this::onClick);
 
 
-        language_txt=view.findViewById(R.id.language_txt);
-        language_txt2=view.findViewById(R.id.language_txt2);
+        languageTxt =view.findViewById(R.id.language_txt);
+        languageTxt2 =view.findViewById(R.id.language_txt2);
 
         List<String> language_names=Arrays.asList(getResources().getStringArray(R.array.language_names_for_show));
         List <String> language_code= Arrays.asList(getResources().getStringArray(R.array.language_code));
@@ -168,12 +168,12 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
             language = sharedPreferences.getString(PreferenceClass.selected_language, language_code.get(0));
 
             if(language_code.contains(language)){
-                language_txt.setText(language_names.get(language_code.indexOf(language)));
-                language_txt2.setText(language_names.get(language_code.indexOf(language)));
+                languageTxt.setText(language_names.get(language_code.indexOf(language)));
+                languageTxt2.setText(language_names.get(language_code.indexOf(language)));
             }
             else {
-                language_txt.setText("english");
-                language_txt2.setText("english");
+                languageTxt.setText("english");
+                languageTxt2.setText("english");
             }
 
 
@@ -183,18 +183,66 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
         view.findViewById(R.id.language_layout2).setOnClickListener(this::onClick);
 
 
+        view.findViewById(R.id.darkmode_layout).setOnClickListener(this);
+        view.findViewById(R.id.darkmode_layout2).setOnClickListener(this);
+
+        darkmodeSwitch =view.findViewById(R.id.darkmode_switch);
+        darkmodeSwitch2 =view.findViewById(R.id.darkmode_switch2);
+
+
+        if (new DarkModePrefManager(getContext()).isNightMode()) {
+            darkmodeSwitch.setChecked(true);
+            darkmodeSwitch2.setChecked(true);
+        } else {
+            darkmodeSwitch.setChecked(false);
+            darkmodeSwitch2.setChecked(false);
+        }
+
+
+        darkmodeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(AllConstants.tag,"isChecked = "+ darkmodeSwitch.isChecked());
+
+                DarkModePrefManager darkModePrefManager = new DarkModePrefManager(getActivity());
+                darkModePrefManager.setDarkMode(darkmodeSwitch.isChecked());
+
+                getActivity().recreate();
+
+
+            }
+        });
+
+        darkmodeSwitch2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(AllConstants.tag,"isChecked = "+ darkmodeSwitch2.isChecked());
+
+                DarkModePrefManager darkModePrefManager = new DarkModePrefManager(getActivity());
+                darkModePrefManager.setDarkMode(darkmodeSwitch2.isChecked());
+
+                getActivity().recreate();
+
+
+            }
+        });
+
 
     }
+
+
+
+
 
     private void checkLogInSession(){
         boolean getLoINSession = sharedPreferences.getBoolean(PreferenceClass.IS_LOGIN,false);
         if(getLoINSession){
-            user_login_div.setVisibility(View.VISIBLE);
-            user_not_login_div.setVisibility(View.GONE);
+            userLoginDiv.setVisibility(View.VISIBLE);
+            userNotLoginDiv.setVisibility(View.GONE);
         }
         else {
-            user_not_login_div.setVisibility(View.VISIBLE);
-            user_login_div.setVisibility(View.GONE);
+            userNotLoginDiv.setVisibility(View.VISIBLE);
+            userLoginDiv.setVisibility(View.GONE);
         }
 
     }
@@ -210,8 +258,8 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
         editor.putBoolean(PreferenceClass.IS_LOGIN, false);
         editor.commit();
 
-        user_not_login_div.setVisibility(View.VISIBLE);
-        user_login_div.setVisibility(View.GONE);
+        userNotLoginDiv.setVisibility(View.VISIBLE);
+        userLoginDiv.setVisibility(View.GONE);
         LoginManager.getInstance().logOut();
 
         startActivity(new Intent(getContext(), MainActivity.class));
@@ -257,6 +305,7 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
     }
 
     public void Open_Language_dialog(){
+  /*
         List <String> language_names=  Arrays.asList(getResources().getStringArray(R.array.language_names_for_show));
         List <String> language_code=  Arrays.asList(getResources().getStringArray(R.array.language_code));
 
@@ -271,6 +320,14 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
 
             }
         });
+*/
+
+
+        Languages_F languages_f = new Languages_F();
+        FragmentTransaction transaction6 = getChildFragmentManager().beginTransaction();
+        transaction6.addToBackStack(null);
+        transaction6.add(R.id.user_frag_main_container, languages_f,"ParentFragment").commit();
+
     }
 
     public void onCall() {
@@ -325,7 +382,6 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
                 transaction.addToBackStack(null);
                 transaction.add(R.id.user_frag_main_container, restaurantMenuItemsFragment,"parent").commit();
 
-                LOG_OUT_FLAG = true;
                 break;
 
             case R.id.favourites_div:
@@ -341,7 +397,6 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
                 FragmentTransaction transaction2 = getChildFragmentManager().beginTransaction();
                 transaction2.addToBackStack(null);
                 transaction2.add(R.id.user_frag_main_container, addPaymentFragment,"parent").commit();
-                FLAG_CART_USER_FRAGMENT = true;
                 break;
 
             case R.id.dilervery_address_div:
@@ -353,19 +408,18 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
                 break;
 
             case R.id.user_name_div:
-                EditAccountFragment editAccountFragment = new EditAccountFragment(new Fragment_Callback() {
+                EditAccountFragment editAccountFragment = new EditAccountFragment(new FragmentCallback() {
                     @Override
-                    public void Responce(Bundle bundle) {
+                    public void onResponce(Bundle bundle) {
                         String first_name = sharedPreferences.getString(PreferenceClass.pre_first, "");
                         String last_name = sharedPreferences.getString(PreferenceClass.pre_last,"");
-                        user_name.setText(first_name + " "+ last_name);
+                        userName.setText(first_name + " "+ last_name);
 
                     }
                 });
                 FragmentTransaction transaction4 = getChildFragmentManager().beginTransaction();
                 transaction4.addToBackStack(null);
                 transaction4.add(R.id.user_frag_main_container, editAccountFragment,"parent").commit();
-                FLAG_CART_USER_FRAGMENT = true;
                 break;
 
             case R.id.change_password_div:
@@ -373,7 +427,6 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
                 FragmentTransaction transaction5 = getChildFragmentManager().beginTransaction();
                 transaction5.addToBackStack(null);
                 transaction5.add(R.id.user_frag_main_container, changePasswordFragment,"ParentFragment").commit();
-                FLAG_CART_USER_FRAGMENT = true;
                 break;
 
             case R.id.sign_in_div:
@@ -381,7 +434,6 @@ public class UserAccountFragment extends RootFragment implements View.OnClickLis
                 FragmentTransaction transaction6 = getChildFragmentManager().beginTransaction();
                 transaction6.addToBackStack(null);
                 transaction6.add(R.id.user_frag_main_container, loginAcitvity,"ParentFragment").commit();
-                LOG_IN_FLAG = true;
                 break;
 
             case R.id.log_out_div:

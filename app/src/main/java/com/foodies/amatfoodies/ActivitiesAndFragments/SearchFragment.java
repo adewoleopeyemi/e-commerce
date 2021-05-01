@@ -16,7 +16,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,22 +40,22 @@ import java.util.ArrayList;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 
-public class SearchFragment extends RootFragment {
+public class SearchFragment extends RootFragment implements View.OnClickListener {
     SearchView searchView;
-    ImageView close_country;
+
     ArrayList<CountryListModel> arrayListCountry;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     CountryListAdapter recyclerViewadapter;
-    RecyclerView card_recycler_view;
+    RecyclerView cardRecyclerView;
 
     CamomileSpinner pbHeaderProgress;
     SharedPreferences sharedPreferences;
     public static boolean FLAG_COUNTRY_NAME;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
 
     View view;
@@ -70,10 +69,12 @@ public class SearchFragment extends RootFragment {
         context=getContext();
 
         progressDialog = view.findViewById(R.id.progressDialog);
-        transparent_layer = view.findViewById(R.id.transparent_layer);
+        transparentLayer = view.findViewById(R.id.transparent_layer);
         searchView = view.findViewById(R.id.simpleSearchView);
 
         String txt="<font color = #dddddd>\" + \"Search Country\" + \"</font>";
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             searchView.setQueryHint(Html.fromHtml(txt, Html.FROM_HTML_MODE_LEGACY));
         } else {
@@ -87,27 +88,19 @@ public class SearchFragment extends RootFragment {
         LinearLayout searchEditFrame = (LinearLayout) searchView.findViewById(R.id.search_edit_frame); // Get the Linear Layout
         ((LinearLayout.LayoutParams) searchEditFrame.getLayoutParams()).leftMargin = 5;
         search(searchView);
-        close_country = view.findViewById(R.id.close_country);
-        card_recycler_view = view.findViewById(R.id.countries_list);
+
+        cardRecyclerView = view.findViewById(R.id.countries_list);
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        card_recycler_view.setLayoutManager(recyclerViewlayoutManager);
+        cardRecyclerView.setLayoutManager(recyclerViewlayoutManager);
         sharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
 
 
         pbHeaderProgress = view.findViewById(R.id.pbHeaderProgress);
         pbHeaderProgress.start();
 
-        close_country.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-               getActivity().onBackPressed();
-            }
-        });
+        view.findViewById(R.id.close_country).setOnClickListener(this::onClick);
 
         getCountryList();
-
-
 
 
         return view;
@@ -117,18 +110,18 @@ public class SearchFragment extends RootFragment {
 
     public void getCountryList(){
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
         arrayListCountry = new ArrayList<>();
 
-        ApiRequest.Call_Api(context, Config.SHOW_COUNTRIES_LIST, null, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_COUNTRIES_LIST, null, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
                 try {
@@ -162,7 +155,7 @@ public class SearchFragment extends RootFragment {
                         }
                         if(arrayListCountry!=null) {
                             recyclerViewadapter = new CountryListAdapter(arrayListCountry, getActivity());
-                            card_recycler_view.setAdapter(recyclerViewadapter);
+                            cardRecyclerView.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
 
                             recyclerViewadapter.setOnItemClickListner(new CountryListAdapter.OnItemClickListner() {
@@ -218,6 +211,15 @@ public class SearchFragment extends RootFragment {
         });
     }
 
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.close_country:
+                getActivity().onBackPressed();
+                break;
+        }
+    }
 
 
 }

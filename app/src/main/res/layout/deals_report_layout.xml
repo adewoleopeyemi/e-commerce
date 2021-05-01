@@ -7,11 +7,10 @@
     android:clickable="true"
     android:id="@+id/deal_order_main_container">
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp">
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,30 +18,32 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/order_now"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/title_city_tv"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
 
         <ImageView
             android:id="@+id/back_icon"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingEnd="50dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/back_arrow"
+            android:paddingEnd="50dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
             />
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
     <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="55dp"
+    android:layout_marginTop="@dimen/toolbar_height"
     android:id="@+id/deals_report_main_layout"
     android:background="@color/colorWhite">
 
@@ -56,7 +57,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/colorBG"
+            android:background="@color/colorBg"
             >
 
             <TextView
@@ -67,7 +68,7 @@
                 android:layout_marginStart="15dp"
                 android:textSize="10sp"
                 android:id="@+id/rest_name_tv"
-                android:textColor="@color/or_color_name"/>
+                android:textColor="@color/color_light_black"/>
 
         </RelativeLayout>
 
@@ -208,7 +209,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="55dp">
+                    android:layout_height="@dimen/toolbar_height">
 
 
                     <LinearLayout
@@ -228,7 +229,7 @@
                             android:layout_height="40dp"
                             android:background="@drawable/round_shape_btn_login"
                             android:layout_weight="1"
-                            android:id="@+id/accept_div"
+                            android:id="@+id/delivery_div"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="3dp"
                             >
@@ -241,7 +242,7 @@
                                 android:textStyle="normal"
                                 android:layout_centerInParent="true"
                                 android:id="@+id/accept_tv"
-                                android:textColor="@color/colorWhite"
+                                android:textColor="@color/bg_top_color"
                                 />
 
                         </RelativeLayout>
@@ -253,7 +254,7 @@
                             android:layout_weight="1"
                             android:layout_marginStart="3dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/decline_div"
+                            android:id="@+id/pickup_div"
                             >
 
                             <TextView
@@ -263,7 +264,7 @@
                                 android:textSize="14sp"
                                 android:textStyle="normal"
                                 android:layout_centerInParent="true"
-                                android:textColor="@color/or_color_name"
+                                android:textColor="@color/color_light_black"
                                 android:id="@+id/decline_tv"
                                 />
 
@@ -329,7 +330,7 @@
                         android:textSize="14sp"
                         android:paddingStart="15dp"
                         android:id="@+id/rider_tip_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -342,7 +343,7 @@
                         android:layout_alignParentRight="true"
                         android:paddingEnd="15dp"
                         android:text="0"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         android:textSize="14sp" />
 
 
@@ -364,7 +365,7 @@
                         android:textSize="14sp"
                         android:paddingStart="15dp"
                         android:id="@+id/sub_total_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -376,7 +377,7 @@
                         android:paddingEnd="15dp"
                         android:layout_alignParentEnd="true"
                         android:id="@+id/sub_total_price_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                 </RelativeLayout>
@@ -395,7 +396,7 @@
                         android:textSize="14sp"
                         android:paddingStart="15dp"
                         android:id="@+id/tax"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -418,7 +419,7 @@
                         android:paddingEnd="15dp"
                         android:layout_alignParentEnd="true"
                         android:id="@+id/total_tex_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
 
@@ -440,7 +441,7 @@
                         android:textSize="14sp"
                         android:paddingStart="15dp"
                         android:id="@+id/deals_delivery_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -452,7 +453,7 @@
                         android:paddingEnd="15dp"
                         android:layout_alignParentEnd="true"
                         android:id="@+id/total_delivery_fee_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -482,7 +483,7 @@
                         android:textSize="14sp"
                         android:paddingStart="15dp"
                         android:id="@+id/deals_total_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -494,7 +495,7 @@
                         android:paddingEnd="15dp"
                         android:layout_alignParentEnd="true"
                         android:id="@+id/total_sum_tv"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <TextView
@@ -533,7 +534,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/check_out"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/bg_top_color" />
 
     </RelativeLayout>
 

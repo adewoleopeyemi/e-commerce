@@ -16,7 +16,7 @@ import com.foodies.amatfoodies.R;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.ViewHolder> implements Filterable {
@@ -31,7 +31,6 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
         this.getDataAdapter = getDataAdapter;
         this.mFilteredList = getDataAdapter;
         this.context = context;
-
     }
 
     @Override
@@ -47,7 +46,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
     public void onBindViewHolder(CountryListAdapter.ViewHolder holder, final int position) {
 
 
-         holder.country_name.setText(mFilteredList.get(position).getCountry_name());
+         holder.countryName.setText(mFilteredList.get(position).getCountry_name());
 
         holder.main_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,10 +63,10 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
     public int getItemCount() {
         return mFilteredList.size() ;
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public Filter getFilter() {
-
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
@@ -99,13 +98,12 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
                 notifyDataSetChanged();
             }
         };
-
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView country_name;
+        public TextView countryName;
         public RelativeLayout main_view;
 
         public ViewHolder(View itemView) {
@@ -113,7 +111,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
             super(itemView);
 
 
-            country_name = itemView.findViewById(R.id.country_name_tv);
+            countryName = itemView.findViewById(R.id.country_name_tv);
             main_view = itemView.findViewById(R.id.main_view);
 
 
@@ -127,4 +125,6 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
     public void setOnItemClickListner(OnItemClickListner onCardClickListner) {
         this.onItemClickListner = onCardClickListner;
     }
+
+
 }

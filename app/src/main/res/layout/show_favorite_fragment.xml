@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
+    android:background="@color/colorWhite"
     android:id="@+id/restaurent_main_layout">
 
     <LinearLayout
@@ -13,11 +12,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.percentlayout.widget.PercentRelativeLayout
+        <RelativeLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:background="@color/colorWhite"
-            android:layout_height="55dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="@dimen/toolbar_height"
             android:paddingEnd="15dp">
 
             <TextView
@@ -27,46 +26,51 @@
                 android:layout_centerVertical="true"
                 android:text="@string/favorites"
                 android:id="@+id/title_city_tv"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="18sp"/>
+                android:textColor="@color/bg_top_color"
+                android:textSize="15sp"/>
+
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingEnd="50dp"
-                android:src="@drawable/back_arrow"
-                android:layout_marginStart="5dp"
-                android:id="@+id/back_icon"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:paddingEnd="50dp"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/back_icon"
+                android:id="@+id/back_icon"
                 />
 
-        </androidx.percentlayout.widget.PercentRelativeLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/floating_search_view"
+            <EditText
+                android:id="@+id/search_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:defaultQueryHint="Some Text Here"
-                app:queryHint="@string/search_restaurant"
-                android:textSize="12sp"
-                app:iconifiedByDefault="false"
-                android:paddingLeft="-10dp"
-                android:paddingStart="-10dp"
-                app:theme="@style/AppSearchView"
-                app:searchIcon="@drawable/search_icon"
-                android:queryBackground="@android:color/transparent"
-                android:focusableInTouchMode="true"/>
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/res_filter"
+                android:layout_toEndOf="@id/search_icon"
+                android:backgroundTint="@color/transparent"
+                android:hint="@string/search_restaurant"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorEditTextBG"
+                android:textSize="13dp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorEditTextBG"
-                />
+
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/search_icon" />
 
         </RelativeLayout>
 
@@ -101,23 +105,21 @@
 
     </LinearLayout>
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar_div"
         android:id="@+id/no_job_div"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:visibility="gone"
-        android:background="@color/colorBG">
+        android:background="@color/colorBg">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/_120sdp"
             android:id="@+id/img_no_job"
             android:layout_centerInParent="true"
-            android:src="@drawable/no_job_today"
-            app:layout_widthPercent = "40%"
-            app:layout_heightPercent = "40%"/>
+            android:src="@drawable/no_job_today"/>
 
         <TextView
             android:layout_height="wrap_content"
@@ -139,7 +141,7 @@
             android:text="@string/let_us_know_where_are_you_so_we_can_recommend_nearby_events"
             android:textSize="14sp"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
     <RelativeLayout
@@ -152,22 +154,5 @@
 
     </RelativeLayout>
 
-
-    <RelativeLayout
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:id="@+id/progressDialog"
-        android:background="@drawable/round_shape_dialog_white"
-        >
-        <com.gmail.samehadar.iosdialog.CamomileSpinner
-            android:id="@+id/restaurantProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:spinnerColor="@color/colorRed"
-            app:clockwise="true"
-            />
-    </RelativeLayout>
 
 </FrameLayout>

@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -31,6 +30,7 @@ import android.widget.Toast;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
@@ -58,7 +58,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import at.markushi.ui.CircleButton;
 
@@ -66,42 +65,29 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class SingUpActivity extends RootFragment implements AdapterView.OnItemSelectedListener {
 
-    public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
-            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-                    "\\@" +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                    "(" +
-                    "\\." +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                    ")+"
-    );
+    CircleButton confirmBtn;
 
-    CircleButton confirm_btn;
 
-    LinearLayout div2;
+    ImageView backSignUp, backIconVerification, backIconConfirm;
 
-    ImageView back_sign_up, back_icon_verification, back_icon_confirm;
-
-    LinearLayout verification_div, main_sign_up, confirm_div, verification_main_screen, confirmation_main_screen;
+    LinearLayout verificationDiv, mainSignUp, confirmDiv, verificationMainScreen, confirmationMainScreen;
     Button btn_signup, btn_done;
-    RelativeLayout div;
 
-    EditText editText1, editText2, editText3, editText4, e_first, e_last, e_email, e_password;
+
+    EditText editText1, editText2, editText3, editText4, eFirst, eLast, eEmail, ePassword;
     MaskedEditText phone;
-     TextView countryCode, btn_resend;
+     TextView countryCode, btnResend;
 
-    RelativeLayout fb_div;
+    RelativeLayout fbDiv;
 
-    FrameLayout main_sign_up_div;
+    FrameLayout mainSignUpDiv;
 
-    public boolean FLAG_CONFIRMATION_SCREEN, FLAG_VERIFICATION_SCREEN;
     private Spinner spinner;
-    private static final String[] paths = {"Pakistan", "Canada"};
 
     SharedPreferences preferences;
 
@@ -149,38 +135,20 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         spinner = (Spinner) v.findViewById(R.id.spinner);
 
 
-        back_sign_up = (ImageView) v.findViewById(R.id.back_icon);
+        backSignUp = (ImageView) v.findViewById(R.id.back_icon);
         countryCode = (TextView) v.findViewById(R.id.country_code);
         phone = (MaskedEditText) v.findViewById(R.id.country_phone);
-        verification_div = v.findViewById(R.id.verification_screen);
-        main_sign_up = v.findViewById(R.id.main_sign_up);
+        verificationDiv = v.findViewById(R.id.verification_screen);
+        mainSignUp = v.findViewById(R.id.main_sign_up);
         btn_signup = v.findViewById(R.id.btn_signup);
-        btn_resend = v.findViewById(R.id.resend_btn);
+        btnResend = v.findViewById(R.id.resend_btn);
 
 
 
-        //  ed_progress =  (LinearLayout) v.findViewById(R.id.linlaHeaderProgress);
-        back_icon_verification = v.findViewById(R.id.back_icon_verification);
-        verification_main_screen = v.findViewById(R.id.verification_main_div);
+        backIconVerification = v.findViewById(R.id.back_icon_verification);
+        verificationMainScreen = v.findViewById(R.id.verification_main_div);
 
-        confirmation_main_screen = v.findViewById(R.id.confirmation_main_screen);
-
-        div = v.findViewById(R.id.div);
-        div.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-
-        div2 = v.findViewById(R.id.div2);
-        div2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-
+        confirmationMainScreen = v.findViewById(R.id.confirmation_main_screen);
 
 
         editText1 = (EditText) v.findViewById(R.id.edit_text1);
@@ -188,12 +156,12 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         editText3 = (EditText) v.findViewById(R.id.edit_text3);
         editText4 = (EditText) v.findViewById(R.id.edit_text4);
 
-        e_first = (EditText) v.findViewById(R.id.ed_fname);
-        e_last = (EditText) v.findViewById(R.id.ed_lname);
-        e_email = (EditText) v.findViewById(R.id.ed_email);
-        e_password = (EditText) v.findViewById(R.id.ed_password);
+        eFirst = (EditText) v.findViewById(R.id.ed_fname);
+        eLast = (EditText) v.findViewById(R.id.ed_lname);
+        eEmail = (EditText) v.findViewById(R.id.ed_email);
+        ePassword = (EditText) v.findViewById(R.id.ed_password);
 
-        fb_div = v.findViewById(R.id.fb_div);
+        fbDiv = v.findViewById(R.id.fb_div);
         fb_btn = (TextView) v.findViewById(R.id.btn_fb);
 
 
@@ -208,7 +176,7 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
             }
         });
-        fb_div.setOnClickListener(new View.OnClickListener() {
+        fbDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FB_LOGIN();
@@ -230,9 +198,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
                     String Email = acct.getEmail();
                     String ID = acct.getId();
 
-                    e_first.setText(Fname);
-                    e_last.setText(Lname);
-                    e_email.setText(Email);
+                    eFirst.setText(Fname);
+                    eLast.setText(Lname);
+                    eEmail.setText(Email);
 
 
 
@@ -247,15 +215,13 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
 
 
-        main_sign_up_div = v.findViewById(R.id.main_sign_up_div);
+        mainSignUpDiv = v.findViewById(R.id.main_sign_up_div);
 
 
 
         editText1.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-
                 TextView text = (TextView) getActivity().getCurrentFocus();
 
                 if (editText1.getText().toString().length() == 1)     //size as per your requirement
@@ -266,12 +232,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
-
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
             }
 
         });
@@ -279,7 +242,6 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         editText2.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
 
                 TextView text = (TextView) getActivity().getCurrentFocus();
 
@@ -291,13 +253,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
-
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-
             }
 
         });
@@ -305,8 +263,6 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         editText3.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-
                 TextView text = (TextView) getActivity().getCurrentFocus();
 
                 if (editText3.getText().toString().length() == 1)     //size as per your requirement
@@ -317,35 +273,31 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
-                // TODO Auto-generated method stub
-
             }
 
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
             }
 
         });
 
-        /// End
 
         btn_done = v.findViewById(R.id.btn_done);
-        confirm_div = v.findViewById(R.id.confirm_screen);
-        back_icon_confirm = v.findViewById(R.id.back_icon_confirm);
+        confirmDiv = v.findViewById(R.id.confirm_screen);
+        backIconConfirm = v.findViewById(R.id.back_icon_confirm);
 
-        back_icon_confirm.setOnClickListener(new View.OnClickListener() {
+        backIconConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-                verification_main_screen.setVisibility(View.VISIBLE);
-                confirm_div.setVisibility(View.GONE);
+                verificationMainScreen.setVisibility(View.VISIBLE);
+                confirmDiv.setVisibility(View.GONE);
 
             }
         });
 
 
-        btn_resend.setOnClickListener(new View.OnClickListener() {
+        btnResend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -369,11 +321,11 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
                 if (countryCode.getText().toString().trim().equals("")) {
 
-                    Toast.makeText(getContext(), "Enter Country!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.entry_country, Toast.LENGTH_SHORT).show();
 
                 } else if (phone.getText(true).toString().trim().equals("")) {
 
-                    Toast.makeText(getContext(), "Enter Contact Number!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.enter_contact_number, Toast.LENGTH_SHORT).show();
 
                 } else {
 
@@ -385,11 +337,11 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
 
 
-        back_icon_verification.setOnClickListener(new View.OnClickListener() {
+        backIconVerification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verification_div.setVisibility(View.GONE);
-                main_sign_up.setVisibility(View.VISIBLE);
+                verificationDiv.setVisibility(View.GONE);
+                mainSignUp.setVisibility(View.VISIBLE);
             }
         });
 
@@ -402,47 +354,60 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
                 try {
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-                } catch (Exception e) {
-
+                }
+                catch (Exception e) {
                 }
 
 
-                boolean valid = checkEmail(e_email.getText().toString());
-                if (e_first.getText().toString().trim().equals("")) {
+                boolean valid = Functions.isValidEmail(eEmail.getText().toString());
 
-                    Toast.makeText(getContext(), "Enter First Name!", Toast.LENGTH_SHORT).show();
 
-                } else if (e_last.getText().toString().trim().equals("")) {
+                if (eFirst.getText().toString().trim().equals("")) {
+                    Toast.makeText(getContext(), R.string.enter_first_name, Toast.LENGTH_SHORT).show();
+                }
 
-                    Toast.makeText(getContext(), "Enter Last Name!", Toast.LENGTH_SHORT).show();
+                else if (eLast.getText().toString().trim().equals("")) {
 
-                } else if (e_email.getText().toString().trim().equals("")) {
+                    Toast.makeText(getContext(), R.string.enter_last_name, Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(getContext(), "Enter Email!", Toast.LENGTH_SHORT).show();
+                }
 
-                } else if (e_password.getText().toString().trim().equals("")) {
+                else if (eEmail.getText().toString().trim().equals("")) {
 
-                    Toast.makeText(getContext(), "Enter Password!", Toast.LENGTH_SHORT).show();
-                } else if (e_password.getText().toString().length() < 6) {
+                    Toast.makeText(getContext(), R.string.enter_email, Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(getContext(), "Enter Password Atleat 6 Charaters!", Toast.LENGTH_SHORT).show();
-                } else if (!valid) {
+                }
 
-                    Toast.makeText(getContext(), "Enter Valid Email!", Toast.LENGTH_SHORT).show();
-                } else {
+                else if (ePassword.getText().toString().trim().equals("")) {
 
-                    verification_div.setVisibility(View.VISIBLE);
-                    main_sign_up.setVisibility(View.GONE);
-                    FLAG_VERIFICATION_SCREEN = true;
+                    Toast.makeText(getContext(), getString(R.string.please_enter_password), Toast.LENGTH_SHORT).show();
+                }
+
+                else if (ePassword.getText().toString().length() < 6) {
+
+                    Toast.makeText(getContext(), getString(R.string.enter_password_atleast_characters), Toast.LENGTH_SHORT).show();
+                }
+
+                else if (!valid) {
+
+                    Toast.makeText(getContext(), getString(R.string.enter_valid_email),Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+
+                    verificationDiv.setVisibility(View.VISIBLE);
+                    mainSignUp.setVisibility(View.GONE);
 
                     Get_Coutry_list();
 
                 }
+
+
             }
 
         });
 
-        back_sign_up.setOnClickListener(new View.OnClickListener() {
+        backSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -453,8 +418,8 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
 
 
-        confirm_btn = v.findViewById(R.id.confirm_btn);
-        confirm_btn.setOnClickListener(new View.OnClickListener() {
+        confirmBtn = v.findViewById(R.id.confirm_btn);
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -464,7 +429,7 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
                 } else {
 
-                    Verify2();
+                    verify2();
                 }
 
             }
@@ -492,7 +457,6 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
             public void onSuccess(LoginResult loginResult) {
 
                 final AccessToken accessToken = loginResult.getAccessToken();
-                // final String id = Profile.getCurrentProfile().getId().toString();
                 GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject user, GraphResponse graphResponse) {
@@ -504,9 +468,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
                         if(FName!=null&& LName!=null) {
 
-                            e_first.setText(FName);
-                            e_last.setText(LName);
-                            e_email.setText(useremail);
+                            eFirst.setText(FName);
+                            eLast.setText(LName);
+                            eEmail.setText(useremail);
 
 
 
@@ -541,12 +505,6 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
     }
 
 
-    private boolean checkEmail(String email) {
-        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
-    }
-
-
-
 
     String [] countryname_list;
     String [] countrycode_list;
@@ -558,9 +516,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
         JSONObject jsonObject = new JSONObject();
 
-        ApiRequest.Call_Api(context, Config.showCountries, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.showCountries, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
 
@@ -633,9 +591,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         }
         Log.d("JSONPost",jsonObject.toString());
 
-        ApiRequest.Call_Api(context, Config.Verify_URL, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.Verify_URL, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                  try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -644,9 +602,8 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
                     if (code_id == 200) {
 
-                        verification_main_screen.setVisibility(View.GONE);
-                        confirm_div.setVisibility(View.VISIBLE);
-                        FLAG_CONFIRMATION_SCREEN = true;
+                        verificationMainScreen.setVisibility(View.GONE);
+                        confirmDiv.setVisibility(View.VISIBLE);
 
                     }else {
 
@@ -669,7 +626,7 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
     }
 
-    private void Verify2() {
+    private void verify2() {
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
         transparent_layer.setVisibility(View.VISIBLE);
@@ -689,9 +646,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         }
 
 
-        ApiRequest.Call_Api(context, Config.Verify_URL, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.Verify_URL, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
                 transparent_layer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
@@ -703,7 +660,7 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
                     if (code_id == 200) {
 
-                        SignUp(e_email.getText().toString(), e_password.getText().toString(), e_first.getText().toString(), e_last.getText().toString());
+                        signUp(eEmail.getText().toString(), ePassword.getText().toString(), eFirst.getText().toString(), eLast.getText().toString());
 
                     }else {
 
@@ -719,7 +676,7 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
 
     }
 
-    private void SignUp(final String email, final String pass, String f_name, String l_name) {
+    private void signUp(final String email, final String pass, String f_name, String l_name) {
         String device_tocken =preferences.getString(PreferenceClass.device_token,"");
 
         String phne = phone.getText(true).toString().replaceAll("[^0-9]", "");
@@ -745,9 +702,9 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         transparent_layer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, url, jsonObject, new Callback() {
+        ApiRequest.callApi(context, url, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
                 transparent_layer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
@@ -788,8 +745,8 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
         progressDialog.setVisibility(View.VISIBLE);
 
 
-        String _lat = preferences.getString(PreferenceClass.LATITUDE,"");
-        String _long = preferences.getString(PreferenceClass.LONGITUDE,"");
+        String lat = preferences.getString(PreferenceClass.LATITUDE,"");
+        String lng = preferences.getString(PreferenceClass.LONGITUDE,"");
         String device_tocken =preferences.getString(PreferenceClass.device_token,"");
 
 
@@ -801,24 +758,24 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
             jsonObject.put("device_token", device_tocken);
             jsonObject.put("role", "user");
 
-            if(_lat.isEmpty()){
+            if(lat.isEmpty()){
                 jsonObject.put("lat", "31.5042483");
             }else {
-                jsonObject.put("lat", _lat);
+                jsonObject.put("lat", lat);
             }
-            if(_long.isEmpty()){
+            if(lng.isEmpty()){
                 jsonObject.put("long", "74.3307944");
             }else {
-                jsonObject.put("long", _long);
+                jsonObject.put("long", lng);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        ApiRequest.Call_Api(context, url, jsonObject, new Callback() {
+        ApiRequest.callApi(context, url, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
@@ -849,7 +806,7 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
                           editor.putBoolean(PreferenceClass.IS_LOGIN, true);
                           editor.commit();
 
-                            OrderDetailFragment.CALLBACK_ORDERFRAG = true;
+
 
                             editor.putString(PreferenceClass.USER_TYPE,resultObj2.optString("role"));
                             editor.commit();
@@ -912,11 +869,10 @@ public class SingUpActivity extends RootFragment implements AdapterView.OnItemSe
             String Fname = acct.getGivenName();
             String Lname = acct.getFamilyName();
             String Email = acct.getEmail();
-            String ID = acct.getId();
 
-            e_first.setText(Fname);
-            e_last.setText(Lname);
-            e_email.setText(Email);
+            eFirst.setText(Fname);
+            eLast.setText(Lname);
+            eEmail.setText(Email);
 
         }
     }

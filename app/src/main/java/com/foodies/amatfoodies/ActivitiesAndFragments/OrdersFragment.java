@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -40,36 +40,33 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.foodies.amatfoodies.ActivitiesAndFragments.DealOrderFragment.DEAL_PLACED;
-
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class OrdersFragment extends RootFragment {
 
-    ImageView filter_search;
-    public static boolean STATUS_INACTIVE,FLAG_ACCEPTED_ORDER;
+    ImageView filterSearch;
+    public static boolean statusinactive;
 
     SharedPreferences sPre;
 
-    RecyclerView order_history_recyclerview;
+    RecyclerView orderHistoryRecyclerview;
 
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     OrderAdapter recyclerViewadapter;
 
-    LinearLayout recycler_view_restaurant;
+    LinearLayout recyclerViewRestaurant;
     CamomileSpinner orderProgressBar;
-    SwipeRefreshLayout refresh_layout;
-    String status_active = "1";
-    String status_inactive = "2";
+    SwipeRefreshLayout refreshLayout;
+
+    boolean is_current_orders=true;
+
 
     ArrayList<OrderModelClass> orderArrayList;
-   RelativeLayout no_job_div;
-    TextView title_tv;
-    RelativeLayout transparent_layer,progressDialog;
-
-    public static boolean _hasLoadedOnce= false;
+   RelativeLayout noJobDiv;
+    TextView titleTv;
+    RelativeLayout transparentLayer,progressDialog;
 
 
     View view;
@@ -91,64 +88,48 @@ public class OrdersFragment extends RootFragment {
 
         initUI(view);
         sPre = getContext().getSharedPreferences(PreferenceClass.user,getContext().MODE_PRIVATE);
-        FLAG_ACCEPTED_ORDER = true;
-        order_history_recyclerview = view.findViewById(R.id.order_history_recyclerview);
+        orderHistoryRecyclerview = view.findViewById(R.id.order_history_recyclerview);
         orderProgressBar = view.findViewById(R.id.orderProgress);
         orderProgressBar.start();
 
-        order_history_recyclerview.setHasFixedSize(true);
+        orderHistoryRecyclerview.setHasFixedSize(true);
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        order_history_recyclerview.setLayoutManager(recyclerViewlayoutManager);
+        orderHistoryRecyclerview.setLayoutManager(recyclerViewlayoutManager);
 
-        if( OrderDetailFragment.CALLBACK_ORDERFRAG||DEAL_PLACED){
-            getAllOrderParser(status_active);
-            OrderDetailFragment.CALLBACK_ORDERFRAG = false;
-            DEAL_PLACED= false;
-        }
+
+        getAllOrderParser();
+
 
         return view;
+
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isFragmentVisible_) {
-        super.setUserVisibleHint(true);
 
-        if (this.isVisible()) {
-               if (isFragmentVisible_ && !_hasLoadedOnce) {
-                getAllOrderParser(status_active);
-                _hasLoadedOnce = true;
-            }
-        }
-    }
+
 
     private void initUI(View v){
 
-
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
 
-        title_tv = v.findViewById(R.id.title_tv);
-        title_tv.setText(getResources().getString(R.string.history));
-        no_job_div = v.findViewById(R.id.no_job_div);
-        refresh_layout = v.findViewById(R.id.refresh_layout);
-        refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        titleTv = v.findViewById(R.id.title_tv);
+        titleTv.setText(getResources().getString(R.string.history));
+        noJobDiv = v.findViewById(R.id.no_job_div);
+        refreshLayout = v.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                if(FLAG_ACCEPTED_ORDER) {
-                    getAllOrderParser(status_active);
-                }
-                else {
-                    getAllOrderParser(status_inactive);
-                }
-                refresh_layout.setRefreshing(false);
+                getAllOrderParser();
+
+                refreshLayout.setRefreshing(false);
 
             }
         });
 
-       recycler_view_restaurant = v.findViewById(R.id.recycler_view_restaurant );
-                filter_search = v.findViewById(R.id.filter_search);
-        filter_search.setOnClickListener(new View.OnClickListener() {
+       recyclerViewRestaurant = v.findViewById(R.id.recycler_view_restaurant );
+                filterSearch = v.findViewById(R.id.filter_search);
+        filterSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 customDialogbox();
@@ -158,26 +139,9 @@ public class OrdersFragment extends RootFragment {
 
     }
 
-    @Override
-    public void onAttachFragment(Fragment childFragment) {
-        super.onAttachFragment(childFragment);
-        setUserVisibleHint(false);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setUserVisibleHint(false);
-    }
-
-    @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
 
 
-    }
-
-    private void getAllOrderParser(String status_){
+    private void getAllOrderParser(){
 
 
         orderArrayList = new ArrayList<>();
@@ -187,19 +151,22 @@ public class OrdersFragment extends RootFragment {
         try {
 
             jsonObject.put("user_id",user_id);
-            jsonObject.put("status",status_);
+            if(is_current_orders)
+                jsonObject.put("status","1");
+            else
+                jsonObject.put("status","2");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_ORDERS, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_ORDERS, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject  jsonResponse = new JSONObject(resp);
@@ -213,11 +180,11 @@ public class OrdersFragment extends RootFragment {
 
 
                         if(jsonarray.length()==0){
-                            recycler_view_restaurant.setVisibility(View.GONE);
+                            recyclerViewRestaurant.setVisibility(View.GONE);
 
                         }
                         else {
-                            recycler_view_restaurant.setVisibility(View.VISIBLE);
+                            recyclerViewRestaurant.setVisibility(View.VISIBLE);
                         }
 
                         for (int i = 0; i < jsonarray.length(); i++) {
@@ -227,6 +194,9 @@ public class OrdersFragment extends RootFragment {
                             JSONObject jsonObjOrder = json1.getJSONObject("Order");
                             JSONObject jsonObjCurrency = jsonObjOrder.getJSONObject("Currency");
                             OrderModelClass orderModelClass = new OrderModelClass();
+                            orderModelClass.setStatus(jsonObjCurrency.optString("status"));
+
+
                             orderModelClass.setCurrency_symbol(jsonObjCurrency.optString("symbol"));
                             orderModelClass.setOrder_price(jsonObjOrder.optString("price"));
                             orderModelClass.setInstructions(jsonObjOrder.optString("instructions"));
@@ -236,7 +206,6 @@ public class OrdersFragment extends RootFragment {
                             orderModelClass.setOrder_created(jsonObjOrder.optString("created"));
                             orderModelClass.setDelivery(jsonObjOrder.optString("delivery"));
                             orderModelClass.setDeal_id(jsonObjOrder.optString("deal_id"));
-
                             if(jsonObjOrder.getJSONArray("OrderMenuItem")!=null && jsonObjOrder.getJSONArray("OrderMenuItem").length()>0) {
                                 JSONArray jsonarrayOrder = jsonObjOrder.getJSONArray("OrderMenuItem");
                                 JSONObject jsonObjectMenu = jsonarrayOrder.getJSONObject(0);
@@ -254,21 +223,35 @@ public class OrdersFragment extends RootFragment {
 
                             }
 
-                            orderArrayList.add(orderModelClass);
+//                            if(is_current_orders && (orderModelClass.getStatus().equalsIgnoreCase("1") ||
+//                                    orderModelClass.getStatus().equalsIgnoreCase("3")))
+//                            {
+//
+//
+//                            }
+//
+//
+//                            if(!is_current_orders && orderModelClass.getStatus().equalsIgnoreCase("2") )
+//                            {
+//
+//                                orderArrayList.add(orderModelClass);
+//                            }
+//
 
+                            orderArrayList.add(orderModelClass);
                         }
 
                         if (orderArrayList!=null) {
 
                             if(orderArrayList.size()>0){
-                                no_job_div.setVisibility(View.GONE);
+                                noJobDiv.setVisibility(View.GONE);
                             }
                             else if(orderArrayList.size()==0) {
-                                no_job_div.setVisibility(View.VISIBLE);
+                                noJobDiv.setVisibility(View.VISIBLE);
                             }
 
                             recyclerViewadapter = new OrderAdapter(orderArrayList, getActivity());
-                            order_history_recyclerview.setAdapter(recyclerViewadapter);
+                            orderHistoryRecyclerview.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
 
                         }
@@ -302,7 +285,7 @@ public class OrdersFragment extends RootFragment {
                 }
 
 
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
 
@@ -331,20 +314,20 @@ public class OrdersFragment extends RootFragment {
         currentOrderDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                STATUS_INACTIVE = false;
-                getAllOrderParser(status_active);
+                statusinactive = false;
+                is_current_orders = true;
+                getAllOrderParser();
                 dialog.dismiss();
-                FLAG_ACCEPTED_ORDER = true;
             }
         });
 
         pastOrderDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                STATUS_INACTIVE = true;
-               getAllOrderParser(status_inactive);
+                statusinactive = true;
+                is_current_orders = false;
+               getAllOrderParser();
                 dialog.dismiss();
-                FLAG_ACCEPTED_ORDER = false;
             }
         });
 

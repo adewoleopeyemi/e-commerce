@@ -1,7 +1,7 @@
 package com.foodies.amatfoodies.Models;
 
 /**
- * Created by qboxus on 1/22/2018.
+ * Created by foodies on 1/22/2018.
  */
 
 public class CartChildModel {

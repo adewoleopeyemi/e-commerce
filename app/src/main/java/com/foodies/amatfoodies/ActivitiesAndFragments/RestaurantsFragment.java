@@ -5,43 +5,41 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 
-import android.util.TypedValue;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
-import com.foodies.amatfoodies.Adapters.ServerImageParseAdapter;
+import com.foodies.amatfoodies.Adapters.RestaurantsAdapter;
 import com.foodies.amatfoodies.Adapters.SlidingImageAdapter;
+import com.foodies.amatfoodies.Constants.AdapterClickListener;
 import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.DataParser;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
+import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.GoogleMapWork.MapsActivity;
 import com.foodies.amatfoodies.Models.ImageSliderModel;
@@ -50,10 +48,7 @@ import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.Utils.FontHelper;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 import com.foodies.amatfoodies.Utils.TabLayoutUtils;
-import com.foodies.amatfoodies.ViewHolders.RestuarentsViewHolder;
 import com.gmail.samehadar.iosdialog.CamomileSpinner;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.rd.PageIndicatorView;
 
 import org.json.JSONArray;
@@ -61,7 +56,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -74,41 +68,40 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class RestaurantsFragment extends RootFragment implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks{
+public class RestaurantsFragment extends RootFragment  {
 
-    private static ViewPager mPager;
-    private static int currentPage = 0;
+    private  ViewPager mPager;
+    private  int currentPage = 0;
     private ArrayList<ImageSliderModel> ImagesArray;
-    private ImageView res_filter;
+    private ImageView resFilter;
 
 
-    private TextView title_city_tv;
+    private TextView titleCityTv;
 
 
-
-    private ArrayList<RestaurantsModel> datalist=new ArrayList<>();
-    private RecyclerView restaurant_recycler_view;
+    private ArrayList<RestaurantsModel> datalist;
+    private RecyclerView recyclerView;
     private RecyclerViewHeader recyclerHeader;
-    SwipeRefreshLayout refresh_layout;
+    SwipeRefreshLayout refreshLayout;
 
-    RecyclerView.LayoutManager recyclerViewlayoutManager;
-    RestaurantsAdapter recyclerViewadapter;
+    RecyclerView.LayoutManager layoutManager;
+    RestaurantsAdapter adapter;
 
     CamomileSpinner progressBar;
     String currentLoc;
-    static SharedPreferences sharedPreferences;
-    SearchView searchView;
-    public static Timer swipeTimer;
-    View layout;
+    SharedPreferences sharedPreferences;
+    EditText searchEdit;
+
+    public Timer swipeTimer;
 
     Handler handler = new Handler();
     Runnable timeCounter;
-    String lat,lon,user_id;
+    String lat, lon, userId;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer, progressDialog;
     PageIndicatorView pageIndicatorView;
 
 
@@ -116,14 +109,13 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
     Context context;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-         view = inflater.inflate(R.layout.resturent_fragment, container, false);
-        context=getContext();
+        view = inflater.inflate(R.layout.resturent_fragment, container, false);
+        context = getContext();
 
 
-        FontHelper.applyFont(getContext(),getActivity().getWindow().getDecorView().getRootView(), AllConstants.verdana);
+        FontHelper.applyFont(getContext(), getActivity().getWindow().getDecorView().getRootView(), AllConstants.verdana);
 
         FrameLayout frameLayout = view.findViewById(R.id.RestaurantsFragment);
         frameLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -135,41 +127,40 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
         });
 
         sharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
-        currentLoc = sharedPreferences.getString(PreferenceClass.CURRENT_LOCATION_ADDRESS,"");
-        lat = sharedPreferences.getString(PreferenceClass.LATITUDE,"");
-        lon = sharedPreferences.getString(PreferenceClass.LONGITUDE,"");
-         user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
-        title_city_tv = view.findViewById(R.id.title_city_tv);
-        if(currentLoc.isEmpty()){
-            title_city_tv.setText("Kalma Chowk Lahore");
-        }
-        else {
-            title_city_tv.setText(currentLoc);
+        currentLoc = sharedPreferences.getString(PreferenceClass.CURRENT_LOCATION_ADDRESS, "");
+        lat = sharedPreferences.getString(PreferenceClass.LATITUDE, "");
+        lon = sharedPreferences.getString(PreferenceClass.LONGITUDE, "");
+        userId = sharedPreferences.getString(PreferenceClass.pre_user_id, "");
+        titleCityTv = view.findViewById(R.id.title_city_tv);
+        if (currentLoc.isEmpty()) {
+            titleCityTv.setText("Kalma Chowk Lahore");
+        } else {
+            titleCityTv.setText(currentLoc);
         }
 
-        if(lat.isEmpty()||lon.isEmpty()){
+        if (lat.isEmpty() || lon.isEmpty()) {
             lat = "31.4904023";
             lon = "74.2906989";
         }
 
 
-        res_filter = view.findViewById(R.id.res_filter);
-        res_filter.setOnClickListener(new View.OnClickListener() {
+        resFilter = view.findViewById(R.id.res_filter);
+        resFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Fragment restaurantMenuItemsFragment = new RestaurantSpecialityFrag(new Fragment_Callback() {
+                Fragment restaurantMenuItemsFragment = new RestaurantSpecialityFrag(new FragmentCallback() {
                     @Override
-                    public void Responce(Bundle bundle) {
-                        if(bundle!=null){
-                            String speciality=bundle.getString("speciality");
+                    public void onResponce(Bundle bundle) {
+                        if (bundle != null) {
+                            String speciality = bundle.getString("speciality");
                             getRestaurantListAgainstSpeciality(speciality);
                         }
                     }
                 });
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
-                transaction.add(R.id.RestaurantsFragment, restaurantMenuItemsFragment,"ParentFragment").commit();
+                transaction.add(R.id.RestaurantsFragment, restaurantMenuItemsFragment, "ParentFragment").commit();
             }
         });
 
@@ -180,13 +171,12 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
     }
 
 
-
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if(ShowFavoriteRestFragment.FROM_FAVORITE) {
-                getRestaurantList();
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        if (menuVisible) {
+            if (ShowFavoriteRestFragment.FROM_FAVORITE) {
+                getrestaurantlist();
                 ShowFavoriteRestFragment.FROM_FAVORITE = false;
             }
         }
@@ -199,22 +189,15 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
-    private void initUI(final View v){
+    private void initUI(final View v) {
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
-        recyclerWithHeader(v);
-
-        searchView = v.findViewById(R.id.floating_search_view);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
 
 
-        TextView searchText = (TextView)
-                v.findViewById(R.id.search_src_text);
-        searchText.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
-        searchText.setPadding(0,0,0,0);
-        LinearLayout searchEditFrame = (LinearLayout) searchView.findViewById(R.id.search_edit_frame); // Get the Linear Layout
 
-        ((LinearLayout.LayoutParams) searchEditFrame.getLayoutParams()).leftMargin = 5;
-        search(searchView,v);
+        searchEdit = v.findViewById(R.id.search_edit);
+
+        search();
 
         mPager = (ViewPager) v.findViewById(R.id.image_slider_pager);
         pageIndicatorView = v.findViewById(R.id.pageIndicatorView);
@@ -222,39 +205,88 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
         progressBar.start();
 
 
-         getRestaurantList();
-         initPager(v);
+        recyclerWithHeader(v);
 
-        refresh_layout = v.findViewById(R.id.refresh_layout);
-        refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        datalist = new ArrayList<>();
+        adapter = new RestaurantsAdapter(datalist, getContext(), new AdapterClickListener() {
+            @Override
+            public void onItemClick(View view, int pos, Object object) {
+                RestaurantsModel model = (RestaurantsModel) object;
+
+                if(view.getId()==R.id.favorite_icon){
+
+                    if(PreferenceClass.sharedPreferences.getBoolean(PreferenceClass.IS_LOGIN,false)){
+                        addFavoriteRestaurant(pos,model.restaurant_id);
+                    }
+                }
+                else {
+                    Fragment restaurantMenuItemsFragment = new RestaurantMenuItemsFragment();
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("data", model);
+                    restaurantMenuItemsFragment.setArguments(bundle);
+                    transaction.addToBackStack(null);
+                    transaction.add(R.id.RestaurantsFragment, restaurantMenuItemsFragment, "parent").commit();
+                    if (swipeTimer != null) {
+                        swipeTimer.cancel();
+                        swipeTimer.purge();
+                    }
+                }
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+
+
+
+        getrestaurantlist();
+        initPager(v);
+
+        refreshLayout = v.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(handler!=null && timeCounter!=null){
+                if (handler != null && timeCounter != null) {
                     handler.removeCallbacks(timeCounter);
                 }
-                getRestaurantList();
+                getrestaurantlist();
                 initPager(v);
-                refresh_layout.setRefreshing(false);
+                refreshLayout.setRefreshing(false);
 
             }
         });
 
-        title_city_tv.setOnClickListener(new View.OnClickListener() {
+        titleCityTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-              startActivity(new Intent(getContext(),MapsActivity.class));
+                startActivity(new Intent(getContext(), MapsActivity.class));
             }
+        });
 
 
+        view.findViewById(R.id.map_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRestaurentOnMap();
+               // startActivity(new Intent(getContext(), RestaurentsOnMap_A.class));
+            }
         });
 
     }
 
 
-    public void getRestaurantList(){
+    public void openRestaurentOnMap(){
+        Fragment restaurentsOnMap_a = new RestaurentsOnMap_F();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.add(R.id.RestaurantsFragment, restaurentsOnMap_a, "parent").commit();
+
+    }
+
+    public void getrestaurantlist() {
         Calendar c = Calendar.getInstance();
-        System.out.println("Current time => "+c.getTime());
+        System.out.println("Current time => " + c.getTime());
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = df.format(c.getTime());
@@ -263,8 +295,8 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
         try {
             jsonObject.put("lat", lat);
             jsonObject.put("long", lon);
-            jsonObject.put("current_time",formattedDate);
-            jsonObject.put("user_id",user_id);
+            jsonObject.put("current_time", formattedDate);
+            jsonObject.put("user_id", userId);
 
 
         } catch (JSONException e) {
@@ -272,84 +304,35 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
         }
 
 
-        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, false);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_RESTAURANTS, jsonObject, new Callback() {
+        datalist.clear();
+
+        ApiRequest.callApi(context, Config.SHOW_RESTAURANTS, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
 
-                     int code_id = Integer.parseInt(jsonResponse.optString("code"));
+                    int code_id = Integer.parseInt(jsonResponse.optString("code"));
 
                     if (code_id == 200) {
 
-                        ArrayList<RestaurantsModel> tem_list=new ArrayList<>();
+                        ArrayList<RestaurantsModel> tem_list = new ArrayList<>();
 
                         JSONObject json = new JSONObject(jsonResponse.toString());
                         JSONArray jsonarray = json.getJSONArray("msg");
 
-                        JSONArray promoted=json.optJSONArray("promoted");
-                        if(promoted!=null) {
+                        JSONArray promoted = json.optJSONArray("promoted");
+                        if (promoted != null) {
                             for (int i = 0; i < promoted.length(); i++) {
 
                                 JSONObject json1 = promoted.getJSONObject(i);
 
-                                JSONObject jsonObjRestaurant = json1.getJSONObject("Restaurant");
-                                JSONObject jsonObjCurrency = json1.getJSONObject("Currency");
-                                String symbol = jsonObjCurrency.optString("symbol");
-                                JSONObject jsonObjTax = json1.getJSONObject("Tax");
-                                JSONObject jsonObjRating = null;
-                                try {
-                                    jsonObjRating = json1.getJSONObject("TotalRatings");
-                                } catch (JSONException ignored) {
-                                    ignored.getCause();
-                                }
-
-                                JSONObject jsonObjDistance = json1.getJSONObject("0");
-                                String distance = jsonObjDistance.optString("distance");
-                                RestaurantsModel RestaurantObj = new RestaurantsModel();
-                                RestaurantObj.restaurant_name=jsonObjRestaurant.optString("name");
-                                RestaurantObj.restaurant_salgon = jsonObjRestaurant.optString("slogan");
-                                RestaurantObj.restaurant_about = jsonObjRestaurant.optString("about");
-                                RestaurantObj.restaurant_fee = symbol + jsonObjRestaurant.optString("delivery_fee");
-                                RestaurantObj.restaurant_image = jsonObjRestaurant.optString("image");
-                                RestaurantObj.restaurant_id=jsonObjRestaurant.optString("id");
-                                RestaurantObj.restaurant_phone = jsonObjRestaurant.optString("phone");
-                                RestaurantObj.restaurant_cover = jsonObjRestaurant.optString("cover_image");
-                                RestaurantObj.restaurant_isFav = jsonObjRestaurant.optString("favourite");
-                                RestaurantObj.promoted = "1";
-                                RestaurantObj.preparation_time = jsonObjRestaurant.optString("preparation_time");
-
-                                if(distance!=null) {
-                                    String distanceKM = String.valueOf(new DecimalFormat("##.#").format(Double.parseDouble(distance) * 1.6)) + " KM";
-                                    RestaurantObj.restaurant_distance = distanceKM;
-                                }
-                                else
-                                    RestaurantObj.restaurant_distance ="0.0 KM";
-
-
-                                if (jsonObjRating == null) {
-
-                                    RestaurantObj.restaurant_avgRating = "0.00";
-                                    RestaurantObj.restaurant_totalRating = "0.00";
-                                } else {
-                                    RestaurantObj.restaurant_avgRating = jsonObjRating.optString("avg");
-                                }
-                                RestaurantObj.restaurant_currency = jsonObjCurrency.optString("symbol");
-                                RestaurantObj.restaurant_tax = jsonObjTax.optString("tax");
-                                String tax = jsonObjTax.optString("tax");
-                                RestaurantObj.delivery_fee_per_km = jsonObjTax.optString("delivery_fee_per_km");
-                                RestaurantObj.deliveryTime = jsonObjTax.getString("delivery_time");
-                                RestaurantObj.min_order_price = jsonObjRestaurant.optString("min_order_price");
-                                RestaurantObj.restaurant_menu_style = jsonObjRestaurant.optString("menu_style");
-                                RestaurantObj.deliveryFee_Range = jsonObjRestaurant.optString("delivery_free_range");
-
-
-                                tem_list.add(RestaurantObj);
+                                tem_list.add(DataParser.Pasrse_Restaurent(json1));
                             }
                         }
 
@@ -357,114 +340,26 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
 
                             JSONObject json1 = jsonarray.getJSONObject(i);
 
-                            JSONObject jsonObjRestaurant = json1.getJSONObject("Restaurant");
-                            JSONObject jsonObjCurrency = json1.getJSONObject("Currency");
-                            String symbol = jsonObjCurrency.optString("symbol");
-                            JSONObject jsonObjTax = json1.getJSONObject("Tax");
-                            JSONObject jsonObjRating = null;
-                            try {
-                                jsonObjRating = json1.getJSONObject("TotalRatings");
-                            } catch (JSONException ignored) {
-                                ignored.getCause();
-                            }
-
-                            JSONObject jsonObjDistance = json1.getJSONObject("0");
-                            String distance = jsonObjDistance.optString("distance","0");
-                            RestaurantsModel RestaurantObj = new RestaurantsModel();
-                            RestaurantObj.restaurant_name=jsonObjRestaurant.optString("name");
-                            RestaurantObj.restaurant_salgon=jsonObjRestaurant.optString("slogan");
-                            RestaurantObj.restaurant_about=jsonObjRestaurant.optString("about");
-                            RestaurantObj.restaurant_fee=symbol + jsonObjRestaurant.optString("delivery_fee");
-                            RestaurantObj.restaurant_image=jsonObjRestaurant.optString("image");
-                            RestaurantObj.restaurant_id=jsonObjRestaurant.optString("id");
-                            RestaurantObj.restaurant_phone=jsonObjRestaurant.optString("phone");
-                            RestaurantObj.restaurant_cover=jsonObjRestaurant.optString("cover_image");
-                            RestaurantObj.restaurant_isFav=jsonObjRestaurant.optString("favourite");
-                            RestaurantObj.promoted="0";
-                            RestaurantObj.preparation_time=jsonObjRestaurant.optString("preparation_time");
-
-                            if(distance.equals("") || distance.equals("null")){
-                                distance="0.0";
-                            }
-                            String distanceKM = String.valueOf(new DecimalFormat("##.#").format(Double.parseDouble(distance) * 1.6)) + " KM";
-                            RestaurantObj.restaurant_distance=distanceKM;
-
-                            if (jsonObjRating == null) {
-
-                                RestaurantObj.restaurant_avgRating="0.00";
-                                RestaurantObj.restaurant_totalRating="0.00";
-                            } else {
-                                RestaurantObj.restaurant_avgRating=jsonObjRating.optString("avg");
-                            }
-                            RestaurantObj.restaurant_currency=jsonObjCurrency.optString("symbol");
-                            RestaurantObj.restaurant_tax=jsonObjTax.optString("tax");
-
-                            String delivery_fee_per_km = jsonObjTax.optString("delivery_fee_per_km");
-                            if(delivery_fee_per_km==null ||delivery_fee_per_km.equals("null"))
-                                RestaurantObj.delivery_fee_per_km="0";
-                            else
-                                RestaurantObj.delivery_fee_per_km=delivery_fee_per_km;
-
-
-                            RestaurantObj.deliveryTime=jsonObjTax.getString("delivery_time");
-                            RestaurantObj.min_order_price=jsonObjRestaurant.optString("min_order_price");
-                            RestaurantObj.restaurant_menu_style=jsonObjRestaurant.optString("menu_style");
-                            RestaurantObj.deliveryFee_Range=jsonObjRestaurant.optString("delivery_free_range");
-
-
-                            tem_list.add(RestaurantObj);
-                        }
-
-                        datalist=tem_list;
-
-                        if (datalist != null) {
-
-                            recyclerViewadapter = new RestaurantsAdapter(datalist, getContext());
-                            restaurant_recycler_view.setAdapter(recyclerViewadapter);
-                            recyclerViewadapter.notifyDataSetChanged();
-                            recyclerViewadapter.setOnItemClickListner(new OnItemClickListner() {
-                                @Override
-                                public void OnItemClicked(View view, final int position) {
-
-                                       RestaurantsModel model = datalist.get(position);
-
-                                    try {
-
-                                        Fragment restaurantMenuItemsFragment = new RestaurantMenuItemsFragment();
-                                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                        Bundle bundle=new Bundle();
-                                        bundle.putSerializable("data",model);
-                                        restaurantMenuItemsFragment.setArguments(bundle);
-                                        transaction.addToBackStack(null);
-                                        transaction.add(R.id.RestaurantsFragment, restaurantMenuItemsFragment, "parent").commit();
-                                        if(swipeTimer!=null){
-                                            swipeTimer.cancel();
-                                            swipeTimer.purge();
-                                        }
-                                    }catch (IndexOutOfBoundsException e){
-                                        e.getCause();
-                                    }catch (Exception e){
-
-                                    }
-                                }
-                            });
+                            tem_list.add(DataParser.Pasrse_Restaurent(json1));
 
                         }
 
+                        datalist.addAll(tem_list);
+                        adapter.notifyDataSetChanged();
 
                     } else {
                         JSONObject json = new JSONObject(jsonResponse.toString());
                         Toast.makeText(getApplicationContext(), json.optString("msg"), Toast.LENGTH_SHORT).show();
                     }
 
-                } catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
 
                 }
 
                 progressDialog.setVisibility(View.GONE);
-                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
+                transparentLayer.setVisibility(View.GONE);
 
 
             }
@@ -473,32 +368,33 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
     }
 
 
-    public void getRestaurantListAgainstSpeciality(String speciality){
+    public void getRestaurantListAgainstSpeciality(String speciality) {
 
-        datalist = new ArrayList<>();
 
-        String lat = sharedPreferences.getString(PreferenceClass.LATITUDE,"");
-        String lon = sharedPreferences.getString(PreferenceClass.LONGITUDE,"");
+        String lat = sharedPreferences.getString(PreferenceClass.LATITUDE, "");
+        String lon = sharedPreferences.getString(PreferenceClass.LONGITUDE, "");
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("lat",lat);
-            jsonObject.put("long",lon);
-            jsonObject.put("user_id",user_id);
-            jsonObject.put("speciality",speciality);
+            jsonObject.put("lat", lat);
+            jsonObject.put("long", lon);
+            jsonObject.put("user_id", userId);
+            jsonObject.put("speciality", speciality);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, false);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_REST_AGAINST_SPECIALITY, jsonObject, new Callback() {
+        datalist.clear();
+
+        ApiRequest.callApi(context, Config.SHOW_REST_AGAINST_SPECIALITY, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -515,87 +411,18 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
 
                             JSONObject json1 = jsonarray.getJSONObject(i);
 
-                            JSONObject jsonObjRestaurant = json1.getJSONObject("Restaurant");
-                            JSONObject jsonObjCurrency = json1.getJSONObject("Currency");
-                            String symbol = jsonObjCurrency.optString("symbol");
-                            JSONObject jsonObjTax = json1.getJSONObject("Tax");
-                            JSONObject jsonObjRating = null;
-                            try {
-                                jsonObjRating = json1.getJSONObject("TotalRatings");
-                            } catch (JSONException ignored) {
-                                ignored.getCause();
-                            }
-
-                            JSONObject jsonObjDistance = json1.getJSONObject("0");
-                             String distance = jsonObjDistance.optString("distance");
-                            RestaurantsModel RestaurantObj = new RestaurantsModel();
-                            RestaurantObj.restaurant_name=jsonObjRestaurant.optString("name");
-                            RestaurantObj.restaurant_salgon=jsonObjRestaurant.optString("slogan");
-                            RestaurantObj.restaurant_about=jsonObjRestaurant.optString("about");
-                            RestaurantObj.restaurant_fee=symbol + jsonObjRestaurant.optString("delivery_fee");
-                            RestaurantObj.restaurant_image=jsonObjRestaurant.optString("image");
-                            RestaurantObj.restaurant_id=jsonObjRestaurant.optString("id");
-                            RestaurantObj.restaurant_phone=jsonObjRestaurant.optString("phone");
-                            RestaurantObj.restaurant_cover=jsonObjRestaurant.optString("cover_image");
-                            RestaurantObj.restaurant_isFav=jsonObjRestaurant.optString("favourite");
-                            RestaurantObj.promoted=jsonObjRestaurant.optString("promoted");
-                            RestaurantObj.preparation_time=jsonObjRestaurant.optString("preparation_time");
-                            String distanceKM = String.valueOf(new DecimalFormat("##.#").format(Double.parseDouble(distance) * 1.6)) + " KM";
-                            RestaurantObj.restaurant_distance=distanceKM;
-
-                            if (jsonObjRating == null) {
-
-                                RestaurantObj.restaurant_avgRating="0.00";
-                                RestaurantObj.restaurant_totalRating="0.00";
-                            } else {
-                                RestaurantObj.restaurant_avgRating=jsonObjRating.optString("avg");
-                            }
-                            RestaurantObj.restaurant_currency=jsonObjCurrency.optString("symbol");
-                            RestaurantObj.restaurant_tax=jsonObjTax.optString("tax");
-                            String tax = jsonObjTax.optString("tax");
-                            RestaurantObj.delivery_fee_per_km=jsonObjTax.optString("delivery_fee_per_km");
-                            RestaurantObj.deliveryTime=jsonObjTax.getString("delivery_time");
-                            RestaurantObj.min_order_price=jsonObjRestaurant.optString("min_order_price");
-                            RestaurantObj.restaurant_menu_style=jsonObjRestaurant.optString("menu_style");
-                            RestaurantObj.deliveryFee_Range=jsonObjRestaurant.optString("delivery_free_range");
-
-                            datalist.add(RestaurantObj);
+                            datalist.add(DataParser.Pasrse_Restaurent(json1));
                         }
 
-                        if (datalist != null) {
-
-                            recyclerViewadapter = new RestaurantsAdapter(datalist, getContext());
-                            restaurant_recycler_view.setAdapter(recyclerViewadapter);
-                            recyclerViewadapter.notifyDataSetChanged();
-
-                            recyclerViewadapter.setOnItemClickListner(new OnItemClickListner() {
-                                @Override
-                                public void OnItemClicked(View view, final int position) {
-
-                                         RestaurantsModel model = datalist.get(position);
-
-                                        Fragment restaurantMenuItemsFragment = new RestaurantMenuItemsFragment();
-                                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                        transaction.setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left, R.anim.in_from_left, R.anim.out_to_right);
-                                        Bundle bundle=new Bundle();
-                                        bundle.putSerializable("data",model);
-                                        restaurantMenuItemsFragment.setArguments(bundle);
-                                        transaction.addToBackStack(null);
-                                        transaction.add(R.id.RestaurantsFragment, restaurantMenuItemsFragment, "parent").commit();
-
-                                    }
-                            });
-
-                        }
-
+                        adapter.notifyDataSetChanged();
 
                     }
-                } catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
             }
@@ -605,19 +432,18 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
     }
 
 
-
     private void initPager(final View v) {
 
         ImagesArray = new ArrayList<ImageSliderModel>();
-         ApiRequest.Call_Api(context, Config.SHOW_SLIDER, null, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_SLIDER, null, new Callback() {
             @Override
-            public void Responce(String resp) {
-                 try {
+            public void onResponce(String resp) {
+                try {
                     JSONObject jsonResponse = new JSONObject(resp);
 
-                    int code_id  = Integer.parseInt(jsonResponse.optString("code"));
+                    int code_id = Integer.parseInt(jsonResponse.optString("code"));
 
-                    if(code_id == 200) {
+                    if (code_id == 200) {
 
                         JSONObject json = new JSONObject(jsonResponse.toString());
                         JSONArray jsonarray = json.getJSONArray("msg");
@@ -635,9 +461,8 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
 
                         try {
                             pageIndicatorView.setCount(ImagesArray.size());
-                            mPager.setAdapter(new SlidingImageAdapter(getContext(),ImagesArray));
-                        }
-                        catch (NullPointerException e){
+                            mPager.setAdapter(new SlidingImageAdapter(getContext(), ImagesArray));
+                        } catch (NullPointerException e) {
                             e.getCause();
                         }
 
@@ -649,23 +474,21 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
 
                                 @Override
                                 public void run() {
-                                    if((currentPage+1)>ImagesArray.size() ){
-                                        currentPage=0;
-                                    }else{
+                                    if ((currentPage + 1) > ImagesArray.size()) {
+                                        currentPage = 0;
+                                    } else {
                                         currentPage++;
                                     }
                                     mPager.setCurrentItem(currentPage);
-                                    handler.postDelayed(timeCounter, 5*1000);
+                                    handler.postDelayed(timeCounter, 5 * 1000);
 
                                 }
                             };
                             handler.post(timeCounter);
 
-                        }
-                        catch (IllegalStateException e){
+                        } catch (IllegalStateException e) {
                             e.getCause();
                         }
-
 
 
                     }
@@ -679,78 +502,64 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
 
     }
 
-    private void search(final androidx.appcompat.widget.SearchView searchView, final View v) {
+    private void search() {
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+
+        searchEdit.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
 
-                if (newText.length() > 0) {
-                    // Search
-                    if (recyclerViewadapter != null)
-                        recyclerViewadapter.getFilter().filter(newText);
+                    if (adapter != null)
+                        adapter.getFilter().filter(s);
 
 
                     RelativeLayout.LayoutParams parms =
-                            new RelativeLayout.LayoutParams(0,0);
+                            new RelativeLayout.LayoutParams(0, 0);
                     recyclerHeader.setLayoutParams(parms);
 
+                } else {
 
-                }
-
-                else {
                     RelativeLayout.LayoutParams parms =
-                            new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,AllConstants.height/3);
+                            new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, AllConstants.height / 3);
                     recyclerHeader.setLayoutParams(parms);
 
-
-
-                    if (recyclerViewadapter != null) {
-                        recyclerViewadapter.setmFilteredList(datalist);
-                        recyclerViewadapter.notifyDataSetChanged();
-                    }
+                    adapter.notifyDataSetChanged();
                 }
 
+            }
 
-                return true;
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
+
+
     }
 
 
-    public void recyclerWithHeader(View view){
+    public void recyclerWithHeader(View view) {
 
-        restaurant_recycler_view = view.findViewById(R.id.restaurant_recycler_view);
+        recyclerView = view.findViewById(R.id.restaurant_recycler_view);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
-        recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-
-        restaurant_recycler_view.setLayoutManager(recyclerViewlayoutManager);
 
         recyclerHeader = (RecyclerViewHeader) view.findViewById(R.id.header);
-        recyclerHeader.attachTo(restaurant_recycler_view);
+        recyclerHeader.attachTo(recyclerView);
 
         RelativeLayout.LayoutParams parms =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,AllConstants.height/3);
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, AllConstants.height / 3);
         recyclerHeader.setLayoutParams(parms);
 
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 
 
     @Override
@@ -774,17 +583,14 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
     @Override
     public void onPause() {
         super.onPause();
-
         handler.removeCallbacks(timeCounter);
-
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if(MapsActivity.SAVE_LOCATION) {
+        if (MapsActivity.SAVE_LOCATION) {
 
             lat = sharedPreferences.getString(PreferenceClass.LATITUDE, "");
             lon = sharedPreferences.getString(PreferenceClass.LONGITUDE, "");
@@ -794,22 +600,22 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
             locationAddress = getAddress(Double.parseDouble(lat), Double.parseDouble(lon));
             if (locationAddress != null) {
 
-                String city="";
-                if(locationAddress.getLocality()!=null && !locationAddress.getLocality().equals("null"))
-                    city = ""+locationAddress.getLocality();
+                String city = "";
+                if (locationAddress.getLocality() != null && !locationAddress.getLocality().equals("null"))
+                    city = "" + locationAddress.getLocality();
 
-                String country="";
-                if(locationAddress.getCountryName()!=null && !locationAddress.getCountryName().equals("null"))
-                    country = ""+locationAddress.getCountryName();
+                String country = "";
+                if (locationAddress.getCountryName() != null && !locationAddress.getCountryName().equals("null"))
+                    country = "" + locationAddress.getCountryName();
 
 
                 String address = city + " " + country;
 
-                title_city_tv.setText(address);
+                titleCityTv.setText(address);
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(PreferenceClass.CURRENT_LOCATION_ADDRESS, address).commit();
-                getRestaurantList();
+                getrestaurantlist();
                 MapsActivity.SAVE_LOCATION = false;
 
 
@@ -820,26 +626,14 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
-
-
-    public Address getAddress(double latitude, double longitude)
-    {
+    public Address getAddress(double latitude, double longitude) {
         Geocoder geocoder;
         List<Address> addresses;
         geocoder = new Geocoder(getContext(), Locale.getDefault());
 
         try {
-            addresses = geocoder.getFromLocation(latitude,longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             return addresses.get(0);
 
         } catch (IOException e) {
@@ -850,254 +644,56 @@ public class RestaurantsFragment extends RootFragment implements GoogleApiClient
 
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void addFavoriteRestaurant(int pos,String res_id){
 
-    }
+        final String user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
+        JSONObject jsonObject = new JSONObject();
 
-    @Override
-    public void onConnectionSuspended(int i) {
+        try {
+            jsonObject.put("user_id",user_id);
+            jsonObject.put("restaurant_id",res_id);
+            jsonObject.put("favourite","1");
 
-    }
-
-
-
-    public class RestaurantsAdapter extends RecyclerView.Adapter<RestuarentsViewHolder> implements Filterable {
-
-        ArrayList<RestaurantsModel> getDataAdapter;
-        private ArrayList<RestaurantsModel> mFilteredList;
-        Context context;
-        ImageLoader imageLoader1;
-        OnItemClickListner onItemClickListner;
-        SharedPreferences sharedPreferences;
-
-
-        public RestaurantsAdapter(ArrayList<RestaurantsModel> getDataAdapter, Context context){
-            super();
-            this.getDataAdapter = getDataAdapter;
-            this.mFilteredList = getDataAdapter;
-            this.context = context;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        public ArrayList<RestaurantsModel> getmFilteredList() {
-            return mFilteredList;
-        }
+        Functions.showLoader(context,false,false);
+        ApiRequest.callApi(context, Config.ADD_FAV_RESTAURANT, jsonObject, new Callback() {
+            @Override
+            public void onResponce(String resp) {
 
-        public void setmFilteredList(ArrayList<RestaurantsModel> mFilteredList) {
-            this.mFilteredList = mFilteredList;
-        }
+                Functions.cancelLoader();
 
-        @Override
-        public RestuarentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = null;
+                try {
+                    JSONObject  converResponseToJson = new JSONObject(resp);
 
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_items_restaurants, parent, false);
-
-            RestuarentsViewHolder viewHolder = new RestuarentsViewHolder(v);
-
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(final RestuarentsViewHolder holder, final int position) {
-
-            final RestaurantsModel getDataAdapter1 =  getmFilteredList().get(position);
-
-            sharedPreferences = context.getSharedPreferences(PreferenceClass.user,Context.MODE_PRIVATE);
-            imageLoader1 = ServerImageParseAdapter.getInstance(context).getImageLoader();
-
-            holder.favorite_icon.setTag(getDataAdapter1);
-            RestaurantsModel checkWetherToShow=(RestaurantsModel)holder.favorite_icon.getTag();
-
-
-            Uri uri = Uri.parse(Config.imgBaseURL+getDataAdapter1.restaurant_image);
-            holder.restaurant_img.setImageURI(uri);
-
-            holder.title_restaurants.setText(getDataAdapter1.restaurant_name.trim());
-
-
-
-            String symbol = getDataAdapter1.restaurant_currency;
-            holder.salogon_restaurants.setText(getDataAdapter1.restaurant_salgon.trim());
-            holder.baked_time_tv.setText(getDataAdapter1.preparation_time+ " min");
-            holder.item_delivery_time_tv.setText(getDataAdapter1.deliveryTime+" min");
-
-            holder.ratingBar.setRating(Float.parseFloat(getDataAdapter1.restaurant_avgRating));
-
-            if(getDataAdapter1.min_order_price.equalsIgnoreCase("0.00")){
-                holder.item_time_tv.setText(symbol + " " + getDataAdapter1.delivery_fee_per_km + " /km");
-            }
-            else {
-                holder.item_time_tv.setText(symbol + " " + getDataAdapter1.delivery_fee_per_km+ " /km- Free over" + " " + symbol + " " + getDataAdapter1.min_order_price);
-
-            }
-
-            if (checkWetherToShow.restaurant_isFav.equalsIgnoreCase("1")){
-                holder.favorite_icon.setImageResource(R.drawable.ic_heart_filled);
-            }
-            else {
-                holder.favorite_icon.setImageResource(R.drawable.ic_heart_not_filled);
-            }
-
-            String getPromotedString = getDataAdapter1.promoted;
-
-            if (getPromotedString.equalsIgnoreCase("1"))
-            {
-                holder.featured.setVisibility(View.VISIBLE);
-            }
-            else {
-                holder.featured.setVisibility(View.GONE);
-            }
-
-            holder.distanse_restaurants.setText(getDataAdapter1.restaurant_distance);
-
-            holder.restaurant_row_main.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if (onItemClickListner !=null){
-                        int position = holder.getAdapterPosition();
-                        String name = mFilteredList.get(position).restaurant_id;
-                        for (int i=0 ; i <getDataAdapter.size() ; i++ ){
-                            if(name.equals(getDataAdapter.get(i).restaurant_id)){
-                                position = i;
-                                break;
-                            }
-                        }
-                        if (position != RecyclerView.NO_POSITION) {
-                            onItemClickListner.OnItemClicked(view,position);
-                        }
-                    }
-                }
-            });
-
-
-            holder.favorite_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                     boolean getLoINSession = sharedPreferences.getBoolean(PreferenceClass.IS_LOGIN,false);
-                    if(!getLoINSession){}
-                    else {
-                        addFavoriteRestaurant(getDataAdapter1.restaurant_id);
+                    int code_id  = Integer.parseInt(converResponseToJson.optString("code"));
+                    if(code_id == 200) {
+                       RestaurantsModel item=datalist.get(pos);
+                       if(item.restaurant_isFav.equals("0")){
+                           item.restaurant_isFav="1";
+                       }
+                       else {
+                           item.restaurant_isFav="0";
+                       }
+                       datalist.remove(pos);
+                       datalist.add(pos,item);
+                       adapter.notifyDataSetChanged();
 
                     }
 
-                }
-            });
-
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            if (position == 0)
-                return 1;
-            else
-                return 2;
-        }
-
-        @Override
-        public int getItemCount() {
-            return mFilteredList.size() ;
-        }
-
-
-
-        @Override
-        public Filter getFilter() {
-
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence charSequence) {
-                    String charString = charSequence.toString();
-                    if (charString.isEmpty()) {
-                        mFilteredList = getDataAdapter;
-                    } else {
-                        ArrayList<RestaurantsModel> filteredList = new ArrayList<>();
-                        for (RestaurantsModel row : getDataAdapter) {
-
-                              if (row.restaurant_name.toLowerCase().contains(charString.toLowerCase())) {
-                                filteredList.add(row);
-                            }
-                        }
-
-                        mFilteredList = filteredList;
-                    }
-
-                    FilterResults filterResults = new FilterResults();
-                    filterResults.values = mFilteredList;
-                    return filterResults;
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-                @Override
-                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                    mFilteredList = (ArrayList<RestaurantsModel>) filterResults.values;
-                    notifyDataSetChanged();
-                }
-            };
 
-        }
-
-
-        public void setOnItemClickListner(OnItemClickListner onCardClickListner) {
-            this.onItemClickListner = onCardClickListner;
-        }
-
-
-
-        public void addFavoriteRestaurant(String res_id){
-
-            String user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
-
-            JSONObject jsonObject = new JSONObject();
-
-            try {
-                jsonObject.put("user_id",user_id);
-                jsonObject.put("restaurant_id",res_id);
-                jsonObject.put("favourite","1");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
-
-            TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-            transparent_layer.setVisibility(View.VISIBLE);
-            progressDialog.setVisibility(View.VISIBLE);
-
-            ApiRequest.Call_Api(context, Config.ADD_FAV_RESTAURANT, jsonObject, new Callback() {
-                @Override
-                public void Responce(String resp) {
-
-                    TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                    transparent_layer.setVisibility(View.GONE);
-                    progressDialog.setVisibility(View.GONE);
-
-                    try {
-                        JSONObject  converResponseToJson = new JSONObject(resp);
-
-                        int code_id  = Integer.parseInt(converResponseToJson.optString("code"));
-                        if(code_id == 200) {
-                            getRestaurantList();
-                            notifyDataSetChanged();
-
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
-            });
-
-
-        }
-
+        });
 
     }
 
-    public interface OnItemClickListner {
-        void OnItemClicked(View view, int position);
-    }
+
 
 }

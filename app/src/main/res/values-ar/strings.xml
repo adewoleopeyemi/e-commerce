@@ -190,4 +190,70 @@
     <string name="you_have_to_need_more">"يجب أن تحتاج إلى المزيد"</string>
     <string name="for_free_delivery_order">" لطلب توصيل مجاني."</string>
     <string name="checkout">الدفع</string>
+
+
+    <string name="dark_mode">Dark Mode</string>
+    <string name="wrong_data_enter_please_try_again">Wrong data enter! Please check again</string>
+    <string name="delivery_address_or_payment_method_is_missing">Delivery Address OR Payment Method is Missed</string>
+    <string name="profile_update_successfully">Profile updated successfully</string>
+    <string name="please_enter_email">Please enter Email!</string>
+    <string name="please_enter_password">Please enter password!</string>
+    <string name="enter_password_atleast_characters">Enter Password Atleast 6 Charaters!</string>
+    <string name="enter_valid_email">Enter valid email!</string>
+    <string name="tab_again_to_exit">Tap Again To Exit</string>
+    <string name="password_sent_to_given_email">Password sent to your given email</string>
+    <string name="your_email_is_not_correct">Your email is not correct</string>
+    <string name="reset_the_password">Reset the Password</string>
+    <string name="your_code_is_not_correct">Your Code is not correct</string>
+    <string name="password_rest_successfully">Password Reset Successfully</string>
+    <string name="password_rest_fail">Password Reset Fail</string>
+    <string name="please_enter_the_email">Please enter the email</string>
+    <string name="please_enter_the_code">Please enter the Code</string>
+    <string name="please_enter_the_password">Please enter the Password</string>
+    <string name="please_enter_the_confirm_password">Please enter the Confirm Password</string>
+    <string name="new_password_and_confirm_password_not_match">New Password and Confirm password not match</string>
+    <string name="please_select_your_rating_star">Please select your rating star</string>
+    <string name="entry_country">Enter Country!</string>
+    <string name="enter_contact_number">Enter Contact Number!</string>
+    <string name="enter_first_name">Enter First Name!</string>
+    <string name="enter_last_name">Enter Last Name!</string>
+    <string name="enter_email">Enter Email!</string>
+
+
+
+    <string name="canecl_order">الغاء الطلب</string>
+    <string name="tap_again">اضغط مرة أخرى</string>
+    <string name="type_your_message_here">اكتب رسالتك هنا</string>
+    <string name="support">دردشة</string>
+    <string name="slide_to_cancel">حرك للإلغاء</string>
+    <string name="take_photo">تصوير</string>
+    <string name="choose_photo_from_gallery">اختر صورة من المعرض</string>
+    <string name="copy">نسخ</string>
+    <string name="delete_this_message">احذف هذه الرسالة</string>
+    <string name="camera_denied">رفضت الكاميرا</string>
+    <string name="not_found">لم يتم العثور على</string>
+    <string name="seen_at">شوهد في</string>
+    <string name="sent">أرسلت</string>
+    <string name="not_delivered">لم يتم تسليمها</string>
+    <string name="this_message_was_deleted">تم حذف هذه الرسالة</string>
+    <string name="click_again">انقر مرة أخرى</string>
+    <string name="something_went_wrong">هناك خطأ ما</string>
+    <string name="enable_location">تمكن موقع</string>
+    <string name="you_ll_need_to_enable_your_location_n_in_order_to_use_binder">سوف تحتاج إلى تمكين موقعك \ n من أجل استخدام Foodies</string>
+    <string name="allow_location">السماح بالموقع</string>
+    <string name="order_delivered">أجل تسليم</string>
+    <string name="your_order_has_been_delivered">تم تسليم طلبك</string>
+    <string name="on_the_way_to_dropoff_location">في الطريق إلى موقع الإنزال</string>
+    <string name="rider_is_going_to_dropoff_location">رايدر ذاهب إلى موقع الإنزال</string>
+    <string name="order_picked">ترتيب منتقى</string>
+    <string name="your_order_has_been_picked_up">تم التقاط طلبك</string>
+    <string name="on_the_way_to_pickup_location">في الطريق إلى موقع الالتقاط</string>
+    <string name="rider_is_going_to_pickup_your_order">رايدر سوف يستلم طلبك</string>
+    <string name="order_created">أجل خلق</string>
+    <string name="your_order_has_been_placed">وقد وضعت طلبك</string>
+    <string name="rider_has_no_number">لم يسجل رايدر أي رقم هاتف!</string>
+    <string name="hello_blank_fragment">مرحبا جزء فارغ</string>
+    <string name="delivery_details">تفاصيل التسليم</string>
+    <string name="optional_rider_instructions">(اختياري) إرشادات الراكب</string>
+
 </resources>

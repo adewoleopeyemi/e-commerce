@@ -17,16 +17,14 @@ import java.util.ArrayList;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	Context context;
-	ArrayList<MenuItemModel>ListTerbaru;
-	ArrayList<ArrayList<MenuItemExtraModel>> ListChildTerbaru;
+	ArrayList<MenuItemModel> listTerbaru;
+	ArrayList<ArrayList<MenuItemExtraModel>> listChildTerbaru;
 	int count;
 
 	public ExpandableListAdapter (Context context, ArrayList<MenuItemModel>ListTerbaru, ArrayList<ArrayList<MenuItemExtraModel>> ListChildTerbaru){
 		this.context=context;
-		this.ListTerbaru=ListTerbaru;
-		this.ListChildTerbaru=ListChildTerbaru;
-//      this.count=ListTerbaru.size();
-//      this.count=ListChildTerbaru.size();
+		this.listTerbaru =ListTerbaru;
+		this.listChildTerbaru =ListChildTerbaru;
 	}
 	@Override
 	public boolean areAllItemsEnabled()
@@ -37,7 +35,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public MenuItemExtraModel getChild(int groupPosition, int childPosition) {
-		return ListChildTerbaru.get(groupPosition).get(childPosition);
+		return listChildTerbaru.get(groupPosition).get(childPosition);
 	}
 
 	@Override
@@ -73,17 +71,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	}
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return ListChildTerbaru.get(groupPosition).size();
+		return listChildTerbaru.get(groupPosition).size();
 	}
 
 	@Override
 	public MenuItemModel getGroup(int groupPosition) {
-		return ListTerbaru.get(groupPosition);
+		return listTerbaru.get(groupPosition);
 	}
 
 	@Override
 	public int getGroupCount() {
-		return ListTerbaru.size();
+		return listTerbaru.size();
 	}
 
 	@Override

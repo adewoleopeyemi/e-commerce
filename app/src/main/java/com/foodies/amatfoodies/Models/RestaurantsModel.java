@@ -3,7 +3,7 @@ package com.foodies.amatfoodies.Models;
 import java.io.Serializable;
 
 /**
- * Created by qboxus on 12/20/2017.
+ * Created by foodies on 12/20/2017.
  */
 
 public class RestaurantsModel implements Serializable {
@@ -22,12 +22,13 @@ public class RestaurantsModel implements Serializable {
     public String  restaurant_distance= "";
     public String  restaurant_currency= "";
     public String  restaurant_tax= "";
-    public String deliveryTime = "";
-    public String deliveryFee_Range;
-    public String delivery_fee_per_km,min_order_price;
-    public String preparation_time = "";
-    public String promoted = "";
-
+    public String  deliveryTime = "";
+    public String  deliveryFee_Range;
+    public String  delivery_fee_per_km,min_order_price;
+    public String  preparation_time = "";
+    public String  promoted = "";
+    public String  lat="";
+    public String  lng="";
 
 
 }

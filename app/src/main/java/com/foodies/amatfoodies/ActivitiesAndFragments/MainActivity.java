@@ -18,27 +18,40 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
 
-import com.foodies.amatfoodies.Adapters.RestaurantsAdapter;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.foodies.amatfoodies.Constants.AllConstants;
+import com.foodies.amatfoodies.Constants.ApiRequest;
+import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
+import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Utils.ContextWrapper;
 import com.foodies.amatfoodies.Utils.NotificationUtils;
 import com.foodies.amatfoodies.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -47,20 +60,16 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
     private PagerMainActivity mCurrentFrag;
     public static Context context;
     private long mBackPressed;
     public static SharedPreferences sPre;
     public static boolean FLAG_MAIN;
-    public static RecyclerView.LayoutManager recyclerViewlayoutManager;
-    public static RestaurantsAdapter recyclerViewadapter;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
-
 
     SharedPreferences sharedPreferences;
 
@@ -70,6 +79,9 @@ public class MainActivity extends FragmentActivity {
         String[] language_array = newBase.getResources().getStringArray(R.array.language_code);
         List<String> language_code = Arrays.asList(language_array);
         sharedPreferences = newBase.getSharedPreferences(PreferenceClass.user, MODE_PRIVATE);
+
+        PreferenceClass.sharedPreferences = sharedPreferences;
+
         String language = sharedPreferences.getString(PreferenceClass.selected_language, "");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && language_code.contains(language)) {
@@ -77,6 +89,7 @@ public class MainActivity extends FragmentActivity {
             Context context = ContextWrapper.wrap(newBase, newLocale);
             super.attachBaseContext(context);
         }
+
         else {
             super.attachBaseContext(newBase);
         }
@@ -84,18 +97,25 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            set_language_local();
+
+
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+
+
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         FirebaseApp.initializeApp(getApplicationContext());
 
-        sPre = getSharedPreferences(PreferenceClass.user,MODE_PRIVATE);
+        sPre = getSharedPreferences(PreferenceClass.user, MODE_PRIVATE);
 
 
         FLAG_MAIN = true;
@@ -104,12 +124,12 @@ public class MainActivity extends FragmentActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        AllConstants.width= size.x;
+        AllConstants.width = size.x;
         AllConstants.height = size.y;
 
 
         mCurrentFrag = new PagerMainActivity();
-        if(mCurrentFrag!=null) {
+        if (mCurrentFrag != null) {
             getSupportFragmentManager().beginTransaction().add(R.id.main_container, mCurrentFrag).commit();
 
         }
@@ -119,10 +139,12 @@ public class MainActivity extends FragmentActivity {
             public void onReceive(Context context, Intent intent) {
 
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                     FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
 
 
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                }
+
+                else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
 
                     String message = intent.getStringExtra("message");
 
@@ -134,20 +156,27 @@ public class MainActivity extends FragmentActivity {
             }
         };
 
+        Log.d(AllConstants.tag,"onCreateCall");
+
+        if(AllConstants.ISShowAd)
+        callAddHandler();
+
 
         printKeyHash();
+
+        getPublicIP();
 
     }
 
 
-    public void set_language_local(){
-        String [] language_array=getResources().getStringArray(R.array.language_code);
-        List <String> language_code= Arrays.asList(language_array);
+    public void set_language_local() {
+        String[] language_array = getResources().getStringArray(R.array.language_code);
+        List<String> language_code = Arrays.asList(language_array);
 
-        String language=sharedPreferences.getString(PreferenceClass.selected_language,"");
+        String language = sharedPreferences.getString(PreferenceClass.selected_language, "");
 
 
-        if(language_code.contains(language)) {
+        if (language_code.contains(language)) {
             Locale myLocale = new Locale(language);
             Resources res = getResources();
             DisplayMetrics dm = res.getDisplayMetrics();
@@ -157,7 +186,6 @@ public class MainActivity extends FragmentActivity {
             onConfigurationChanged(conf);
 
         }
-
 
 
     }
@@ -172,7 +200,7 @@ public class MainActivity extends FragmentActivity {
                     super.onBackPressed();
                     return;
                 } else {
-                    Toast.makeText(getBaseContext(), "Tap Again To Exit", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.tab_again_to_exit, Toast.LENGTH_SHORT).show();
 
                     mBackPressed = System.currentTimeMillis();
 
@@ -190,12 +218,14 @@ public class MainActivity extends FragmentActivity {
 
         if (requestCode == RestaurantMenuItemsFragment.PERMISSION_DATA_CART_ADED) {
 
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 Intent intent = new Intent();
                 intent.setAction("AddToCart");
                 sendBroadcast(intent);
                 SearchFragment.FLAG_COUNTRY_NAME = true;
             }
+        } else if (requestCode == AllConstants.Request_code_Location) {
+            checkLocationStatus();
         }
     }
 
@@ -208,9 +238,22 @@ public class MainActivity extends FragmentActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.REGISTRATION_COMPLETE));
 
-         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION));
-         NotificationUtils.clearNotifications(getApplicationContext());
+        NotificationUtils.clearNotifications(getApplicationContext());
+
+
+        checkLocationStatus();
+
+    }
+
+
+    private void checkLocationStatus() {
+
+        if (!Functions.checkLocationStatus(this)) {
+            startActivityForResult(new Intent(this, Enable_location_A.class), AllConstants.Request_code_Location);
+
+        }
 
     }
 
@@ -222,14 +265,13 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-    public void printKeyHash()  {
+    public void printKeyHash() {
         try {
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName() , PackageManager.GET_SIGNATURES);
-            for(Signature signature:info.signatures)
-            {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-                Log.i("keyhash" , Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                Log.i("keyhash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -239,8 +281,8 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-    private void sendMyNotification(String message) {
-        //On click of notification it redirect to this Activity
+    public void sendMyNotification(String message) {
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -255,10 +297,10 @@ public class MainActivity extends FragmentActivity {
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"channel-01");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel-01");
         builder.setSmallIcon(R.drawable.app_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_icon))
-                .setColor(ContextCompat.getColor(this,R.color.colorRed))
+                .setColor(ContextCompat.getColor(this, R.color.colorRed))
                 .setContentTitle(getResources().getString(R.string.app_name))
                 .setContentIntent(pendingIntent)
                 .setContentText(String.format(message))
@@ -269,6 +311,111 @@ public class MainActivity extends FragmentActivity {
         notificationManager.notify(0, builder.build());
 
     }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Remove_CallBack();
+    }
+
+    Handler handler;
+    Runnable runnable;
+    public void callAddHandler(){
+        if(handler!=null && runnable!=null)
+            handler.removeCallbacks(runnable);
+
+        runnable=new Runnable() {
+            @Override
+            public void run() {
+                Load_Add();
+            }
+        };
+        handler=new Handler();
+        handler.postDelayed(runnable,3000);
+    }
+
+    public void Remove_CallBack(){
+        if(handler!=null && runnable!=null)
+            handler.removeCallbacks(runnable);
+
+    }
+
+    private InterstitialAd mInterstitialAd;
+
+    public void Load_Add() {
+
+        //code for intertial add
+        if(mInterstitialAd==null) {
+            mInterstitialAd = new InterstitialAd(context);
+            //here we will get the add id keep in mind above id is app id and below Id is add Id
+            mInterstitialAd.setAdUnitId(getResources().getString(R.string.my_Interstitial_Add));
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+
+                }
+
+                @Override
+                public void onAdLoaded() {
+                    mInterstitialAd.setAdListener(null);
+                    mInterstitialAd.show();
+                }
+            });
+        }
+    }
+
+
+    public void getPublicIP() {
+        ApiRequest.Call_Api_GetRequest(this, "https://api.ipify.org/?format=json", new Callback() {
+            @Override
+            public void onResponce(String resp) {
+                try {
+
+                    JSONObject responce = new JSONObject(resp);
+                    String ip = responce.optString("ip");
+
+                    addFirebaseTokon(ip);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void addFirebaseTokon(String ip) {
+
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        String token = task.getResult();
+                        PreferenceClass.getSharedPreference(MainActivity.this).edit().putString(PreferenceClass.device_token, token).commit();
+
+                        JSONObject params = new JSONObject();
+                        try {
+                            params.put("user_id", PreferenceClass.getSharedPreference(MainActivity.this).getString(PreferenceClass.pre_user_id, ""));
+                            params.put("device", getString(R.string.device));
+                            params.put("version", getString(R.string.version));
+                            params.put("ip", "" + ip);
+                            params.put("device_token", token);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        ApiRequest.callApi(MainActivity.this, Config.addDeviceData, params, null);
+
+                    }
+                });
+    }
+
 
 }
 

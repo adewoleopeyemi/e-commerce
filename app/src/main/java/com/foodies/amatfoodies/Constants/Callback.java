@@ -6,5 +6,5 @@ package com.foodies.amatfoodies.Constants;
 
 public interface Callback {
 
-    void Responce(String resp);
+    void onResponce(String resp);
 }

@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by Dinosoftlabs on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class MapStateManager {

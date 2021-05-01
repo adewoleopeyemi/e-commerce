@@ -15,19 +15,19 @@ import com.foodies.amatfoodies.R;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class CartFragExpandable  extends BaseExpandableListAdapter {
 
     Context context;
-    ArrayList<CartFragParentModel> ListTerbaru;
-    ArrayList<ArrayList<CartFragChildModel>> ListChildTerbaru;
+    ArrayList<CartFragParentModel> listTerbaru;
+    ArrayList<ArrayList<CartFragChildModel>> listchildterbaru;
 
-    public CartFragExpandable (Context context, ArrayList<CartFragParentModel>ListTerbaru, ArrayList<ArrayList<CartFragChildModel>> ListChildTerbaru){
+    public CartFragExpandable (Context context, ArrayList<CartFragParentModel>ListTerbaru, ArrayList<ArrayList<CartFragChildModel>> listchildterbaru){
         this.context=context;
-        this.ListTerbaru=ListTerbaru;
-        this.ListChildTerbaru=ListChildTerbaru;
+        this.listTerbaru =ListTerbaru;
+        this.listchildterbaru = listchildterbaru;
 
     }
     @Override
@@ -39,7 +39,7 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
 
     @Override
     public CartFragChildModel getChild(int groupPosition, int childPosition) {
-        return ListChildTerbaru.get(groupPosition).get(childPosition);
+        return listchildterbaru.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.row_item_cart_child, null);
 
             holder=new CartFragExpandable.ViewHolder();
-            holder.item_detail_tv = (TextView)convertView.findViewById(R.id.item_detail_tv);
+            holder.itemDetailTv = (TextView)convertView.findViewById(R.id.item_detail_tv);
 
             convertView.setTag(holder);
         }
@@ -74,14 +74,15 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
         String name = childTerbaru.getName();
         String price = childTerbaru.getPrice();
         String symbol = childTerbaru.getSymbol();
-        holder.item_detail_tv.setText(quantity+"x "+name+" + "+symbol+price);
+        holder.itemDetailTv.setText(quantity+"x "+name+" + "+symbol+price);
 
         return convertView;
     }
+
     @Override
     public int getChildrenCount(int groupPosition) {
-        if(ListChildTerbaru.get(groupPosition).size() != 0){
-            return ListChildTerbaru.get(groupPosition).size();
+        if(listchildterbaru.get(groupPosition).size() != 0){
+            return listchildterbaru.get(groupPosition).size();
         }
         return 0;
 
@@ -89,12 +90,12 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
 
     @Override
     public CartFragParentModel getGroup(int groupPosition) {
-        return ListTerbaru.get(groupPosition);
+        return listTerbaru.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return ListTerbaru.size();
+        return listTerbaru.size();
     }
 
     @Override
@@ -111,12 +112,9 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.row_item_cart_parent, null);
 
-         /*   ExpandableListView mExpandableListView = (ExpandableListView) parent;
-            mExpandableListView.expandGroup(groupPosition);*/
-
             holder=new CartFragExpandable.ViewHolder();
-            holder.name_tv=(TextView)convertView.findViewById(R.id.name_tv);
-            holder.price_tv = (TextView)convertView.findViewById(R.id.price_tv);
+            holder.nameTv =(TextView)convertView.findViewById(R.id.name_tv);
+            holder.priceTv = (TextView)convertView.findViewById(R.id.price_tv);
 
             convertView.setTag(holder);
 
@@ -130,8 +128,8 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
         String price = terbaruModel.getItem_price();
         String symbol = terbaruModel.getItem_symbol();
 
-        holder.name_tv.setText(name+" x"+quantity);
-        holder.price_tv.setText(symbol+price);
+        holder.nameTv.setText(name+" x"+quantity);
+        holder.priceTv.setText(symbol+price);
 
         return convertView;
     }
@@ -147,7 +145,7 @@ public class CartFragExpandable  extends BaseExpandableListAdapter {
     }
 
     static class ViewHolder{
-        TextView name_tv,price_tv,item_detail_tv;
+        TextView nameTv, priceTv, itemDetailTv;
     }
 
 

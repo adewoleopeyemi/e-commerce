@@ -11,31 +11,30 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp">
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height">
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/title_tv"
             android:layout_centerInParent="true"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/bg_top_color"
             android:textSize="15sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="18dp"
             android:id="@+id/filter_search"
             android:layout_centerVertical="true"
             android:paddingStart="25dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/filter_colored"
+            android:src="@drawable/filter"
             />
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,13 +49,13 @@
             android:layout_below="@+id/toolbar_sign_in"
             android:id="@+id/order_type_div"
             android:visibility="gone"
-            android:background="@color/colorBG">
+            android:background="@color/colorBg">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pending Orders"
-                android:textColor="@color/or_color_name"
+                android:text="@string/pending_orders"
+                android:textColor="@color/color_light_black"
                 android:textSize="10sp"
                 android:layout_marginStart="15dp"
                 android:id="@+id/order_tv"
@@ -91,23 +90,21 @@
 
     </LinearLayout>
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar_div"
         android:id="@+id/no_job_div"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:visibility="gone"
-        android:background="@color/colorBG">
+        android:background="@color/colorBg">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/_120sdp"
             android:id="@+id/img_no_job"
             android:layout_centerInParent="true"
-            android:src="@drawable/no_job_today"
-            app:layout_widthPercent = "40%"
-            app:layout_heightPercent = "40%"/>
+            android:src="@drawable/no_job_today"/>
 
         <TextView
             android:layout_height="wrap_content"
@@ -116,6 +113,7 @@
             android:layout_centerHorizontal="true"
             android:text="@string/whoops"
             android:id="@+id/whoops"
+            android:textColor="@color/color_light_black"
             android:textSize="22sp"/>
 
         <TextView
@@ -127,9 +125,10 @@
             android:layout_marginStart="55dp"
             android:layout_marginEnd="55dp"
             android:text="@string/no_deal_text"
+            android:textColor="@color/color_light_black"
             android:textSize="14sp"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

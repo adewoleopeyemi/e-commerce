@@ -11,10 +11,10 @@ import android.os.Handler;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,6 +31,7 @@ import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.CalculationModel;
@@ -38,11 +39,11 @@ import com.foodies.amatfoodies.Models.CartChildModel;
 import com.foodies.amatfoodies.Models.CartParentModel;
 import com.foodies.amatfoodies.Models.RestaurantChildModel;
 import com.foodies.amatfoodies.Models.RestaurantsModel;
+import com.foodies.amatfoodies.Utils.ContextWrapper;
 import com.foodies.amatfoodies.Utils.CustomExpandableListView;
 import com.foodies.amatfoodies.Utils.FontHelper;
 
 import com.foodies.amatfoodies.R;
-import com.gmail.samehadar.iosdialog.CamomileSpinner;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,8 +57,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -66,27 +70,27 @@ import static com.foodies.amatfoodies.ActivitiesAndFragments.PagerMainActivity.t
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class AddToCartActivity extends AppCompatActivity {
 
-    ImageView clos_menu_items_detail;
-    Button increament_btn,decrement_btn;
-    TextView inc_dec_tv,grand_total_price_tv,total_price_tv,desc_tv,name_tv,cart_title_tv;
-    int present_count = 1;
+    ImageView closMenuItemsDetail;
+    Button increamentBtn, decrementBtn;
+    TextView incDecTv, grandTotalPriceTv, totalPriceTv, descTv, nameTv, cartTitleTv;
+    int presentCount = 1;
     SharedPreferences sPref;
 
     AddToCartExpandable listAdapter;
     CustomExpandableListView cartExpandableListView;
     ArrayList<CartParentModel> listDataHeader;
     ArrayList<CartChildModel> listChildData;
-    private ArrayList<ArrayList<CartChildModel>> ListChild;
-    String restaurant_menu_item_id;
+    private ArrayList<ArrayList<CartChildModel>> listChild;
+    String restaurantMenuItemId;
     DatabaseReference mDatabase;
-    private static FirebaseDatabase firebaseDatabase;
-    private  String userId,udid,key_,name_,desc,price_,symbol,res_id,res_name,res_tax,res_fee;
-    Double menuExtraItemObj,itemPrice,previousMenuObjPrice;
+    private FirebaseDatabase firebaseDatabase;
+    private  String userId,udid, key, name,desc, price,symbol, resId, resName, resTax, resFee;
+    Double menuExtraItemObj,itemPrice;
     int required = 0;
     Double totalExtraItemPrice,grandTotal;
 
@@ -96,51 +100,79 @@ public class AddToCartActivity extends AppCompatActivity {
 
     ArrayList<Integer> arrayList = new ArrayList<>();
 
-    public static boolean FLAG_ONCE_LOOP_ADD,FLAG_CART_ADD,FIRST_TIME_LOADER,WAS_IN_BG,IS_APP_OPEN;
+    public  boolean FLAG_ONCE_LOOP_ADD,FLAG_CART_ADD,FIRST_TIME_LOADER,WAS_IN_BG;
     String previousCheck;
-    RelativeLayout add_to_cart;
-    EditText inst_text;
-    public static TextView tab_badge,cart_btn_text;
-    String prev_rest_id;
-    CamomileSpinner progress;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout addToCart;
+    EditText instText;
+    public TextView tabBadge, cartBtnText;
+    String prevRestId;
     int showcartCount = 0;
-    String min_order_price, descFinal;
-    private static boolean UPDATE_CONFIRM;
+    String minOrderPrice, descFinal;
+    private boolean UPDATE_CONFIRM;
 
 
     RestaurantsModel rest_model;
     RestaurantChildModel rest_child_model;
 
+
+
+    SharedPreferences sharedPreferences;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+
+        if (new DarkModePrefManager(newBase).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        String[] language_array = newBase.getResources().getStringArray(R.array.language_code);
+        List<String> language_code = Arrays.asList(language_array);
+        sharedPreferences = newBase.getSharedPreferences(PreferenceClass.user, MODE_PRIVATE);
+
+        PreferenceClass.sharedPreferences = sharedPreferences;
+
+        String language = sharedPreferences.getString(PreferenceClass.selected_language, "");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && language_code.contains(language)) {
+            Locale newLocale = new Locale(language);
+            Context context = ContextWrapper.wrap(newBase, newLocale);
+            super.attachBaseContext(context);
+        } else {
+            super.attachBaseContext(newBase);
+        }
+
+    }
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
+
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_cart);
 
+
         View view = LayoutInflater.from(AddToCartActivity.this).inflate(R.layout.custom_tab, null);
-        tab_badge =  view.findViewById(R.id.tab_badge);
+        tabBadge =  view.findViewById(R.id.tab_badge);
 
-        progressDialog = findViewById(R.id.progressDialog);
-        transparent_layer = findViewById(R.id.transparent_layer);
 
-        progress = findViewById(R.id.addToCartProgress);
-        progress.start();
         sPref = getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
         udid = sPref.getString(PreferenceClass.UDID,"");
 
-
-        transparent_layer.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-
         if(UPDATE_NODE) {
-            key_ = getIntent().getStringExtra("key");
+            key = getIntent().getStringExtra("key");
         }
 
 
@@ -150,34 +182,30 @@ public class AddToCartActivity extends AppCompatActivity {
          rest_child_model=(RestaurantChildModel) intent.getSerializableExtra("rest_child_model");
         }
 
-        restaurant_menu_item_id = rest_child_model.restaurant_menu_item_id;
-        if(restaurant_menu_item_id==null){
-            transparent_layer.setVisibility(View.GONE);
-            progressDialog.setVisibility(View.GONE);
+        restaurantMenuItemId = rest_child_model.restaurant_menu_item_id;
 
-        }
 
-        name_ = rest_child_model.child_title;
+        name = rest_child_model.child_title;
         desc = rest_child_model.child_sub_title;
-        price_ = rest_child_model.price;
+        price = rest_child_model.price;
         symbol = rest_child_model.currency_symbol;
 
 
-        res_id = rest_model.restaurant_id;
-        res_name=rest_model.restaurant_name;
-        res_tax = rest_model.restaurant_tax;
+        resId = rest_model.restaurant_id;
+        resName =rest_model.restaurant_name;
+        resTax = rest_model.restaurant_tax;
 
-        if( res_tax==null||res_tax.equals("null"))
-            res_tax = "0";
-
-
+        if( resTax ==null|| resTax.equals("null"))
+            resTax = "0";
 
 
-        min_order_price = rest_model.min_order_price;
 
 
-        res_fee = "0";
-        inst_text = findViewById(R.id.inst_text);
+        minOrderPrice = rest_model.min_order_price;
+
+
+        resFee = "0";
+        instText = findViewById(R.id.inst_text);
         Random r = new Random();
         randomNum = r.nextInt(1000 - 65) + 65;
 
@@ -199,28 +227,28 @@ public class AddToCartActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()){
 
                     if(UPDATE_NODE){
-                        mDatabase.child(key_).setValue(new CalculationModel(userId,restaurant_menu_item_id,
-                                name_,price_,"","1","0",min_order_price,
-                                extraItem,inst_text.getText().toString(),res_id,res_name,symbol,desc,res_fee,res_tax));
+                        mDatabase.child(key).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                name, price,"","1","0", minOrderPrice,
+                                extraItem, instText.getText().toString(), resId, resName,symbol,desc, resFee, resTax));
                     }
                     else {
                         userId = mDatabase.push().getKey();
-                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                name_, price_, "", "1", "0", min_order_price,
-                                extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                name, price, "", "1", "0", minOrderPrice,
+                                extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                     }
                 }
                 else {
 
                     if(UPDATE_NODE){
-                        mDatabase.child(key_).setValue(new CalculationModel(userId,restaurant_menu_item_id,
-                                name_,price_,"","1","0",min_order_price,
-                                extraItem,inst_text.getText().toString(),res_id,res_name,symbol,desc,res_fee,res_tax));
+                        mDatabase.child(key).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                name, price,"","1","0", minOrderPrice,
+                                extraItem, instText.getText().toString(), resId, resName,symbol,desc, resFee, resTax));
                     }
                     else {
                         userId = mDatabase.push().getKey();
-                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                name_, price_, "", "1", "0", min_order_price, extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                name, price, "", "1", "0", minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                     }
                 }
             }
@@ -231,9 +259,81 @@ public class AddToCartActivity extends AppCompatActivity {
             }
         });
 
+
+        listDataHeader = new ArrayList<CartParentModel>();
+        listChild = new ArrayList<>();
+
+
         cartExpandableListView = (CustomExpandableListView ) findViewById(R.id.item_detail_list);
         cartExpandableListView .setExpanded(true);
         cartExpandableListView.setGroupIndicator(null);
+
+        listAdapter = new AddToCartExpandable(getApplicationContext(), listDataHeader, listChild);
+        cartExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+
+                final CartChildModel item = (CartChildModel) listAdapter.getChild(groupPosition, childPosition);
+
+                boolean iteIsRequired = item.isCheckRequired();
+
+                if (!iteIsRequired) {
+
+                    CheckBox checkBox = view.findViewById(R.id.check_btn);
+
+                    if (checkBox != null) {
+                        if (!checkBox.isChecked()) {
+                            checkBox.setChecked(true);
+                            FLAG_ONCE_LOOP_ADD = true;
+                            addNewNode(item.getExtra_item_id(), item.getChild_item_name(), item.getChild_item_price());
+                            loadCalculationDetail();
+                        } else if (checkBox.isChecked()) {
+                            checkBox.setChecked(false);
+                            FLAG_ONCE_LOOP_ADD = false;
+                            deleteNewNode(item.getExtra_item_id());
+                        }
+                    }
+                } else {
+
+
+                    if (!item.isCheckedddd()) {
+                        String string = arrayList.toString();
+                        ArrayList<CartChildModel> childsList=listAdapter.getChilderns(groupPosition);
+                        for (CartChildModel model:childsList){
+                            if(model.isCheckedddd()){
+                                previousCheck=model.getExtra_item_id();
+                                break;
+                            }
+                        }
+                        if (arrayList.contains(groupPosition)) {
+                            deleteNewNode(previousCheck);
+                            addNewNode(item.getExtra_item_id(), item.getChild_item_name(), item.getChild_item_price());
+                            previousCheck = item.getExtra_item_id();
+
+
+                        } else {
+
+                            addNewNode(item.getExtra_item_id(), item.getChild_item_name(), item.getChild_item_price());
+                            previousCheck = item.getExtra_item_id();
+                            loadCalculationDetail();
+                            required = required + 1;
+                                 }
+
+                        if (!arrayList.contains(groupPosition)) {
+                            arrayList.add(groupPosition);
+                        }
+
+                        upDateNotify(listAdapter.getChilderns(groupPosition));
+                        item.setCheckeddd(true);
+                        listAdapter.notifyDataSetChanged();
+                    }
+
+
+                }
+                return false;
+            }
+        });
+        cartExpandableListView.setAdapter(listAdapter);
 
 
         init();
@@ -243,22 +343,23 @@ public class AddToCartActivity extends AppCompatActivity {
 
 
     public void init(){
-        cart_btn_text = findViewById(R.id.cart_btn_text);
+        cartBtnText = findViewById(R.id.cart_btn_text);
         if(UPDATE_NODE){
-            cart_btn_text.setText("Update Cart");
-
+            cartBtnText.setText("Update Cart");
         }
-        add_to_cart = findViewById(R.id.add_to_cart);
-        increament_btn = findViewById(R.id.plus_btn);
-        decrement_btn = findViewById(R.id.minus_btn);
-        inc_dec_tv = findViewById(R.id.inc_dec_tv);
-        clos_menu_items_detail = findViewById(R.id.clos_menu_items_detail);
-        grand_total_price_tv = findViewById(R.id.grand_total_price_tv);
-        total_price_tv = findViewById(R.id.total_price_tv);
-        desc_tv = findViewById(R.id.desc_tv);
-        name_tv = findViewById(R.id.name_tv);
 
-        cart_title_tv = findViewById(R.id.cart_title_tv);
+
+        addToCart = findViewById(R.id.add_to_cart);
+        increamentBtn = findViewById(R.id.plus_btn);
+        decrementBtn = findViewById(R.id.minus_btn);
+        incDecTv = findViewById(R.id.inc_dec_tv);
+        closMenuItemsDetail = findViewById(R.id.clos_menu_items_detail);
+        grandTotalPriceTv = findViewById(R.id.grand_total_price_tv);
+        totalPriceTv = findViewById(R.id.total_price_tv);
+        descTv = findViewById(R.id.desc_tv);
+        nameTv = findViewById(R.id.name_tv);
+
+        cartTitleTv = findViewById(R.id.cart_title_tv);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -268,7 +369,7 @@ public class AddToCartActivity extends AppCompatActivity {
             }
         },500);
 
-        clos_menu_items_detail.setOnClickListener(new View.OnClickListener() {
+        closMenuItemsDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -282,14 +383,14 @@ public class AddToCartActivity extends AppCompatActivity {
         descFinal = desc.replaceAll("&amp;", "&");
 
 
-        name_tv.setText(name_.replaceAll("&amp;", "&"));
+        nameTv.setText(name.replaceAll("&amp;", "&"));
 
-        desc_tv.setText(descFinal);
-        total_price_tv.setText(symbol+price_);
-        cart_title_tv.setText(name_.replaceAll("&amp;", "&"));
+        descTv.setText(descFinal);
+        totalPriceTv.setText(symbol+ price);
+        cartTitleTv.setText(name.replaceAll("&amp;", "&"));
         getOrderDetailItems();
 
-        add_to_cart.setOnClickListener(new View.OnClickListener() {
+        addToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -314,24 +415,24 @@ public class AddToCartActivity extends AppCompatActivity {
                                 JSONObject allJsonObject = null;
                                 try {
                                     allJsonObject = jsonArray.getJSONObject(0);
-                                    prev_rest_id = String.valueOf(allJsonObject.optString("restID"));
+                                    prevRestId = String.valueOf(allJsonObject.optString("restID"));
 
-                                    if (!prev_rest_id.equalsIgnoreCase(res_id)) {
+                                    if (!prevRestId.equalsIgnoreCase(resId)) {
                                         showDialogIfChangeRest();
 
                                     } else {
                                         if (UPDATE_NODE) {
-                                            mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                                                    name_, price_, String.valueOf(grandTotal), inc_dec_tv.getText().toString(), "0",
-                                                    min_order_price, extraItem, inst_text.getText().toString(), res_id, res_name, symbol, desc, res_fee, res_tax));
+                                            mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                                                    name, price, String.valueOf(grandTotal), incDecTv.getText().toString(), "0",
+                                                    minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                                             AddPaymentFragment.FLAG_ADD_PAYMENT = false;
                                             AddressListFragment.FLAG_ADDRESS_LIST = false;
                                             UPDATE_NODE = false;
                                             UPDATE_CONFIRM = true;
                                         } else {
-                                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                                    name_, price_, String.valueOf(grandTotal), inc_dec_tv.getText().toString(), "0",
-                                                    min_order_price, extraItem, inst_text.getText().toString(), res_id, res_name, symbol, desc, res_fee, res_tax));
+                                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                                    name, price, String.valueOf(grandTotal), incDecTv.getText().toString(), "0",
+                                                    minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                                             AddPaymentFragment.FLAG_ADD_PAYMENT = false;
                                             AddressListFragment.FLAG_ADDRESS_LIST = false;
                                             SharedPreferences.Editor editor = sPref.edit();
@@ -371,18 +472,6 @@ public class AddToCartActivity extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-       }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -400,26 +489,26 @@ public class AddToCartActivity extends AppCompatActivity {
                         // mDatabase.setValue(null);
 
                         if(UPDATE_NODE){
-                            mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                                    name_, price_, "", "1", "0", min_order_price,
-                                    extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                            mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                                    name, price, "", "1", "0", minOrderPrice,
+                                    extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                         }else {
 
-                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                    name_, price_, "", "1", "0", min_order_price,
-                                    extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                    name, price, "", "1", "0", minOrderPrice,
+                                    extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                         }
                     }
                     else {
                         if(UPDATE_NODE){
-                            mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                                    name_, price_, "", "1", "0", min_order_price,
-                                    extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                            mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                                    name, price, "", "1", "0", minOrderPrice,
+                                    extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                         }else {
 
-                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                    name_, price_, "", "1", "0",
-                                    min_order_price, extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                    name, price, "", "1", "0",
+                                    minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                         }
                     }
                 }
@@ -434,28 +523,24 @@ public class AddToCartActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-
-    }
 
     @Override
     public void onBackPressed() {
         if(UPDATE_NODE){
             Toast.makeText(AddToCartActivity.this, "Please Select the items", Toast.LENGTH_SHORT).show();
-        }else {
+        }
+        else {
             super.onBackPressed();
         }
 
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        IS_APP_OPEN = true;
+
 
         if(UPDATE_CONFIRM || FLAG_CART_ADD){
             UPDATE_CONFIRM = false;
@@ -472,33 +557,27 @@ public class AddToCartActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
-
     public void increamentDecFunc(){
 
-        increament_btn.setOnClickListener(new View.OnClickListener() {
+        increamentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try
                 {
-                    String presentValStr=inc_dec_tv.getText().toString();
-                    present_count=Integer.parseInt(presentValStr);
-                    present_count++;
-                    inc_dec_tv.setText(String.valueOf(present_count));
+                    String presentValStr= incDecTv.getText().toString();
+                    presentCount =Integer.parseInt(presentValStr);
+                    presentCount++;
+                    incDecTv.setText(String.valueOf(presentCount));
                     SharedPreferences.Editor editor = sPref.edit();
-                    editor.putInt(PreferenceClass.DEALS_QUANTITY,present_count).commit();
+                    editor.putInt(PreferenceClass.DEALS_QUANTITY, presentCount).commit();
 
                     if(UPDATE_NODE){
-                        mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                                name_, price_, "", inc_dec_tv.getText().toString(), "0", min_order_price,
-                                extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                        mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                                name, price, "", incDecTv.getText().toString(), "0", minOrderPrice,
+                                extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                     }else {
-                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                name_, price_, "", inc_dec_tv.getText().toString(), "0", min_order_price, extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                name, price, "", incDecTv.getText().toString(), "0", minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                     }
                     loadCalculationDetail();
                 }
@@ -509,29 +588,29 @@ public class AddToCartActivity extends AppCompatActivity {
             }
         });
 
-        decrement_btn.setOnClickListener(new View.OnClickListener() {
+        decrementBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try
                 {
-                    String presentValStr=inc_dec_tv.getText().toString();
-                    present_count=Integer.parseInt(presentValStr);
+                    String presentValStr= incDecTv.getText().toString();
+                    presentCount =Integer.parseInt(presentValStr);
                     if(presentValStr.equalsIgnoreCase(String.valueOf(Integer.parseInt("1")))) {
                         //  Toast.makeText(getContext(),"Can not Less than 1",Toast.LENGTH_LONG).show();
                     }
                     else {
-                        present_count--;
+                        presentCount--;
                     }
-                    inc_dec_tv.setText(String.valueOf(present_count));
+                    incDecTv.setText(String.valueOf(presentCount));
                     SharedPreferences.Editor editor = sPref.edit();
-                    editor.putInt(PreferenceClass.DEALS_QUANTITY,present_count).commit();
+                    editor.putInt(PreferenceClass.DEALS_QUANTITY, presentCount).commit();
                     if(UPDATE_NODE){
-                        mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                                name_, price_, "", inc_dec_tv.getText().toString(), "0", min_order_price,
-                                extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                        mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                                name, price, "", incDecTv.getText().toString(), "0", minOrderPrice,
+                                extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                     }else {
-                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                name_, price_, "", inc_dec_tv.getText().toString(), "0", min_order_price, extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+                        mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                name, price, "", incDecTv.getText().toString(), "0", minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                     }
                     loadCalculationDetail();
 
@@ -547,27 +626,23 @@ public class AddToCartActivity extends AppCompatActivity {
 
     public void getOrderDetailItems(){
 
-        listDataHeader = new ArrayList<CartParentModel>();
-        ListChild = new ArrayList<>();
-        transparent_layer.setVisibility(View.VISIBLE);
-        progressDialog.setVisibility(View.VISIBLE);
-
         JSONObject params = new JSONObject();
         try {
-            if(restaurant_menu_item_id!=null) {
-                params.put("restaurant_menu_item_id", restaurant_menu_item_id);
+            if(restaurantMenuItemId !=null) {
+                params.put("restaurant_menu_item_id", restaurantMenuItemId);
             }
 
-            params.put("restaurant_id",res_id);
+            params.put("restaurant_id", resId);
         } catch (JSONException e) {
             e.printStackTrace();
-            transparent_layer.setVisibility(View.GONE);
-            progressDialog.setVisibility(View.GONE);
+
         }
 
-        ApiRequest.Call_Api(this, Config.SHOW_MENU_EXTRA_ITEM, params, new Callback() {
+        Functions.showLoader(this,false,false);
+        ApiRequest.callApi(this, Config.SHOW_MENU_EXTRA_ITEM, params, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
+                Functions.cancelLoader();
 
                try {
                     JSONObject  jsonResponse = new JSONObject(resp);
@@ -613,104 +688,19 @@ public class AddToCartActivity extends AppCompatActivity {
                                 listChildData.add(menuItemExtraModel);
 
                             }
-                            ListChild.add(listChildData);
-
-
-                            listAdapter = new AddToCartExpandable(getApplicationContext(), listDataHeader, ListChild);
-
-                            cartExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                                @Override
-                                public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
-
-                                    final CartChildModel item = (CartChildModel) listAdapter.getChild(groupPosition, childPosition);
-
-                                    boolean iteIsRequired = item.isCheckRequired();
-
-                                    if (!iteIsRequired) {
-
-                                        CheckBox checkBox = view.findViewById(R.id.check_btn);
-
-                                        if (checkBox != null) {
-                                            //  checkBox.toggle();
-
-                                            if (!checkBox.isChecked()) {
-                                                //  item.setCheckBoxIsChecked(true);
-                                                checkBox.setChecked(true);
-
-                                                FLAG_ONCE_LOOP_ADD = true;
-                                                addNewNode(item.getExtra_item_id(), item.getChild_item_name(), item.getChild_item_price());
-                                                loadCalculationDetail();
-                                            } else if (checkBox.isChecked()) {
-                                                //   item.setCheckBoxIsChecked(false);
-                                                checkBox.setChecked(false);
-                                                FLAG_ONCE_LOOP_ADD = false;
-                                                deleteNewNode(item.getExtra_item_id());
-                                                //   loadCalculationDetail();
-
-                                            }
-                                        }
-                                    } else {
-
-
-                                        if (!item.isCheckedddd()) {
-
-                                            String string = arrayList.toString();
-                                            ArrayList<CartChildModel> childsList=listAdapter.getChilderns(groupPosition);
-                                            for (CartChildModel model:childsList){
-                                                if(model.isCheckedddd()){
-                                                    previousCheck=model.getExtra_item_id();
-                                                    break;
-                                                }
-                                            }
-
-                                            if (arrayList.contains(groupPosition)) {
-                                                //FLAG_CHECKBOX_TOGGLER = true;
-                                                deleteNewNode(previousCheck);
-                                                addNewNode(item.getExtra_item_id(), item.getChild_item_name(), item.getChild_item_price());
-                                                previousCheck = item.getExtra_item_id();
-
-
-                                            } else {
-                                                //FLAG_CHECKBOX_TOGGLER = false;
-                                                addNewNode(item.getExtra_item_id(), item.getChild_item_name(), item.getChild_item_price());
-                                                previousCheck = item.getExtra_item_id();
-                                                loadCalculationDetail();
-                                                required = required + 1;
-                                                // previousCheck = String.valueOf(previousValArray.get(groupPosition));
-                                            }
-
-                                            if (!arrayList.contains(groupPosition)) {
-                                                arrayList.add(groupPosition);
-                                                //  arrayPos.add(groupPosition,previousCheck);
-                                            }
-
-                                            upDateNotify(listAdapter.getChilderns(groupPosition));
-                                            item.setCheckeddd(true);
-                                            listAdapter.notifyDataSetChanged();
-                                        }
-
-
-                                    }
-                                    return false;
-                                }
-                            });
+                            listChild.add(listChildData);
 
                         }
 
-                        cartExpandableListView.setAdapter(listAdapter);
+                        listAdapter.notifyDataSetChanged();
 
                         for (int l = 0; l < listAdapter.getGroupCount(); l++)
                             cartExpandableListView.expandGroup(l);
+
                     }
-
-                    transparent_layer.setVisibility(View.GONE);
-                    progressDialog.setVisibility(View.GONE);
-
 
                 }catch (Exception e){
                     e.getMessage();
-                    transparent_layer.setVisibility(View.GONE);
-                    progressDialog.setVisibility(View.GONE);
                 }
             }
         });
@@ -728,16 +718,16 @@ public class AddToCartActivity extends AppCompatActivity {
         names.put("menu_extra_item_id", id);
         names.put("menu_extra_item_name",name);
         names.put("menu_extra_item_price",price);
-        names.put("menu_extra_item_quantity",inc_dec_tv.getText().toString());
+        names.put("menu_extra_item_quantity", incDecTv.getText().toString());
         extraItem.add(names);
         if(UPDATE_NODE){
-            mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                    name_, price_, "", "1", "0", min_order_price,
-                    extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+            mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                    this.name, this.price, "", "1", "0", minOrderPrice,
+                    extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
         }else {
-            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                    name_, price_, "", inc_dec_tv.getText().toString(), "0",
-                    min_order_price, extraItem, inst_text.getText().toString(), res_id,res_name, symbol, desc, res_fee, res_tax));
+            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                    this.name, this.price, "", incDecTv.getText().toString(), "0",
+                    minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
         }
     }
 
@@ -753,7 +743,6 @@ public class AddToCartActivity extends AppCompatActivity {
                     Map<String, Object> td = (HashMap<String, Object>) dataSnapshot.getValue();
 
                     Collection<Object> values = td.values();
-                    String string = values.toString();
 
                     JSONArray jsonArray = null;
                     try {
@@ -771,18 +760,17 @@ public class AddToCartActivity extends AppCompatActivity {
 
                                 if (menuExtraItemObj.equalsIgnoreCase(id)) {
 
-                                    //  int some = i;
                                     try {
                                         extraItem.remove(b);
                                         if (UPDATE_NODE) {
-                                            mDatabase.child(key_).setValue(new CalculationModel(key_, restaurant_menu_item_id,
-                                                    name_, price_, "", "1", "0", min_order_price,
-                                                    extraItem, inst_text.getText().toString(), res_id, res_name, symbol, desc, res_fee, res_tax));
+                                            mDatabase.child(key).setValue(new CalculationModel(key, restaurantMenuItemId,
+                                                    name, price, "", "1", "0", minOrderPrice,
+                                                    extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
                                         } else {
-                                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurant_menu_item_id,
-                                                    name_, price_, "", inc_dec_tv.getText().toString(), "0",
-                                                    min_order_price, extraItem, inst_text.getText().toString(), res_id, res_name, symbol, desc, res_fee, res_tax));
-                                        } // loadCalculationDetail();
+                                            mDatabase.child(userId).setValue(new CalculationModel(userId, restaurantMenuItemId,
+                                                    name, price, "", incDecTv.getText().toString(), "0",
+                                                    minOrderPrice, extraItem, instText.getText().toString(), resId, resName, symbol, desc, resFee, resTax));
+                                        }
                                     } catch (IndexOutOfBoundsException e) {
                                         e.getMessage();
                                     }
@@ -809,8 +797,7 @@ public class AddToCartActivity extends AppCompatActivity {
 
     public void loadCalculationDetail(){
         if(!FIRST_TIME_LOADER) {
-            transparent_layer.setVisibility(View.VISIBLE);
-            progressDialog.setVisibility(View.VISIBLE);
+            Functions.showLoader(this,false,false);
             FIRST_TIME_LOADER = true;
         }
         DatabaseReference query = mDatabase;
@@ -818,9 +805,7 @@ public class AddToCartActivity extends AppCompatActivity {
         lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                transparent_layer.setVisibility(View.GONE);
-                progressDialog.setVisibility(View.GONE);
+                Functions.cancelLoader();
 
                 if(dataSnapshot.exists()){
                 Map<String, Object> td = (HashMap<String, Object>) dataSnapshot.getValue();
@@ -839,11 +824,9 @@ public class AddToCartActivity extends AppCompatActivity {
 
                             JSONObject allJsonObject = jsonArray.getJSONObject(a);
                             itemPrice = Double.parseDouble(allJsonObject.optString("mPrice"));
-                            //  itemPr = itemPrice;
 
-                            grandTotal = totalExtraItemPrice + itemPrice * Double.valueOf(inc_dec_tv.getText().toString());
-                           // String str = grandTotal;
-                           grand_total_price_tv.setText(symbol+grandTotal);
+                            grandTotal = totalExtraItemPrice + itemPrice * Double.valueOf(incDecTv.getText().toString());
+                           grandTotalPriceTv.setText(symbol+grandTotal);
                             if (allJsonObject.getJSONArray("extraItem") != null) {
 
                                 JSONArray extraItemArray = allJsonObject.getJSONArray("extraItem");
@@ -854,12 +837,11 @@ public class AddToCartActivity extends AppCompatActivity {
                                     menuExtraItemObj = Double.parseDouble(jsonObject.optString("menu_extra_item_price"));
 
                                     totalExtraItemPrice = totalExtraItemPrice + menuExtraItemObj;
-                                    Double total2 = totalExtraItemPrice;
 
                                 }
 
-                                grandTotal = Functions.Roundoff_decimal((totalExtraItemPrice + itemPrice) * Double.valueOf(inc_dec_tv.getText().toString()));
-                                grand_total_price_tv.setText(symbol+grandTotal);
+                                grandTotal = Functions.roundoffDecimal((totalExtraItemPrice + itemPrice) * Double.valueOf(incDecTv.getText().toString()));
+                                grandTotalPriceTv.setText(symbol+grandTotal);
 
                             }
 
@@ -868,8 +850,6 @@ public class AddToCartActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
 
-                        transparent_layer.setVisibility(View.GONE);
-                        progressDialog.setVisibility(View.GONE);
                     }catch (Exception e){
 
                     }
@@ -880,16 +860,10 @@ public class AddToCartActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-                transparent_layer.setVisibility(View.GONE);
-                progressDialog.setVisibility(View.GONE);
-
-
             }
         });
 
     }
-
 
     public void deleteCurrentNode(){
 
@@ -944,13 +918,13 @@ public class AddToCartActivity extends AppCompatActivity {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                add_to_cart.performClick();
+                                addToCart.performClick();
                             }
                         },500);
 
 
                     }else {
-                        add_to_cart.performClick();
+                        addToCart.performClick();
                     }
                 }catch (Exception e){
                 }

@@ -1,29 +1,25 @@
 package com.foodies.amatfoodies.Constants;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 public class Config {
 
+    public static String baseURL = "https://panel.amatnow.com/mobileapp_api/api/";
+   public static String imgBaseURL = "https://panel.amatnow.com/mobileapp_api/";
 
+ 
 
-   /*
-   public static String baseURL = "http://domain.com/foodies/mobileapp_api/api/";
-   public static String imgBaseURL = "http://domain.com/foodies/mobileapp_api/";
-
-    public static final String Privacy_policy="https://foodies.com/customer/privacy.php?device=app";
-    */
-   public static String baseURL = "https://amatnow.com/mobileapp_api/api/";
-   public static String imgBaseURL = "https://amatnow.com/mobileapp_api/";
-
-    public static final String Privacy_policy="https://amatnow.com/privacy.php?device=app";
+    public static final String Privacy_policy="https://amatnow.com/privacy-policy";
 
     public static final String LOGIN_URL = baseURL+"login";
+
+
+    public static final String addDeviceData=baseURL+"addDeviceData";
 
     public static final String showCountries = baseURL+"showCountries";
     public static final String Verify_URL = baseURL+"verifyPhoneNo";
     public static final String SignUp_URL = baseURL+"registerUser";
-
 
     public static final String forgotPassword = baseURL+"forgotPassword";
     public static final String verifyforgotPasswordCode = baseURL+"verifyforgotPasswordCode";
@@ -66,9 +62,6 @@ public class Config {
 
     public static final String ORDER_DEAL = baseURL+"orderDeal";
     public static final String addOrderSession=baseURL+"addOrderSession";
-
-
-    public static final String ACCEPT_DECLINE_STATUS = baseURL+"updateRestaurantOrderStatus";
 
 
     public static final String AddRestaurantRating = baseURL+"addRestaurantRating";

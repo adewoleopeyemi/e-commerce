@@ -13,11 +13,13 @@ import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.Utils.FontHelper;
@@ -31,14 +33,20 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
 
 
     ViewFlipper viewFlipper;
-    EditText recover_email,code_edit, ed_new_pass,ed_confirm_pass;
+    EditText recoverEmail, codeEdit, edNewPass, edConfirmPass;
     SharedPreferences sharedPreferences;
     CamomileSpinner progressBar;
-    RelativeLayout transparent_layer, progressDialog;
+    RelativeLayout transparentLayer, progressDialog;
 
     @Nullable
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recover_password);
 
@@ -55,22 +63,22 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
         progressBar = findViewById(R.id.signUpProgress);
         progressBar.start();
         progressDialog = findViewById(R.id.progressDialog);
-        transparent_layer =findViewById(R.id.transparent_layer);
+        transparentLayer =findViewById(R.id.transparent_layer);
 
 
 
         viewFlipper=findViewById(R.id.viewflliper);
 
-        recover_email = findViewById(R.id.recover_email);
+        recoverEmail = findViewById(R.id.recover_email);
         findViewById(R.id.btn_recover).setOnClickListener(this::onClick);
 
 
-        code_edit=findViewById(R.id.code_edit);
+        codeEdit =findViewById(R.id.code_edit);
         findViewById(R.id.sendcode_btn).setOnClickListener(this::onClick);
 
 
-        ed_new_pass=findViewById(R.id.ed_new_pass);
-        ed_confirm_pass=findViewById(R.id.ed_confirm_pass);
+        edNewPass =findViewById(R.id.ed_new_pass);
+        edConfirmPass =findViewById(R.id.ed_confirm_pass);
         findViewById(R.id.btn_change_pass).setOnClickListener(this::onClick);
 
 
@@ -80,11 +88,11 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
 
     }
 
-    public void CallApi_sendemail(){
+    public void callapiSendemail(){
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("email",recover_email.getText().toString());
+            jsonObject.put("email", recoverEmail.getText().toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -92,14 +100,14 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
 
 
         progressDialog.setVisibility(View.VISIBLE);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(this, Config.forgotPassword, jsonObject, new Callback() {
+        ApiRequest.callApi(this, Config.forgotPassword, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 progressDialog.setVisibility(View.GONE);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -107,12 +115,12 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
                     int code_id  = Integer.parseInt(jsonResponse.optString("code"));
                     if (code_id==200){
 
-                        Toast.makeText(RecoverPasswordActivity.this,"Password sent to your given email",Toast.LENGTH_LONG).show();
+                        Toast.makeText(RecoverPasswordActivity.this, getString(R.string.password_sent_to_given_email),Toast.LENGTH_LONG).show();
                         viewFlipper.showNext();
 
                     }
                     else {
-                        Toast.makeText(RecoverPasswordActivity.this,"Your email is not correct",Toast.LENGTH_LONG).show();
+                        Toast.makeText(RecoverPasswordActivity.this, getString(R.string.your_email_is_not_correct),Toast.LENGTH_LONG).show();
                     }
 
                 } catch (JSONException e) {
@@ -127,27 +135,27 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
     }
 
 
-    public void CallApi_sendCode(){
+    public void callApiSendCode(){
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("email",recover_email.getText().toString());
-            jsonObject.put("code",code_edit.getText().toString());
+            jsonObject.put("email", recoverEmail.getText().toString());
+            jsonObject.put("code", codeEdit.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
         progressDialog.setVisibility(View.VISIBLE);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
 
 
-        ApiRequest.Call_Api(this, Config.verifyforgotPasswordCode, jsonObject, new Callback() {
+        ApiRequest.callApi(this, Config.verifyforgotPasswordCode, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 progressDialog.setVisibility(View.GONE);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -159,12 +167,12 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
                         JSONObject user_info=msg.getJSONObject(0).optJSONObject("UserInfo");
                         if(user_info!=null){
                              user_id=user_info.optString("user_id");
-                             Toast.makeText(RecoverPasswordActivity.this, "Reset the Password", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(RecoverPasswordActivity.this, getString(R.string.reset_the_password), Toast.LENGTH_SHORT).show();
                              viewFlipper.showNext();
                         }
                     }
                     else {
-                        Toast.makeText(RecoverPasswordActivity.this,"Your Code is not correct",Toast.LENGTH_LONG).show();
+                        Toast.makeText(RecoverPasswordActivity.this,  getString(R.string.your_code_is_not_correct),Toast.LENGTH_LONG).show();
                     }
 
                 } catch (JSONException e) {
@@ -181,36 +189,36 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
 
 
     String user_id;
-    public void CallApi_ChangePassword(){
+    public void callApiChangePassword(){
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("user_id",user_id);
-            jsonObject.put("password",ed_new_pass.getText().toString());
+            jsonObject.put("password", edNewPass.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         progressDialog.setVisibility(View.VISIBLE);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(this, Config.changePasswordForgot, jsonObject, new Callback() {
+        ApiRequest.callApi(this, Config.changePasswordForgot, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 progressDialog.setVisibility(View.GONE);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
 
                     int code_id  = Integer.parseInt(jsonResponse.optString("code"));
                     if (code_id==200){
-                        Toast.makeText(RecoverPasswordActivity.this, "Password Reset Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RecoverPasswordActivity.this, getString(R.string.password_rest_successfully), Toast.LENGTH_SHORT).show();
                         finish();
                     }
                     else {
-                        Toast.makeText(RecoverPasswordActivity.this,"Password Reset Fail",Toast.LENGTH_LONG).show();
+                        Toast.makeText(RecoverPasswordActivity.this, getString(R.string.password_rest_fail),Toast.LENGTH_LONG).show();
                     }
 
                 } catch (JSONException e) {
@@ -235,11 +243,11 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
                 break;
 
             case R.id.btn_recover:
-                if(TextUtils.isEmpty(recover_email.getText().toString())){
+                if(TextUtils.isEmpty(recoverEmail.getText().toString())){
 
-                    Toast.makeText(this, "Please enter the email", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.please_enter_the_email, Toast.LENGTH_SHORT).show();
                 }else
-                CallApi_sendemail();
+                callapiSendemail();
                 break;
 
 
@@ -248,11 +256,11 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
                 break;
 
             case R.id.sendcode_btn:
-                if(TextUtils.isEmpty(code_edit.getText().toString())){
+                if(TextUtils.isEmpty(codeEdit.getText().toString())){
 
-                    Toast.makeText(this, "Please enter the Code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.please_enter_the_code, Toast.LENGTH_SHORT).show();
                 }else
-                    CallApi_sendCode();
+                    callApiSendCode();
                 break;
 
 
@@ -261,17 +269,17 @@ public class RecoverPasswordActivity extends AppCompatActivity implements View.O
                 break;
 
             case R.id.btn_change_pass:
-                String pass=ed_new_pass.getText().toString();
-                String confirm_pass=ed_confirm_pass.getText().toString();
+                String pass= edNewPass.getText().toString();
+                String confirm_pass= edConfirmPass.getText().toString();
 
                 if(TextUtils.isEmpty(pass)){
-                    Toast.makeText(this, "Please enter the Password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.please_enter_the_password, Toast.LENGTH_SHORT).show();
                 }if(TextUtils.isEmpty(confirm_pass)){
-                    Toast.makeText(this, "Please enter the Confirm Password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.please_enter_the_confirm_password, Toast.LENGTH_SHORT).show();
                 }if(!pass.equals(confirm_pass)){
-                    Toast.makeText(this, "New Password and Confirm password not match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.new_password_and_confirm_password_not_match, Toast.LENGTH_SHORT).show();
                  }else
-                    CallApi_ChangePassword();
+                    callApiChangePassword();
                 break;
 
 

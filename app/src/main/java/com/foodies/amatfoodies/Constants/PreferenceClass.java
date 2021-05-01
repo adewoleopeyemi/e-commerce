@@ -1,10 +1,22 @@
 package com.foodies.amatfoodies.Constants;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class PreferenceClass {
+
+    public static SharedPreferences sharedPreferences;
+
+    public static SharedPreferences getSharedPreference(Context context){
+        if(sharedPreferences!=null)
+            return sharedPreferences;
+        else
+           return sharedPreferences=context.getSharedPreferences(user,Context.MODE_PRIVATE);
+    }
 
     public static final  String user = "User";
     public static final  String pre_email = "pre_email";
@@ -27,6 +39,10 @@ public class PreferenceClass {
     public static final String CREDIT_CARD_BRAND = "creditCardBrand";
 
     public static final String COUNTRY_NAME = "countryName";
+
+    public static final String u_currentLat = "u_currentLat";
+    public static final String u_currentlng = "u_currentlng";
+
 
     public static final String STREET = "street";
     public static final String CITY = "city";

@@ -27,15 +27,15 @@ import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class PrivacyPolicyFragment extends RootFragment {
 
 
     WebView mWebview;
-    ImageView close_icon;
-    TextView rider_jobs;
+    ImageView closeIcon;
+    TextView riderJobs;
 
     @Nullable
     @Override
@@ -52,20 +52,17 @@ public class PrivacyPolicyFragment extends RootFragment {
 
     public void init(View v){
 
-        rider_jobs = v.findViewById(R.id.rider_jobs);
-        rider_jobs.setText(R.string.privacy_policy);
+        riderJobs = v.findViewById(R.id.rider_jobs);
+        riderJobs.setText(R.string.privacy_policy);
 
          callWebView(v);
 
-        close_icon= v.findViewById(R.id.close_btn);
-        close_icon.setOnClickListener(new View.OnClickListener() {
+        closeIcon = v.findViewById(R.id.close_btn);
+        closeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 getActivity().onBackPressed();
-
-                  }
+            }
         });
 
     }
@@ -92,16 +89,14 @@ public class PrivacyPolicyFragment extends RootFragment {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
-                Functions.Show_loader(getContext(),false,false);
+                Functions.showLoader(getContext(),false,false);
 
             }
 
 
             @Override
             public void onPageFinished(WebView view, String url) {
-              Functions.cancel_loader();
-
-                String webUrl = mWebview.getUrl();
+              Functions.cancelLoader();
 
             }
 
@@ -109,6 +104,5 @@ public class PrivacyPolicyFragment extends RootFragment {
 
     });
         mWebview.loadUrl(Config.Privacy_policy);}
-
 
 }

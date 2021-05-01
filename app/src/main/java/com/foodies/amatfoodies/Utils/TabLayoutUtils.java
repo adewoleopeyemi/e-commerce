@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class TabLayoutUtils {
@@ -22,14 +22,6 @@ public class TabLayoutUtils {
             }
     }
 
-    public static View getTabView(TabLayout tabLayout, int position){
-        View tabView = null;
-        ViewGroup viewGroup = getTabViewGroup(tabLayout);
-        if (viewGroup != null && viewGroup.getChildCount() > position)
-            tabView = viewGroup.getChildAt(position);
-
-        return tabView;
-    }
 
     private static ViewGroup getTabViewGroup(TabLayout tabLayout){
         ViewGroup viewGroup = null;

@@ -1,7 +1,7 @@
 package com.foodies.amatfoodies.Models;
 
 /**
- * Created by qboxus on 12/26/2017.
+ * Created by foodies on 12/26/2017.
  */
 
 public class ImageSliderModel {

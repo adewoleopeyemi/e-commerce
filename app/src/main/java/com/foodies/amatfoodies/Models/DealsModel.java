@@ -3,7 +3,7 @@ package com.foodies.amatfoodies.Models;
 import java.io.Serializable;
 
 /**
- * Created by qboxus on 12/27/2017.
+ * Created by foodies on 12/27/2017.
  */
 
 public class DealsModel implements Serializable {

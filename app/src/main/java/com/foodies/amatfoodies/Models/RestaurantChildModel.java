@@ -3,7 +3,7 @@ package com.foodies.amatfoodies.Models;
 import java.io.Serializable;
 
 /**
- * Created by qboxus on 1/10/2018.
+ * Created by foodies on 1/10/2018.
  */
 
 public class RestaurantChildModel implements Serializable {

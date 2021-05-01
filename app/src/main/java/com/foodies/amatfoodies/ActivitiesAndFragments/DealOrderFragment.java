@@ -29,7 +29,7 @@ import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.AddressListModel;
 import com.foodies.amatfoodies.Models.DealsModel;
@@ -48,30 +48,29 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class DealOrderFragment extends RootFragment implements View.OnClickListener {
 
-    SharedPreferences deal_order_pref;
+    SharedPreferences dealOrderPref;
 
-    ImageView back_icon;
-    String deal_name, deals_tax, deal_price, deal_currency, delivery_fee, delivery_address_street, delivery_address_state, delivery_address_city,
-            apartment, card_number, card_brand, deal_desc, user_id, payment_id, address_id, rest_name,riderTip,res_id,formattedDate,deal_id;
-    TextView rest_name_tv, deal_desc_tv, deal_price_tv, sub_total_price_tv, tax_tv, total_delivery_fee_tv, total_deal_order_tv, delivery_address_tv,
-            credit_card_number_tv,total_tex_tv,deal_name_tv,total_sum_tv,rider_tip,rider_tip_price_tv,decline_tv,accept_tv;
-    RelativeLayout deal_payment_method_div, deal_address_div, cart_check_out_div,tip_div,accept_div,decline_div,cart_address_div;
-    public static boolean DEALS;
-    int deal_quantity;
+    ImageView backIcon;
+    String dealName, dealsTax, dealPrice, dealCurrency, deliveryFee, deliveryAddressStreet, deliveryAddressState, deliveryAddressCity,
+            apartment, cardNumber, cardBrand, dealDesc, userId, paymentId, addressId, restName,riderTip, resId,formattedDate, dealId;
+    TextView restNameTv, dealDescTv, dealPriceTv, subTotalPriceTv, taxTv, totalDeliveryFeeTv, deliveryAddressTv,
+            creditCardNumberTv, totalTexTv, dealNameTv, totalSumTv,rider_tip, riderTipPriceTv, declineTv,accept_tv;
+    RelativeLayout dealPaymentMethodDiv, dealAddressDiv, cartCheckOutDiv, tipDiv, acceptDiv, declineDiv;
+    int dealQuantity;
     double getTax, getFinalPrice,grandTotal;
-    boolean getLoINSession,PICK_UP;
+    boolean getLoINSession, pickUp;
 
     Double previousRiderTip = 0.0;
-    public static boolean DEAL_ADDRESS,DEAL_LOGIN,DEAL_PAYMENT_METHOD,DEAL_PLACED;
+    public static boolean DEAL_ADDRESS,DEAL_PAYMENT_METHOD;
 
     CamomileSpinner pbHeaderProgress;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
     View view;
     Context context;
 
@@ -88,8 +87,8 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
             dealsModel=(DealsModel) bundle.getSerializable("data");
         }
 
-        deal_order_pref = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
-        getLoINSession = deal_order_pref.getBoolean(PreferenceClass.IS_LOGIN,false);
+        dealOrderPref = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
+        getLoINSession = dealOrderPref.getBoolean(PreferenceClass.IS_LOGIN,false);
         grandTotal = 0.0;
         riderTip = "0";
         FrameLayout frameLayout = view.findViewById(R.id.deal_order_main_container);
@@ -101,7 +100,6 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
                 return true;
             }
         });
-        DEALS = true;
 
         initUI(view);
         return view;
@@ -109,103 +107,103 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
     }
 
     public void initUI(View v){
-        decline_div = v.findViewById(R.id.decline_div);
-        accept_div = v.findViewById(R.id.accept_div);
-        decline_tv = v.findViewById(R.id.decline_tv);
+        declineDiv = v.findViewById(R.id.pickup_div);
+        acceptDiv = v.findViewById(R.id.delivery_div);
+        declineTv = v.findViewById(R.id.decline_tv);
         accept_tv = v.findViewById(R.id.accept_tv);
-        rider_tip_price_tv = v.findViewById(R.id.rider_tip_price_tv);
+        riderTipPriceTv = v.findViewById(R.id.rider_tip_price_tv);
         rider_tip = v.findViewById(R.id.rider_tip);
 
-        deal_id =dealsModel.deal_id;
-        deal_name = dealsModel.deal_name;
-        deal_desc =dealsModel.deal_desc;
+        dealId =dealsModel.deal_id;
+        dealName = dealsModel.deal_name;
+        dealDesc =dealsModel.deal_desc;
 
-        deal_price =dealsModel.deal_price;
-        deal_currency =dealsModel.deal_symbol;
+        dealPrice =dealsModel.deal_price;
+        dealCurrency =dealsModel.deal_symbol;
         if(dealsModel.isDeliveryFree.equalsIgnoreCase("1")) {
-            deals_tax = "0";
+            dealsTax = "0";
         }
         else {
-            deals_tax =dealsModel.deal_tax;
+            dealsTax =dealsModel.deal_tax;
         }
 
 
-        res_id =dealsModel.deal_restaurant_id;
-        rest_name =dealsModel.restaurant_name;
+        resId =dealsModel.deal_restaurant_id;
+        restName =dealsModel.restaurant_name;
 
 
-        delivery_address_street = deal_order_pref.getString(PreferenceClass.STREET,"");
-        delivery_address_state = deal_order_pref.getString(PreferenceClass.STATE,"");
-        delivery_address_city = deal_order_pref.getString(PreferenceClass.CITY,"");
-        apartment = deal_order_pref.getString(PreferenceClass.APARTMENT,"");
-        user_id = deal_order_pref.getString(PreferenceClass.pre_user_id,"");
-        payment_id = deal_order_pref.getString(PreferenceClass.PAYMENT_ID,"");
-        address_id = deal_order_pref.getString(PreferenceClass.ADDRESS_ID,"");
+        deliveryAddressStreet = dealOrderPref.getString(PreferenceClass.STREET,"");
+        deliveryAddressState = dealOrderPref.getString(PreferenceClass.STATE,"");
+        deliveryAddressCity = dealOrderPref.getString(PreferenceClass.CITY,"");
+        apartment = dealOrderPref.getString(PreferenceClass.APARTMENT,"");
+        userId = dealOrderPref.getString(PreferenceClass.pre_user_id,"");
+        paymentId = dealOrderPref.getString(PreferenceClass.PAYMENT_ID,"");
+        addressId = dealOrderPref.getString(PreferenceClass.ADDRESS_ID,"");
 
 
-        card_number = deal_order_pref.getString(PreferenceClass.CREDIT_CARD_ARRAY,"");
-        card_brand = deal_order_pref.getString(PreferenceClass.CREDIT_CARD_BRAND,"");
+        cardNumber = dealOrderPref.getString(PreferenceClass.CREDIT_CARD_ARRAY,"");
+        cardBrand = dealOrderPref.getString(PreferenceClass.CREDIT_CARD_BRAND,"");
 
 
 
-        deal_quantity = deal_order_pref.getInt(PreferenceClass.DEALS_QUANTITY,1);
+        dealQuantity = dealOrderPref.getInt(PreferenceClass.DEALS_QUANTITY,1);
 
-        getFinalPrice = Double.parseDouble(deal_price)*Double.parseDouble(String.valueOf(deal_quantity));
+        getFinalPrice = Double.parseDouble(dealPrice)*Double.parseDouble(String.valueOf(dealQuantity));
 
 
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
         pbHeaderProgress = v.findViewById(R.id.dealOrderProgress);
         pbHeaderProgress.start();
-        credit_card_number_tv = v.findViewById(R.id.credit_card_number_tv);
-        deal_payment_method_div = v.findViewById(R.id.deal_payment_method_div);
-        deal_address_div = v.findViewById(R.id.deal_address_div);
-        delivery_address_tv = v.findViewById(R.id.delivery_address_tv);
-        rest_name_tv = v.findViewById(R.id.rest_name_tv);
-        rest_name_tv.setText(rest_name);
-        deal_desc_tv = v.findViewById(R.id.deal_desc_tv);
-        deal_desc_tv.setText(deal_desc);
-        sub_total_price_tv = v.findViewById(R.id.sub_total_price_tv);
-        sub_total_price_tv.setText(deal_currency+""+getFinalPrice);
+        creditCardNumberTv = v.findViewById(R.id.credit_card_number_tv);
+        dealPaymentMethodDiv = v.findViewById(R.id.deal_payment_method_div);
+        dealAddressDiv = v.findViewById(R.id.deal_address_div);
+        deliveryAddressTv = v.findViewById(R.id.delivery_address_tv);
+        restNameTv = v.findViewById(R.id.rest_name_tv);
+        restNameTv.setText(restName);
+        dealDescTv = v.findViewById(R.id.deal_desc_tv);
+        dealDescTv.setText(dealDesc);
+        subTotalPriceTv = v.findViewById(R.id.sub_total_price_tv);
+        subTotalPriceTv.setText(dealCurrency +""+getFinalPrice);
 
-        credit_card_number_tv.setText("Select Payment Method");
-
-
-
-        deal_price_tv = v.findViewById(R.id.deal_price_tv);
-        deal_price_tv.setText(deal_currency+deal_price);
-
-        tax_tv = v.findViewById(R.id.tax_tv);
-        tax_tv.setText("("+deals_tax+"%)");
-        total_tex_tv = v.findViewById(R.id.total_tex_tv);
-        getTax = getFinalPrice*Double.parseDouble(deals_tax)/100;
-        total_tex_tv.setText(deal_currency+getTax);
-
-        deal_name_tv = v.findViewById(R.id.deal_name_tv);
-        deal_name_tv.setText(deal_name + " (x"+deal_quantity+")");
-
-        total_delivery_fee_tv = v.findViewById(R.id.total_delivery_fee_tv);
+        creditCardNumberTv.setText("Select Payment Method");
 
 
-        delivery_address_tv.setText("Select Delivery Address");
-        total_delivery_fee_tv.setText("0");
-        delivery_fee = "0";
+
+        dealPriceTv = v.findViewById(R.id.deal_price_tv);
+        dealPriceTv.setText(dealCurrency + dealPrice);
+
+        taxTv = v.findViewById(R.id.tax_tv);
+        taxTv.setText("("+ dealsTax +"%)");
+        totalTexTv = v.findViewById(R.id.total_tex_tv);
+        getTax = getFinalPrice*Double.parseDouble(dealsTax)/100;
+        totalTexTv.setText(dealCurrency +getTax);
+
+        dealNameTv = v.findViewById(R.id.deal_name_tv);
+        dealNameTv.setText(dealName + " (x"+ dealQuantity +")");
+
+        totalDeliveryFeeTv = v.findViewById(R.id.total_delivery_fee_tv);
 
 
-        total_sum_tv = v.findViewById(R.id.total_sum_tv);
-        grandTotal = Double.parseDouble(delivery_fee)+getFinalPrice+getTax;
-        total_sum_tv.setText(deal_currency+new DecimalFormat("##.##").format(grandTotal));
+        deliveryAddressTv.setText("Select Delivery Address");
+        totalDeliveryFeeTv.setText("0");
+        deliveryFee = "0";
 
-        tip_div = v.findViewById(R.id.tip_div);
-        tip_div.setOnClickListener(this);
 
-        back_icon = v.findViewById(R.id.back_icon);
-        back_icon.setOnClickListener(this);
+        totalSumTv = v.findViewById(R.id.total_sum_tv);
+        grandTotal = Double.parseDouble(deliveryFee)+getFinalPrice+getTax;
+        totalSumTv.setText(dealCurrency +new DecimalFormat("##.##").format(grandTotal));
 
-        deal_address_div.setOnClickListener(this);
-        deal_payment_method_div.setOnClickListener(this);
-        cart_check_out_div = v.findViewById(R.id.cart_check_out_div);
-        cart_check_out_div.setOnClickListener(this);
+        tipDiv = v.findViewById(R.id.tip_div);
+        tipDiv.setOnClickListener(this);
+
+        backIcon = v.findViewById(R.id.back_icon);
+        backIcon.setOnClickListener(this);
+
+        dealAddressDiv.setOnClickListener(this);
+        dealPaymentMethodDiv.setOnClickListener(this);
+        cartCheckOutDiv = v.findViewById(R.id.cart_check_out_div);
+        cartCheckOutDiv.setOnClickListener(this);
 
 
         pickUpOrDelivery();
@@ -233,21 +231,21 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
 
                 }
                 else {
-                    Fragment restaurantMenuItemsFragment = new AddressListFragment(new Fragment_Callback() {
+                    Fragment restaurantMenuItemsFragment = new AddressListFragment(new FragmentCallback() {
                         @Override
-                        public void Responce(Bundle bundle) {
+                        public void onResponce(Bundle bundle) {
                             if(bundle!=null){
                                 AddressListModel addressListModel=(AddressListModel)bundle.getSerializable("data");
 
-                                delivery_address_street =addressListModel.getStreet();
-                                delivery_address_city =addressListModel.getCity();
-                                delivery_address_state =addressListModel.getState();
+                                deliveryAddressStreet =addressListModel.getStreet();
+                                deliveryAddressCity =addressListModel.getCity();
+                                deliveryAddressState =addressListModel.getState();
                                 apartment =addressListModel.getApartment();
-                                address_id=addressListModel.getAddress_id();
-                                credit_card_number_tv.setTextColor(ContextCompat.getColor(context,R.color.black));
+                                addressId =addressListModel.getAddress_id();
+                                creditCardNumberTv.setTextColor(ContextCompat.getColor(context,R.color.colorBlack));
 
-                                delivery_address_tv.setText(delivery_address_street + " " + delivery_address_city + " " + delivery_address_state);
-                                delivery_address_tv.setTextColor(ContextCompat.getColor(context,R.color.black));
+                                deliveryAddressTv.setText(deliveryAddressStreet + " " + deliveryAddressCity + " " + deliveryAddressState);
+                                deliveryAddressTv.setTextColor(ContextCompat.getColor(context,R.color.colorBlack));
 
                             }
                         }
@@ -256,7 +254,7 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     Bundle bundle=new Bundle();
                     bundle.putString("grand_total",String.valueOf(grandTotal));
-                    bundle.putString("rest_id",res_id);
+                    bundle.putString("rest_id", resId);
                     transaction.addToBackStack(null);
                     transaction.add(R.id.deal_order_main_container, restaurantMenuItemsFragment, "parent").commit();
 
@@ -272,15 +270,15 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
 
                 }
                 else {
-                    Fragment restaurantMenuItemsFragment = new AddPaymentFragment(new Fragment_Callback() {
+                    Fragment restaurantMenuItemsFragment = new AddPaymentFragment(new FragmentCallback() {
                         @Override
-                        public void Responce(Bundle bundle) {
+                        public void onResponce(Bundle bundle) {
                             if(bundle!=null){
 
-                                payment_id=bundle.getString("card_id");
-                                card_number=bundle.getString("card_number");
-                                credit_card_number_tv.setText(card_number);
-                                credit_card_number_tv.setTextColor(ContextCompat.getColor(context,R.color.black));
+                                paymentId =bundle.getString("card_id");
+                                cardNumber =bundle.getString("card_number");
+                                creditCardNumberTv.setText(cardNumber);
+                                creditCardNumberTv.setTextColor(ContextCompat.getColor(context,R.color.colorBlack));
                             }
                         }
                     });
@@ -292,11 +290,11 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
 
 
             case R.id.cart_check_out_div:
-                if(delivery_address_tv.getText().toString().equalsIgnoreCase("Select Delivery Address")
-                        || credit_card_number_tv.getText().toString().equalsIgnoreCase("Select Payment Method")
+                if(deliveryAddressTv.getText().toString().equalsIgnoreCase("Select Delivery Address")
+                        || creditCardNumberTv.getText().toString().equalsIgnoreCase("Select Payment Method")
                 )
                 {
-                    Toast.makeText(getContext(),"Delivery Address OR Payment Method is Missed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), context.getResources().getString(R.string.delivery_address_or_payment_method_is_missing),Toast.LENGTH_LONG).show();
                 }else {
                     dealOrder();
                 }
@@ -330,10 +328,10 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 riderTip = ed_text.getText().toString();
-                PICK_UP = false;
-                getTotalSumTip(riderTip,PICK_UP);
-                rider_tip_price_tv.setText(deal_currency+riderTip);
-                rider_tip.setText(deal_currency+riderTip);
+                pickUp = false;
+                getTotalSumTip(riderTip, pickUp);
+                riderTipPriceTv.setText(dealCurrency +riderTip);
+                rider_tip.setText(dealCurrency +riderTip);
                 dialog.dismiss();
             }
         });
@@ -361,33 +359,33 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
             previousRiderTip = Double.parseDouble(riderTip);
 
         }
-        total_sum_tv.setText(deal_currency+new DecimalFormat("##.##").format(grandTotal));
+        totalSumTv.setText(dealCurrency +new DecimalFormat("##.##").format(grandTotal));
 
     }
 
     public void pickUpOrDelivery(){
-        decline_div.setOnClickListener(new View.OnClickListener() {
+        declineDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                decline_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
-                accept_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
-                decline_tv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
-                accept_tv.setTextColor(ContextCompat.getColor(context,R.color.or_color_name));
-                rider_tip_price_tv.setText(deal_currency+"0");
-                total_delivery_fee_tv.setText(deal_currency+"0");
-                rider_tip.setText(deal_currency+"0");
-                delivery_address_tv.setText("Pick Up");
-                PICK_UP = true;
-                getTotalSumDeliveryFee(delivery_fee,PICK_UP);
-                getTotalSumTip(riderTip,PICK_UP);
-                deal_address_div.setOnTouchListener(new View.OnTouchListener() {
+                declineDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
+                acceptDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
+                declineTv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
+                accept_tv.setTextColor(ContextCompat.getColor(context,R.color.color_light_black));
+                riderTipPriceTv.setText(dealCurrency +"0");
+                totalDeliveryFeeTv.setText(dealCurrency +"0");
+                rider_tip.setText(dealCurrency +"0");
+                deliveryAddressTv.setText("Pick Up");
+                pickUp = true;
+                getTotalSumDeliveryFee(deliveryFee, pickUp);
+                getTotalSumTip(riderTip, pickUp);
+                dealAddressDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return true;
                     }
                 });
 
-                tip_div.setOnTouchListener(new View.OnTouchListener() {
+                tipDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return true;
@@ -397,37 +395,37 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
             }
         });
 
-        accept_div.setOnClickListener(new View.OnClickListener() {
+        acceptDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                decline_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
-                accept_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
-                decline_tv.setTextColor(ContextCompat.getColor(context,R.color.or_color_name));
+                declineDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
+                acceptDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
+                declineTv.setTextColor(ContextCompat.getColor(context,R.color.color_light_black));
                 accept_tv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
 
-                rider_tip_price_tv.setText(deal_currency+riderTip);
-                total_delivery_fee_tv.setText(deal_currency+delivery_fee);
-                rider_tip.setText(deal_currency+riderTip);
-                if(delivery_address_street.isEmpty()&&apartment.isEmpty()&&delivery_address_city.isEmpty()&&delivery_address_state.isEmpty()){
-                    delivery_address_tv.setText("Select Delivery Address");
+                riderTipPriceTv.setText(dealCurrency +riderTip);
+                totalDeliveryFeeTv.setText(dealCurrency + deliveryFee);
+                rider_tip.setText(dealCurrency +riderTip);
+                if(deliveryAddressStreet.isEmpty()&&apartment.isEmpty()&& deliveryAddressCity.isEmpty()&& deliveryAddressState.isEmpty()){
+                    deliveryAddressTv.setText("Select Delivery Address");
                 }
                 else {
-                    delivery_address_tv.setText(delivery_address_street + " " + apartment + " " + delivery_address_city + " " + delivery_address_state);
+                    deliveryAddressTv.setText(deliveryAddressStreet + " " + apartment + " " + deliveryAddressCity + " " + deliveryAddressState);
                 }
-                PICK_UP = false;
+                pickUp = false;
 
                 previousRiderTip = 0.0;
-                getTotalSumDeliveryFee(delivery_fee,PICK_UP);
-                getTotalSumTip(riderTip,PICK_UP);
+                getTotalSumDeliveryFee(deliveryFee, pickUp);
+                getTotalSumTip(riderTip, pickUp);
 
-                deal_address_div.setOnTouchListener(new View.OnTouchListener() {
+                dealAddressDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return false;
                     }
                 });
 
-                tip_div.setOnTouchListener(new View.OnTouchListener() {
+                tipDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return false;
@@ -446,7 +444,7 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
         else {
             grandTotal = Double.parseDouble(String.valueOf(grandTotal + Double.parseDouble(deliveryFee)));
         }
-        total_sum_tv.setText(deal_currency+new DecimalFormat("##.##").format(grandTotal));
+        totalSumTv.setText(dealCurrency +new DecimalFormat("##.##").format(grandTotal));
 
     }
 
@@ -461,8 +459,8 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
         JSONObject jsonObject = new JSONObject();
 
         try {
-            jsonObject.put("name", deal_name);
-            jsonObject.put("description", deal_desc);
+            jsonObject.put("name", dealName);
+            jsonObject.put("description", dealDesc);
             jsonObject.put("price", grandTotal);
             if (AddPaymentFragment.FLAG_PAYMENT_METHOD) {
                 jsonObject.put("cod", "1");
@@ -470,33 +468,33 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
                 AddPaymentFragment.FLAG_PAYMENT_METHOD = false;
             } else {
                 jsonObject.put("cod", "0");
-                jsonObject.put("payment_id", payment_id);
+                jsonObject.put("payment_id", paymentId);
             }
 
             jsonObject.put("order_time", formattedDate);
-            jsonObject.put("user_id", user_id);
-            jsonObject.put("quantity",String.valueOf(deal_quantity));
+            jsonObject.put("user_id", userId);
+            jsonObject.put("quantity",String.valueOf(dealQuantity));
             jsonObject.put("tax",getTax);
             jsonObject.put("sub_total",getFinalPrice);
-            jsonObject.put("delivery_fee",delivery_fee);
-            jsonObject.put("restaurant_id",res_id);
+            jsonObject.put("delivery_fee", deliveryFee);
+            jsonObject.put("restaurant_id", resId);
             jsonObject.put("device","android");
-            jsonObject.put("deal_id",deal_id);
-            jsonObject.put("version",SplashScreen.VERSION_CODE);
+            jsonObject.put("deal_id", dealId);
+            jsonObject.put("version",SplashScreen.versionCode);
             if(rider_tip.getText().toString().equalsIgnoreCase("Add Rider Tip")){
                 jsonObject.put("rider_tip","0");
             }
             else {
                 jsonObject.put("rider_tip", riderTip);
             }
-            if(delivery_address_tv.getText().toString().equalsIgnoreCase("Pick Up"))
+            if(deliveryAddressTv.getText().toString().equalsIgnoreCase("Pick Up"))
             {
                 jsonObject.put("delivery","0");
                 jsonObject.put("address_id", "0");
             }
             else {
                 jsonObject.put("delivery","1");
-                jsonObject.put("address_id", address_id);
+                jsonObject.put("address_id", addressId);
             }
 
 
@@ -506,15 +504,15 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
 
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.ORDER_DEAL, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.ORDER_DEAL, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
                 try {
@@ -524,10 +522,9 @@ public class DealOrderFragment extends RootFragment implements View.OnClickListe
 
                     if(code_id == 200) {
 
-                        SharedPreferences.Editor editor = deal_order_pref.edit();
+                        SharedPreferences.Editor editor = dealOrderPref.edit();
                         editor.putString(PreferenceClass.ADDRESS_DELIVERY_FEE,"0").commit();
                         CartFragment.ORDER_PLACED = true;
-                        DEAL_PLACED = true;
                         getActivity().startActivity(new Intent(getContext(),MainActivity.class));
                         getActivity().finish();
 

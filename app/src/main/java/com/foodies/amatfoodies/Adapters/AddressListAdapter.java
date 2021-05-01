@@ -15,7 +15,7 @@ import com.foodies.amatfoodies.R;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.ViewHolder> {
 

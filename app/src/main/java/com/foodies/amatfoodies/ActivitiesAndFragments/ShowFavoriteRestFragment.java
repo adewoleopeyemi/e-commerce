@@ -10,25 +10,28 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.foodies.amatfoodies.Constants.AdapterClickListener;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
+import com.foodies.amatfoodies.Constants.DataParser;
+import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
-import com.gmail.samehadar.iosdialog.CamomileSpinner;
 import com.foodies.amatfoodies.Adapters.RestaurantsAdapter;
 import com.foodies.amatfoodies.Constants.Config;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.RestaurantsModel;
 import com.foodies.amatfoodies.R;
-import com.foodies.amatfoodies.Utils.TabLayoutUtils;
 
 
 import org.json.JSONArray;
@@ -38,32 +41,27 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class ShowFavoriteRestFragment extends RootFragment {
 
-    ArrayList<RestaurantsModel> GetDataAdapter1;
+    SwipeRefreshLayout refreshLayout;
 
-    RecyclerView restaurant_recycler_view;
+    ArrayList<RestaurantsModel> dataList;
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
+    RestaurantsAdapter adapter;
 
-    SwipeRefreshLayout refresh_layout;
-
-    RecyclerView.LayoutManager recyclerViewlayoutManager;
-    RestaurantsAdapter recyclerViewadapter;
-
-    CamomileSpinner progressBar;
 
     SharedPreferences sharedPreferences;
 
     ImageView back_icon;
-    SearchView searchView;
-    public static boolean FLAG_SHOW_FAV;
+    EditText searchView;
     public static boolean FROM_FAVORITE;
 
-    RelativeLayout transparent_layer,progressDialog;
-    String user_id;
-   RelativeLayout no_job_div;
+   String userId;
+   RelativeLayout noJobDiv;
 
    View view;
    Context context;
@@ -76,26 +74,66 @@ public class ShowFavoriteRestFragment extends RootFragment {
         context=getContext();
 
         sharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
-        user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
-        restaurant_recycler_view = view.findViewById(R.id.restaurant_recycler_view);
-        progressBar = view.findViewById(R.id.restaurantProgress);
-        progressBar.start();
-        restaurant_recycler_view.setHasFixedSize(true);
-        recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        restaurant_recycler_view.setLayoutManager(recyclerViewlayoutManager);
+        userId = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
+        recyclerView = view.findViewById(R.id.restaurant_recycler_view);
+
+        dataList = new ArrayList<>();
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new RestaurantsAdapter(dataList, getContext(), new AdapterClickListener() {
+            @Override
+            public void onItemClick(View view, int pos, Object object) {
+                RestaurantsModel model = (RestaurantsModel) object;
+
+                if(view.getId()==R.id.favorite_icon){
+
+                    if(PreferenceClass.sharedPreferences.getBoolean(PreferenceClass.IS_LOGIN,false)){
+                        addFavoriteRestaurant(pos,model.restaurant_id);
+                    }
+                }
+                else {
+                    Fragment restaurantMenuItemsFragment = new RestaurantMenuItemsFragment();
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("data", model);
+                    restaurantMenuItemsFragment.setArguments(bundle);
+                    transaction.addToBackStack(null);
+                    transaction.add(R.id.restaurent_main_layout, restaurantMenuItemsFragment, "parent").commit();
+
+                }
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+
+
         init(view);
-        getRestaurantList(user_id);
+        getRestaurantList(userId);
         return view;
 
     }
 
     public void init(View v){
-        no_job_div = v.findViewById(R.id.no_job_div);
-        progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
+        noJobDiv = v.findViewById(R.id.no_job_div);
 
-        searchView = v.findViewById(R.id.floating_search_view);
-        search(searchView);
+        searchView = v.findViewById(R.id.search_edit);
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (adapter != null) adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         back_icon = v.findViewById(R.id.back_icon);
         back_icon.setOnClickListener(new View.OnClickListener() {
@@ -108,23 +146,19 @@ public class ShowFavoriteRestFragment extends RootFragment {
 
             }
         });
-        refresh_layout = v.findViewById(R.id.refresh_layout);
-        refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        refreshLayout = v.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                getRestaurantList(user_id);
-                refresh_layout.setRefreshing(false);
+                getRestaurantList(userId);
+                refreshLayout.setRefreshing(false);
             }
         });
 
     }
 
     public void getRestaurantList(String user_id){
-
-
-        GetDataAdapter1 = new ArrayList<>();
-
 
         final JSONObject jsonObject = new JSONObject();
         try {
@@ -135,14 +169,12 @@ public class ShowFavoriteRestFragment extends RootFragment {
         }
 
 
-        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        progressBar.start();
-        transparent_layer.setVisibility(View.VISIBLE);
-        progressDialog.setVisibility(View.VISIBLE);
+        Functions.showLoader(context,false,false);
 
-        ApiRequest.Call_Api(context, Config.SHOW_FAV_RESTAURANT, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_FAV_RESTAURANT, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
+                Functions.cancelLoader();
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -153,113 +185,40 @@ public class ShowFavoriteRestFragment extends RootFragment {
                         JSONObject json = new JSONObject(jsonResponse.toString());
                         JSONArray jsonarray = json.getJSONArray("msg");
 
+                        ArrayList<RestaurantsModel> temp_list=new ArrayList<>();
+
                         for (int i = 0; i < jsonarray.length(); i++) {
-
-
 
                             JSONObject json1 = jsonarray.getJSONObject(i);
 
-                            JSONObject jsonObjRestaurant = json1.getJSONObject("Restaurant");
-                            JSONObject jsonRestaurantFavorite = json1.getJSONObject("RestaurantFavourite");
+                            temp_list.add(DataParser.Pasrse_favourite_Restaurent(json1));
 
-                            JSONObject jsonObjCurrency = jsonObjRestaurant.getJSONObject("Currency");
-                            String symbol = jsonObjCurrency.optString("symbol");
-                            JSONObject jsonObjTax = jsonObjRestaurant.getJSONObject("Tax");
-                            JSONObject jsonObjRating = null;
-                            try {
-                                jsonObjRating = json1.getJSONObject("TotalRatings");
-                            }
-                            catch (JSONException ignored){
-                                ignored.getCause();
-                            }
-
-
-                            RestaurantsModel RestaurantObj = new RestaurantsModel();
-                            RestaurantObj.restaurant_name=jsonObjRestaurant.optString("name");
-                            RestaurantObj.restaurant_salgon=jsonObjRestaurant.optString("slogan");
-                            RestaurantObj.restaurant_about=jsonObjRestaurant.optString("about");
-                            RestaurantObj.restaurant_fee=symbol+jsonObjRestaurant.optString("delivery_fee");
-                            RestaurantObj.restaurant_image=jsonObjRestaurant.optString("image");
-                            RestaurantObj.restaurant_id=jsonObjRestaurant.optString("id");
-                            RestaurantObj.restaurant_phone=jsonObjRestaurant.optString("phone");
-                            RestaurantObj.restaurant_cover=jsonObjRestaurant.optString("cover_image");
-                            RestaurantObj.min_order_price=jsonObjRestaurant.optString("min_order_price");
-                            RestaurantObj.restaurant_isFav=jsonRestaurantFavorite.optString("favourite");
-                            RestaurantObj.promoted=jsonObjRestaurant.optString("promoted");
-                            RestaurantObj.preparation_time=jsonObjRestaurant.optString("preparation_time");
-
-                            /*JSONObject jsonObjDistance = json1.getJSONObject("0");
-                            String distance = jsonObjDistance.optString("distance");
-                            String distanceKM = String.valueOf(new DecimalFormat("##.#").format(Double.parseDouble(distance) * 1.6)) + " KM";
-                            RestaurantObj.restaurant_distance=distanceKM;
-                           */
-
-                            if(jsonObjRating==null) {
-
-                                RestaurantObj.restaurant_avgRating="0.00";
-                                RestaurantObj.restaurant_totalRating="0.00";
-                            }
-                            else {
-                                RestaurantObj.restaurant_avgRating=jsonObjRating.optString("avg");
-                            }
-                            RestaurantObj.restaurant_currency=jsonObjCurrency.optString("symbol");
-                            RestaurantObj.restaurant_tax=jsonObjTax.optString("tax");
-                            RestaurantObj.delivery_fee_per_km=jsonObjTax.optString("delivery_fee_per_km");
-
-                            RestaurantObj.restaurant_menu_style=jsonObjRestaurant.optString("menu_style");
-                            RestaurantObj.deliveryFee_Range=jsonObjRestaurant.optString("delivery_free_range");
-
-
-
-                            GetDataAdapter1.add(RestaurantObj);
-                        }
-                        if(GetDataAdapter1!=null && GetDataAdapter1.size()>0) {
-                            recyclerViewadapter = new RestaurantsAdapter(GetDataAdapter1, getContext(), ShowFavoriteRestFragment.this, progressBar);
-                            restaurant_recycler_view.setAdapter(recyclerViewadapter);
-                            recyclerViewadapter.notifyDataSetChanged();
-
-                            recyclerViewadapter.setOnItemClickListner(new RestaurantsAdapter.OnItemClickListner() {
-                                @Override
-                                public void OnItemClicked(View view, final int position) {
-
-                                    RestaurantsModel model = GetDataAdapter1.get(position);
-
-                                    FLAG_SHOW_FAV = true;
-
-                                    Fragment restaurantMenuItemsFragment = new RestaurantMenuItemsFragment();
-                                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                    Bundle bundle=new Bundle();
-                                    bundle.putSerializable("data",model);
-                                    restaurantMenuItemsFragment.setArguments(bundle);
-                                    transaction.addToBackStack(null);
-                                    transaction.add(R.id.restaurent_main_layout, restaurantMenuItemsFragment, "parent").commit();
-                                }
-                            });
-                        }
-                        else {
-                            recyclerViewadapter = new RestaurantsAdapter(GetDataAdapter1, getContext(), ShowFavoriteRestFragment.this, progressBar);
-                            restaurant_recycler_view.setAdapter(recyclerViewadapter);
-                            recyclerViewadapter.notifyDataSetChanged();
-                            no_job_div.setVisibility(View.VISIBLE);
                         }
 
-                    }else{
-                        no_job_div.setVisibility(View.VISIBLE);
 
+                        dataList.clear();
+
+                        dataList.addAll(temp_list);
+
+                        adapter.notifyDataSetChanged();
+                        if(dataList.isEmpty()){
+                            noJobDiv.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+
+                    else{
+                        noJobDiv.setVisibility(View.VISIBLE);
                     }
 
 
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    no_job_div.setVisibility(View.VISIBLE);
+                    noJobDiv.setVisibility(View.VISIBLE);
                 }
 
 
-                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
-                transparent_layer.setVisibility(View.GONE);
-                progressDialog.setVisibility(View.GONE);
-
             }
         });
 
@@ -267,23 +226,49 @@ public class ShowFavoriteRestFragment extends RootFragment {
     }
 
 
-    private void search(androidx.appcompat.widget.SearchView searchView) {
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+    public void addFavoriteRestaurant(int pos,String res_id){
+
+        final String user_id = sharedPreferences.getString(PreferenceClass.pre_user_id,"");
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put("user_id",user_id);
+            jsonObject.put("restaurant_id",res_id);
+            jsonObject.put("favourite","1");
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Functions.showLoader(context,false,false);
+        ApiRequest.callApi(context, Config.ADD_FAV_RESTAURANT, jsonObject, new Callback() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public void onResponce(String resp) {
 
-                return false;
-            }
+                Functions.cancelLoader();
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
+                try {
+                    JSONObject  converResponseToJson = new JSONObject(resp);
 
-                if (recyclerViewadapter != null) recyclerViewadapter.getFilter().filter(newText);
-                return true;
+                    int code_id  = Integer.parseInt(converResponseToJson.optString("code"));
+                    if(code_id == 200) {
+                        dataList.remove(pos);
+                        adapter.notifyDataSetChanged();
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
+
     }
+
 
 
 }

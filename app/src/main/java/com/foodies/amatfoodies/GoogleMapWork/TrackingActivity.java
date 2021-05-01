@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.ImageSliderModel;
@@ -66,14 +68,13 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
     ImageView close;
     SharedPreferences sPref;
-    String user_id, order_id;
+    String userId, orderId;
     String map_change = "1";
-    String order_status;
     private SupportMapFragment mapFragment;
     GoogleMap mGoogleMap;
 
-    String rider_f_name, rider_l_name, rider_phone_number;
-    String user_lat, user_long, rest_lat, rest_long, rider_lat, rider_long;
+    String riderFName, riderLName, riderPhoneNumber;
+    String userLat, userLong, restLat, restLong, riderLat, riderLong;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
@@ -89,8 +90,8 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
 
 
-    Bitmap rider_bitmap,user_bitmap,hotel_bitmap;
-    Marker rider_marker,user_marker,hotel_marker;
+    Bitmap riderBitmap, userBitmap, hotelBitmap;
+    Marker riderMarker, userMarker, hotelMarker;
 
 
 
@@ -102,14 +103,21 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
 
         mPager = (ViewPager)findViewById(R.id.image_slider_pager);
         sPref = getSharedPreferences(PreferenceClass.user, MODE_PRIVATE);
-        user_id = sPref.getString(PreferenceClass.pre_user_id, "");
-        order_id = sPref.getString(PreferenceClass.ORDER_ID, "");
+        userId = sPref.getString(PreferenceClass.pre_user_id, "");
+        orderId = sPref.getString(PreferenceClass.ORDER_ID, "");
         pageIndicatorView = findViewById(R.id.pageIndicatorView);
 
         close = findViewById(R.id.close);
@@ -124,13 +132,13 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         mDatabase = firebaseDatabase.getReference().child("tracking_status");
         mDatebaseTracking = firebaseDatabase.getReference().child(AllConstants.TRACKING);
 
-        hotel_bitmap = Bitmap.createScaledBitmap(((BitmapDrawable) getResources()
+        hotelBitmap = Bitmap.createScaledBitmap(((BitmapDrawable) getResources()
                 .getDrawable(R.drawable.hotel_pin)).getBitmap(), Functions.convertDpToPx(this,50), Functions.convertDpToPx(this,50), false);
 
-        user_bitmap = Bitmap.createScaledBitmap(((BitmapDrawable) getResources()
+        userBitmap = Bitmap.createScaledBitmap(((BitmapDrawable) getResources()
                 .getDrawable(R.drawable.user_pin)).getBitmap(), Functions.convertDpToPx(this,50), Functions.convertDpToPx(this,50), false);
 
-        rider_bitmap = Bitmap.createScaledBitmap(((BitmapDrawable) getResources()
+        riderBitmap = Bitmap.createScaledBitmap(((BitmapDrawable) getResources()
                 .getDrawable(R.drawable.rider_pin)).getBitmap(), Functions.convertDpToPx(this,50), Functions.convertDpToPx(this,50), false);
 
 
@@ -169,18 +177,19 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         ImagesArray = new ArrayList<ImageSliderModel>();
+        OrderTrack_Model orderTrack_model=new OrderTrack_Model();
         JSONObject jsonObject1 = new JSONObject();
         try {
-            jsonObject1.put("user_id", user_id);
-            jsonObject1.put("order_id", order_id);
+            jsonObject1.put("user_id", userId);
+            jsonObject1.put("order_id", orderId);
             jsonObject1.put("map_change", map_change);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        ApiRequest.Call_Api(this, Config.SHOW_RIDER_LOCATION_AGAINST_LATLONG, jsonObject1, new Callback() {
+        ApiRequest.callApi(this, Config.SHOW_RIDER_LOCATION_AGAINST_LATLONG, jsonObject1, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 map_change = "0";
                 try {
@@ -198,21 +207,23 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                             JSONObject RiderLocation = RiderOrder.getJSONObject("RiderLocation");
                             JSONArray jsonArray = RiderLocation.getJSONArray("status");
 
-                            rider_lat = RiderLocation.optString("lat","");
-                            rider_long = RiderLocation.optString("long","");
-                            rider_id = RiderOrder.optString("rider_user_id");
+                            orderTrack_model.rider_lat = RiderLocation.optString("lat","");
+                            orderTrack_model.rider_lng = RiderLocation.optString("long","");
+                            orderTrack_model.rider_user_id = RiderOrder.optString("rider_user_id");
 
-                            ImagesArray.clear();
 
+                            orderTrack_model.order_status=new ArrayList<>();
                             for (int j = 0; j < jsonArray.length(); j++) {
 
                                 JSONObject statusJsonObject = jsonArray.getJSONObject(j);
 
-                                order_status = statusJsonObject.optString("order_status");
+
                                 map_change = statusJsonObject.optString("map_change");
 
                                 ImageSliderModel imageSliderModel = new ImageSliderModel();
                                 imageSliderModel.setSliderImageUrl(statusJsonObject.optString("order_status"));
+
+                                orderTrack_model.order_status.add(statusJsonObject.optString("order_status"));
 
                                 ImagesArray.add(imageSliderModel);
 
@@ -222,18 +233,18 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                             mPager.setAdapter(new SlidingImageAdapterTrackingStatus(TrackingActivity.this, ImagesArray));
 
                             JSONObject Rider = jsonObject.getJSONObject("Rider");
-                            rider_f_name = Rider.optString("first_name");
-                            rider_l_name = Rider.optString("last_name");
-                            rider_phone_number = Rider.optString("phone");
+                            riderFName = Rider.optString("first_name");
+                            riderLName = Rider.optString("last_name");
+                            riderPhoneNumber = Rider.optString("phone");
 
                             JSONObject UserLocation = jsonObject.getJSONObject("UserLocation");
-                            user_lat = UserLocation.optString("lat","");
-                            user_long = UserLocation.optString("long","");
+                            userLat = UserLocation.optString("lat","");
+                            userLong = UserLocation.optString("long","");
 
                             JSONObject RestaurantLocation = jsonObject.getJSONObject("RestaurantLocation");
 
-                            rest_lat = RestaurantLocation.optString("lat","");
-                            rest_long = RestaurantLocation.optString("long","");
+                            restLat = RestaurantLocation.optString("lat","");
+                            restLong = RestaurantLocation.optString("long","");
 
                             mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                 @Override
@@ -252,33 +263,33 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                             });
 
 
-                            if ((rider_lat.equalsIgnoreCase("") && rider_long.equalsIgnoreCase("")) && (user_lat.equalsIgnoreCase("") && user_long.equalsIgnoreCase(""))) {
+                            if ((riderLat.equalsIgnoreCase("") && riderLong.equalsIgnoreCase("")) && (userLat.equalsIgnoreCase("") && userLong.equalsIgnoreCase(""))) {
 
-                                if(hotel_marker==null)
-                               hotel_marker = mGoogleMap.addMarker(new MarkerOptions()
+                                if(hotelMarker ==null)
+                               hotelMarker = mGoogleMap.addMarker(new MarkerOptions()
                                         .position(
-                                                new LatLng(Double.parseDouble(rest_lat), Double.parseDouble(rest_long)))
-                                        .icon(BitmapDescriptorFactory.fromBitmap(hotel_bitmap)));
+                                                new LatLng(Double.parseDouble(restLat), Double.parseDouble(restLong)))
+                                        .icon(BitmapDescriptorFactory.fromBitmap(hotelBitmap)));
 
-                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(  new LatLng(Double.parseDouble(rest_lat), Double.parseDouble(rest_long)), 17));
+                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(  new LatLng(Double.parseDouble(restLat), Double.parseDouble(restLong)), 17));
 
                             }
 
-                            else if (user_lat.equalsIgnoreCase("") && user_long.equalsIgnoreCase("")) {
+                            else if (userLat.equalsIgnoreCase("") && userLong.equalsIgnoreCase("")) {
 
-                                if(hotel_marker==null)
-                                    hotel_marker = mGoogleMap.addMarker(new MarkerOptions()
+                                if(hotelMarker ==null)
+                                    hotelMarker = mGoogleMap.addMarker(new MarkerOptions()
                                             .position(
-                                                    new LatLng(Double.parseDouble(rest_lat), Double.parseDouble(rest_long)))
-                                            .icon(BitmapDescriptorFactory.fromBitmap(hotel_bitmap)));
+                                                    new LatLng(Double.parseDouble(restLat), Double.parseDouble(restLong)))
+                                            .icon(BitmapDescriptorFactory.fromBitmap(hotelBitmap)));
 
-                                if(rider_marker==null)
-                                    rider_marker = mGoogleMap.addMarker(new MarkerOptions()
+                                if(riderMarker ==null)
+                                    riderMarker = mGoogleMap.addMarker(new MarkerOptions()
                                             .position(
-                                                    new LatLng(Double.parseDouble(rider_lat), Double.parseDouble(rider_long)))
-                                            .draggable(true).visible(true).title(rider_f_name+" "+rider_l_name).snippet(rider_phone_number).icon(BitmapDescriptorFactory.fromBitmap(rider_bitmap)));
+                                                    new LatLng(Double.parseDouble(riderLat), Double.parseDouble(riderLong)))
+                                            .draggable(true).visible(true).title(riderFName +" "+ riderLName).snippet(riderPhoneNumber).icon(BitmapDescriptorFactory.fromBitmap(riderBitmap)));
 
-                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom( new LatLng(Double.parseDouble(rider_lat), Double.parseDouble(rider_long)), 17));
+                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom( new LatLng(Double.parseDouble(riderLat), Double.parseDouble(riderLong)), 17));
 
                                /*
                                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -291,25 +302,25 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
                             }
 
-                            else if (rest_lat.equalsIgnoreCase("") && rest_long.equalsIgnoreCase("")) {
+                            else if (restLat.equalsIgnoreCase("") && restLong.equalsIgnoreCase("")) {
 
-                                if(hotel_marker!=null)
-                                    hotel_marker.remove();
+                                if(hotelMarker !=null)
+                                    hotelMarker.remove();
 
-                                if(rider_marker==null)
-                                    rider_marker = mGoogleMap.addMarker(new MarkerOptions()
+                                if(riderMarker ==null)
+                                    riderMarker = mGoogleMap.addMarker(new MarkerOptions()
                                             .position(
-                                                    new LatLng(Double.parseDouble(rider_lat), Double.parseDouble(rider_long)))
-                                            .draggable(true).visible(true).title(rider_f_name+" "+rider_l_name).snippet(rider_phone_number).icon(BitmapDescriptorFactory.fromBitmap(rider_bitmap)));
+                                                    new LatLng(Double.parseDouble(riderLat), Double.parseDouble(riderLong)))
+                                            .draggable(true).visible(true).title(riderFName +" "+ riderLName).snippet(riderPhoneNumber).icon(BitmapDescriptorFactory.fromBitmap(riderBitmap)));
 
 
-                                if(user_marker==null)
-                                    user_marker = mGoogleMap.addMarker(new MarkerOptions()
-                                            .position(new LatLng(Double.parseDouble(user_lat),
-                                                    Double.parseDouble(user_long)))
-                                            .icon(BitmapDescriptorFactory.fromBitmap(user_bitmap)));
+                                if(userMarker ==null)
+                                    userMarker = mGoogleMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(Double.parseDouble(userLat),
+                                                    Double.parseDouble(userLong)))
+                                            .icon(BitmapDescriptorFactory.fromBitmap(userBitmap)));
 
-                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom( new LatLng(Double.parseDouble(rider_lat), Double.parseDouble(rider_long)), 17));
+                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom( new LatLng(Double.parseDouble(riderLat), Double.parseDouble(riderLong)), 17));
 
                                 /*
                                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -353,7 +364,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
     public void getStatus(){
         mDatabase.keepSynced(true);
-        DatabaseReference query2 = mDatabase.child(order_id).child("order_status");
+        DatabaseReference query2 = mDatabase.child(orderId).child("order_status");
 
         query2.addValueEventListener(new ValueEventListener() {
             @Override
@@ -384,16 +395,16 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
                 if(dataSnapshot.exists()) {
 
-                    rider_lat = "" + dataSnapshot.child("rider_lat").getValue();
-                    rider_long = "" + dataSnapshot.child("rider_long").getValue();
+                    riderLat = "" + dataSnapshot.child("rider_lat").getValue();
+                    riderLong = "" + dataSnapshot.child("rider_long").getValue();
                     String rider_previous_lat = "" + dataSnapshot.child("rider_previous_lat").getValue();
                     String rider_previous_long = "" + dataSnapshot.child("rider_previous_long").getValue();
-                    LatLng latlongLatest = new LatLng(Double.parseDouble(rider_lat), Double.parseDouble(rider_previous_long));
+                    LatLng latlongLatest = new LatLng(Double.parseDouble(riderLat), Double.parseDouble(rider_previous_long));
 
 
                     if (!user) {
 
-                        if (!rider_lat.equalsIgnoreCase(rider_previous_lat) && !rider_long.equalsIgnoreCase(rider_previous_long)) {
+                        if (!riderLat.equalsIgnoreCase(rider_previous_lat) && !riderLong.equalsIgnoreCase(rider_previous_long)) {
 
 
                             Routing routing = new Routing.Builder()
@@ -409,7 +420,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
                     } else {
 
-                        if (!rider_lat.equalsIgnoreCase(rider_previous_lat) && !rider_long.equalsIgnoreCase(rider_previous_long)) {
+                        if (!riderLat.equalsIgnoreCase(rider_previous_lat) && !riderLong.equalsIgnoreCase(rider_previous_long)) {
 
 
                             Routing routing = new Routing.Builder()
@@ -527,8 +538,10 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                     this,
                     new String[]{Manifest.permission.CALL_PHONE},
                     123);
-        } else {
-            startActivity(new Intent(Intent.ACTION_CALL).setData(Uri.parse("tel:"+ rider_phone_number)));
+        }
+
+        else {
+            startActivity(new Intent(Intent.ACTION_CALL).setData(Uri.parse("tel:"+ riderPhoneNumber)));
         }
     }
 

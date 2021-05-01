@@ -63,7 +63,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if(s==null){
 
-        }else if(s.length()>8){
+        }
+
+        else if(s.length()>8){
+
             storeRegIdInPref(s);
 
             Intent registrationComplete = new Intent(Config.REGISTRATION_COMPLETE);
@@ -121,7 +124,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 
-                } else if(type.equalsIgnoreCase("rider_review")) {
+                }
+
+                else if(type.equalsIgnoreCase("rider_review")) {
 
                     Log.d(AllConstants.tag,type);
 
@@ -145,6 +150,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 }
 
+                Intent intent=new Intent();
+                intent.putExtra("type","order_responce");
+                intent.setAction("order_responce");
+                sendBroadcast(intent,"");
+
             }
 
             else {
@@ -157,7 +167,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext(), channelId);
                     notificationUtils.playNotificationSound();
-                } else {
+                }
+
+                else {
 
                     Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                     resultIntent.putExtra("message", title);
@@ -169,6 +181,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         showNotificationMessageWithBigImage(getApplicationContext(), title, title, timestamp, resultIntent, imageUrl);
                     }
                 }
+
+
+
             }
 
             } catch (JSONException e) {

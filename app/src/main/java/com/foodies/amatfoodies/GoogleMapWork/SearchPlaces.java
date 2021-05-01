@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -24,12 +26,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.foodies.amatfoodies.Constants.Config;
 import com.foodies.amatfoodies.R;
 
@@ -39,72 +39,50 @@ import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by Dinosoftlabs on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class SearchPlaces extends AppCompatActivity implements PlaceAutocompleteAdapter.PlaceAutoCompleteInterface, GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks,View.OnClickListener,SavedPlaceListener{
+public class SearchPlaces extends AppCompatActivity implements PlaceAutocompleteAdapter.PlaceAutoCompleteInterface, View.OnClickListener, SavedPlaceListener {
 
     Context mContext;
-    GoogleApiClient mGoogleApiClient;
 
-    LinearLayout mParent;
     private RecyclerView mRecyclerView;
     LinearLayoutManager llm;
     PlaceAutocompleteAdapter mAdapter;
-    List<SavedAddress> mSavedAddressList;
-  //  PlaceSavedAdapter mSavedAdapter;
-    private static LatLngBounds BOUNDS_PAKISTAN;
 
     EditText mSearchEdittext;
 
-    String latNorth,lngNorth,latSouth,lngSouth;
+    String latNorth, lngNorth, latSouth, lngSouth;
 
     Button close_places;
     ImageView mClear;
 
     SharedPreferences placePref;
     String city_name;
-    private String TAG = "places";
 
-
-    @Override
-    public void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_google_places);
 
         mContext = SearchPlaces.this;
 
-        placePref = getSharedPreferences(PreferenceClass.user,MODE_PRIVATE);
-        city_name = placePref.getString(PreferenceClass.CURRENT_LOCATION_ADDRESS,"");
+        placePref = getSharedPreferences(PreferenceClass.user, MODE_PRIVATE);
+        city_name = placePref.getString(PreferenceClass.CURRENT_LOCATION_ADDRESS, "");
 
         getLatlngBounds();
-
-
-
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
 
         close_places = findViewById(R.id.cancel_places);
         close_places.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +91,7 @@ public class SearchPlaces extends AppCompatActivity implements PlaceAutocomplete
                 finish();
             }
         });
+
 
     }
 
@@ -147,9 +126,6 @@ public class SearchPlaces extends AppCompatActivity implements PlaceAutocomplete
                             lngSouth = southwest.optString("lng").trim();
 
 
-                            BOUNDS_PAKISTAN = new LatLngBounds(
-                                    new LatLng(Double.parseDouble(latSouth), Double.parseDouble(lngSouth)),
-                                    new LatLng(Double.parseDouble(latNorth), Double.parseDouble(lngNorth)));
                         } catch (Exception e){
                             e.getCause();
                         }
@@ -187,8 +163,7 @@ public class SearchPlaces extends AppCompatActivity implements PlaceAutocomplete
         mClear = (ImageView)findViewById(R.id.clear);
         mClear.setOnClickListener(this);
 
-        mAdapter = new PlaceAutocompleteAdapter(this, R.layout.row_item_view_placesearch,
-                mGoogleApiClient, BOUNDS_PAKISTAN, null);
+        mAdapter = new PlaceAutocompleteAdapter(this, R.layout.row_item_view_placesearch);
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -207,15 +182,9 @@ public class SearchPlaces extends AppCompatActivity implements PlaceAutocomplete
                     }
                 } else {
                     mClear.setVisibility(View.GONE);
-                   /* if (mSavedAdapter != null && mSavedAddressList.size() > 0) {
-                        mRecyclerView.setAdapter(mSavedAdapter);
-                    }*/
                 }
-                if (!s.toString().equals("") && mGoogleApiClient.isConnected()) {
+                if (!s.toString().equals("") ) {
                     mAdapter.getFilter().filter(s.toString());
-                } else if (!mGoogleApiClient.isConnected()) {
-//                    Toast.makeText(getApplicationContext(), Constants.API_NOT_CONNECTED, Toast.LENGTH_SHORT).show();
-                    Log.e("", "NOT CONNECTED");
                 }
             }
 
@@ -239,21 +208,6 @@ public class SearchPlaces extends AppCompatActivity implements PlaceAutocomplete
     }
 
 
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
 
     @Override
     public void onPlaceClick(ArrayList<PlaceAutocompleteAdapter.PlaceAutocomplete> mResultList, int position) {

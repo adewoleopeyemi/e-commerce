@@ -37,23 +37,22 @@ import java.util.Date;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class DealsFragment extends RootFragment {
 
-    private RecyclerView deals_recyclerview;
+    RecyclerView dealsRecyclerview;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     DealsAdapter recyclerViewadapter;
     CamomileSpinner dealsProgressBar;
     SwipeRefreshLayout mSwipeRefreshLayout;
     ArrayList<DealsModel> delsArrayList;
-    public static boolean FLAG_DEAL_FRAGMENT,DEAL;
+    public static boolean FLAG_DEAL_FRAGMENT;
     SharedPreferences dealsSharedPreferences;
 
-    RelativeLayout no_job_div;
-    RelativeLayout transparent_layer,progressDialog;
-    public static boolean OPEN_DEALS;
+    RelativeLayout noJobDiv;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
@@ -65,32 +64,22 @@ public class DealsFragment extends RootFragment {
 
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
 
-        }
-
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          view = inflater.inflate(R.layout.deals_fragment, container, false);
          context=getContext();
 
         progressDialog = view.findViewById(R.id.progressDialog);
-        transparent_layer = view.findViewById(R.id.transparent_layer);
+        transparentLayer = view.findViewById(R.id.transparent_layer);
 
-        deals_recyclerview = view.findViewById(R.id.deals_recyclerview);
+        dealsRecyclerview = view.findViewById(R.id.deals_recyclerview);
         dealsProgressBar = view.findViewById(R.id.dealsProgress);
         dealsProgressBar.start();
-        deals_recyclerview.setHasFixedSize(true);
+        dealsRecyclerview.setHasFixedSize(true);
 
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        deals_recyclerview.setLayoutManager(recyclerViewlayoutManager);
-
-
-
+        dealsRecyclerview.setLayoutManager(recyclerViewlayoutManager);
 
         initUI(view);
         getDealsList();
@@ -98,7 +87,7 @@ public class DealsFragment extends RootFragment {
     }
 
     private void initUI(View v){
-        no_job_div = v.findViewById(R.id.no_job_div);
+        noJobDiv = v.findViewById(R.id.no_job_div);
 
         mSwipeRefreshLayout = v.findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -114,17 +103,6 @@ public class DealsFragment extends RootFragment {
 
     }
 
-    @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 
     private void getDealsList(){
 
@@ -145,12 +123,12 @@ public class DealsFragment extends RootFragment {
         }
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_DEALS, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_DEALS, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -202,14 +180,14 @@ public class DealsFragment extends RootFragment {
                         if(delsArrayList!=null) {
 
                             if(delsArrayList.isEmpty()){
-                                no_job_div.setVisibility(View.VISIBLE);
+                                noJobDiv.setVisibility(View.VISIBLE);
                             }
                             else {
-                                no_job_div.setVisibility(View.GONE);
+                                noJobDiv.setVisibility(View.GONE);
                             }
 
                             recyclerViewadapter = new DealsAdapter(delsArrayList, getActivity());
-                            deals_recyclerview.setAdapter(recyclerViewadapter);
+                            dealsRecyclerview.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
                             recyclerViewadapter.setOnItemClickListner(new DealsAdapter.OnItemClickListner() {
                                 @Override
@@ -223,7 +201,6 @@ public class DealsFragment extends RootFragment {
                                     dealsDetailFragment.setArguments(bundle);
                                     transaction.addToBackStack(null);
                                     transaction.add(R.id.DealsFragment, dealsDetailFragment, "parent").commit();
-                                    OPEN_DEALS = true;
 
                                 }
                             });
@@ -238,7 +215,7 @@ public class DealsFragment extends RootFragment {
 
                 }
 
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
 

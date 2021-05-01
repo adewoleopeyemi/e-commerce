@@ -41,7 +41,7 @@ import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.AddressListModel;
 import com.foodies.amatfoodies.Models.CartFragChildModel;
@@ -75,45 +75,45 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class CartFragment extends RootFragment implements View.OnClickListener{
 
-    RelativeLayout accept_div,decline_div,cart_payment_method_div,cart_address_div,cart_datetime_div,tip_div,promo_code_div,cart_check_out_div;
-    TextView decline_tv,accept_tv,tax_tv,credit_card_number_tv,delivery_address_tv,delivery_datetime_tv,rider_tip_price_tv,total_delivery_fee_tv,
-            promo_tv,total_promo_tv,total_sum_tv,rider_tip,discount_tv,rest_name_tv,free_delivery_tv;
-    CustomExpandableListView selected_item_list;
+    RelativeLayout deliveryDiv, pickupDiv, cartPaymentMethodDiv, cartAddressDiv, cartDatetimeDiv, tipDiv, promoCodeDiv, cartCheckOutDiv;
+    TextView declineTv, acceptTv, taxTv, creditCardNumberTv, deliveryAddressTv, deliveryDatetimeTv, riderTipPriceTv, totalDeliveryFeeTv,
+            promoTv, totalPromoTv, totalSumTv,rider_tip, discountTv, restNameTv, freeDeliveryTv;
+    CustomExpandableListView selectedItemList;
     SharedPreferences sPref;
     DatabaseReference mDatabase;
     FirebaseDatabase firebaseDatabase;
-   private String udid,tax_dues,instructions,riderTip,tax_preference,fee_prefernce,total_sum,res_id,rest_name,user_id,mQuantity,
-            coupan_code_;
+   private String udid,tax_dues,riderTip, taxPreference, feePrefernce, totalSum,res_id,rest_name,user_id,mQuantity,
+            coupanCode;
     String grandTotal_ = "0";
 
-    private String payment_id,card_number;
-    private String street,apartment,city,state,address_id;
+    private String card_number;
+    private String street,apartment,city,state, addressId;
 
+    TextView restuarentInstructionTv;
+    
     CartFragExpandable cartFragExpandable;
     ArrayList<CartFragParentModel> listDataHeader;
     ArrayList<CartFragChildModel> listChildData;
-    private ArrayList<ArrayList<CartFragChildModel>> ListChild;
-    TextView sub_total_price_tv,total_tex_tv;
+    private ArrayList<ArrayList<CartFragChildModel>> listChild;
+    TextView subTotalPriceTv, totalTexTv;
     String grandTotal,symbol;
     CamomileSpinner cartProgress;
-    Button clear_btn;
-    RelativeLayout no_cart_div;
+    Button clearBtn;
+    RelativeLayout noCartDiv;
     Collection<Object> values;
     Map<String, Object> td;
-    HashMap<String,Object> values_final;
-    ArrayList<HashMap<String,Object>> extraItemArray;
-    private boolean FLAG_COUPON;
+
     boolean getLoINSession,PICK_UP;
     Double previousRiderTip = 0.0;
     private boolean isViewShown = false;
     LinearLayout mainCartDiv;
     JSONArray jsonArrayMenuExtraItem;
-    FrameLayout cart_main_container;
+    FrameLayout cartMainContainer;
     public static boolean ORDER_PLACED,UPDATE_NODE;
 
     RelativeLayout transparent_layer,progressDialog;
@@ -138,36 +138,36 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
         if (getView() != null) {
             isViewShown = true;
-             cart_main_container.invalidate();
-             initUI(getView());
+            cartMainContainer.invalidate();
+            initUI(getView());
         } else {
             isViewShown = false;
         }
-
     }
+
+
 
     public void initUI(View view){
         sPref = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
-        udid = sPref.getString(PreferenceClass.UDID,"");//"9051e610ebcc1639";
+        udid = sPref.getString(PreferenceClass.UDID,"");
         getLoINSession = sPref.getBoolean(PreferenceClass.IS_LOGIN,false);
         user_id = sPref.getString(PreferenceClass.pre_user_id,"");
 
 
 
-        free_delivery_tv = view.findViewById(R.id.free_delivery_tv);
+        freeDeliveryTv = view.findViewById(R.id.free_delivery_tv);
         progressDialog = view.findViewById(R.id.progressDialog);
         transparent_layer = view.findViewById(R.id.transparent_layer);
 
-        delivery_address_tv = view.findViewById(R.id.delivery_address_tv);
+        deliveryAddressTv = view.findViewById(R.id.delivery_address_tv);
         cartProgress = view.findViewById(R.id.cartProgress);
         cartProgress.start();
-        cart_main_container = view.findViewById(R.id.cart_main_container);
-        cart_main_container.setOnTouchListener(new View.OnTouchListener() {
+        cartMainContainer = view.findViewById(R.id.cart_main_container);
+        cartMainContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
@@ -175,100 +175,96 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
         });
 
 
-        cart_main_container.invalidate();
-        credit_card_number_tv = view.findViewById(R.id.credit_card_number_tv);
-
-
-        extraItemArray = new ArrayList<>();
-
+        cartMainContainer.invalidate();
+        creditCardNumberTv = view.findViewById(R.id.credit_card_number_tv);
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         mDatabase = firebaseDatabase.getReference().child(AllConstants.CALCULATION).child(udid);
         riderTip = "0";
 
-        no_cart_div = view.findViewById(R.id.no_cart_div);
+        noCartDiv = view.findViewById(R.id.no_cart_div);
         mainCartDiv = view.findViewById(R.id.mainCartDiv);
-        promo_tv = view.findViewById(R.id.promo_tv);
-        total_promo_tv = view.findViewById(R.id.total_promo_tv);
+        promoTv = view.findViewById(R.id.promo_tv);
+        totalPromoTv = view.findViewById(R.id.total_promo_tv);
 
 
-        cart_check_out_div = view.findViewById(R.id.cart_check_out_div);
+        cartCheckOutDiv = view.findViewById(R.id.cart_check_out_div);
 
-        clear_btn = view.findViewById(R.id.clear_btn);
-        rest_name_tv = view.findViewById(R.id.rest_name_tv);
+        clearBtn = view.findViewById(R.id.clear_btn);
+        restNameTv = view.findViewById(R.id.rest_name_tv);
 
-        delivery_datetime_tv=view.findViewById(R.id.delivery_datetime_tv);
+        deliveryDatetimeTv =view.findViewById(R.id.delivery_datetime_tv);
 
-        discount_tv = view.findViewById(R.id.discount_tv);
-        promo_code_div = view.findViewById(R.id.promo_code_div);
+        discountTv = view.findViewById(R.id.discount_tv);
+        promoCodeDiv = view.findViewById(R.id.promo_code_div);
         rider_tip = view.findViewById(R.id.rider_tip);
-        total_sum_tv = view.findViewById(R.id.total_sum_tv);
+        totalSumTv = view.findViewById(R.id.total_sum_tv);
 
-        total_delivery_fee_tv= view.findViewById(R.id.total_delivery_fee_tv);
-        rider_tip_price_tv = view.findViewById(R.id.rider_tip_price_tv);
+        totalDeliveryFeeTv = view.findViewById(R.id.total_delivery_fee_tv);
+        riderTipPriceTv = view.findViewById(R.id.rider_tip_price_tv);
 
-        tip_div = view.findViewById(R.id.tip_div);
-        total_tex_tv = view.findViewById(R.id.total_tex_tv);
-        tax_tv = view.findViewById(R.id.tax_tv);
-
-
-        sub_total_price_tv = view.findViewById(R.id.sub_total_price_tv);
-        decline_div = view.findViewById(R.id.decline_div);
-        accept_div = view.findViewById(R.id.accept_div);
-        decline_tv = view.findViewById(R.id.decline_tv);
-        accept_tv = view.findViewById(R.id.accept_tv);
-        selected_item_list = view.findViewById(R.id.selected_item_list);
+        tipDiv = view.findViewById(R.id.tip_div);
+        totalTexTv = view.findViewById(R.id.total_tex_tv);
+        taxTv = view.findViewById(R.id.tax_tv);
 
 
-
-
-        cart_payment_method_div = view.findViewById(R.id.cart_payment_method_div);
-        cart_address_div = view.findViewById(R.id.cart_address_div);
-        cart_datetime_div=view.findViewById(R.id.cart_datetime_div);
-
-
-        cart_check_out_div.setOnClickListener(this);
-        clear_btn.setOnClickListener(this);
-        tip_div.setOnClickListener(this);
-        promo_code_div.setOnClickListener(this);
-        cart_address_div.setOnClickListener(this);
-        cart_datetime_div.setOnClickListener(this);
-        cart_payment_method_div.setOnClickListener(this);
+        subTotalPriceTv = view.findViewById(R.id.sub_total_price_tv);
+        pickupDiv = view.findViewById(R.id.pickup_div);
+        deliveryDiv = view.findViewById(R.id.delivery_div);
+        declineTv = view.findViewById(R.id.decline_tv);
+        acceptTv = view.findViewById(R.id.accept_tv);
+        selectedItemList = view.findViewById(R.id.selected_item_list);
 
 
 
 
+        cartPaymentMethodDiv = view.findViewById(R.id.cart_payment_method_div);
+        cartAddressDiv = view.findViewById(R.id.cart_address_div);
+        cartDatetimeDiv =view.findViewById(R.id.cart_datetime_div);
 
-        selected_item_list.setExpanded(true);
-        selected_item_list.setGroupIndicator(null);
+
+        cartCheckOutDiv.setOnClickListener(this);
+        clearBtn.setOnClickListener(this);
+        tipDiv.setOnClickListener(this);
+        promoCodeDiv.setOnClickListener(this);
+        cartAddressDiv.setOnClickListener(this);
+        cartDatetimeDiv.setOnClickListener(this);
+        cartPaymentMethodDiv.setOnClickListener(this);
 
 
 
-        decline_div.setOnClickListener(new View.OnClickListener() {
+
+
+        selectedItemList.setExpanded(true);
+        selectedItemList.setGroupIndicator(null);
+
+
+
+        pickupDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                decline_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
-                accept_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
-                decline_tv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
-                accept_tv.setTextColor(ContextCompat.getColor(context,R.color.or_color_name));
-                rider_tip_price_tv.setText(symbol+"0");
-                total_delivery_fee_tv.setText(symbol+"0");
+                pickupDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
+                deliveryDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
+                declineTv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
+                acceptTv.setTextColor(ContextCompat.getColor(context,R.color.color_light_black));
+                riderTipPriceTv.setText(symbol+"0");
+                totalDeliveryFeeTv.setText(symbol+"0");
                 rider_tip.setText(symbol+"0");
-                delivery_address_tv.setText(getResources().getString(R.string.pick_up));
-                cart_datetime_div.setVisibility(View.GONE);
+                deliveryAddressTv.setText(getResources().getString(R.string.pick_up));
+                cartDatetimeDiv.setVisibility(View.GONE);
                 PICK_UP = true;
 
-                Calculate_Price();
+                calculatePrice();
 
-                cart_address_div.setOnTouchListener(new View.OnTouchListener() {
+                cartAddressDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return true;
                     }
                 });
 
-                tip_div.setOnTouchListener(new View.OnTouchListener() {
+                tipDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return true;
@@ -278,38 +274,38 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
             }
         });
 
-        accept_div.setOnClickListener(new View.OnClickListener() {
+        deliveryDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                decline_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
-                accept_div.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
-                decline_tv.setTextColor(ContextCompat.getColor(context,R.color.or_color_name));
-                accept_tv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
-                rider_tip_price_tv.setText(symbol+riderTip);
-                total_delivery_fee_tv.setText(symbol+fee_prefernce);
+                pickupDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_grey));
+                deliveryDiv.setBackground(ContextCompat.getDrawable(context,R.drawable.round_shape_btn_login));
+                declineTv.setTextColor(ContextCompat.getColor(context,R.color.color_light_black));
+                acceptTv.setTextColor(ContextCompat.getColor(context,R.color.colorWhite));
+                riderTipPriceTv.setText(symbol+riderTip);
+                totalDeliveryFeeTv.setText(symbol+ feePrefernce);
                 rider_tip.setText(symbol+riderTip);
                 if(street==null&&apartment==null&&city==null&&state==null){
-                    delivery_address_tv.setText(getResources().getString(R.string.select_delivery_address));
+                    deliveryAddressTv.setText(getResources().getString(R.string.select_delivery_address));
                 }
                 else {
-                    delivery_address_tv.setText(street + " " + apartment + " " + city + " " + state);
+                    deliveryAddressTv.setText(street + " " + apartment + " " + city + " " + state);
                 }
                 PICK_UP = false;
 
                 previousRiderTip = 0.0;
 
-                cart_datetime_div.setVisibility(View.VISIBLE);
+                cartDatetimeDiv.setVisibility(View.VISIBLE);
 
-                Calculate_Price();
+                calculatePrice();
 
-                cart_address_div.setOnTouchListener(new View.OnTouchListener() {
+                cartAddressDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return false;
                     }
                 });
 
-                tip_div.setOnTouchListener(new View.OnTouchListener() {
+                tipDiv.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         return false;
@@ -317,6 +313,17 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                 });
             }
         });
+
+
+        restuarentInstructionTv =view.findViewById(R.id.restuarent_instruction_tv);
+        restuarentInstructionTv.setSelected(true);
+        view.findViewById(R.id.restuarent_instruction_div).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addRestuarentInstruction();
+            }
+        });
+
 
     }
 
@@ -343,48 +350,22 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                 }
                 else {
-                    Fragment restaurantMenuItemsFragment = new AddressListFragment(new Fragment_Callback() {
-                        @Override
-                        public void Responce(Bundle bundle) {
-                            if(bundle!=null){
-                                AddressListModel addressListModel=(AddressListModel)bundle.getSerializable("data");
-
-                                street =addressListModel.getStreet();
-                                city =addressListModel.getCity();
-                                state =addressListModel.getState();
-                                apartment =addressListModel.getApartment();
-                                address_id=addressListModel.getAddress_id();
-                                credit_card_number_tv.setTextColor(ContextCompat.getColor(context,R.color.black));
-
-                                delivery_address_tv.setText(street + " " + city + " " + state);
-                                delivery_address_tv.setTextColor(ContextCompat.getColor(context,R.color.black));
-
-                                fee_prefernce=addressListModel.getDelivery_fee();
-                                total_delivery_fee_tv.setText(symbol+fee_prefernce);
-
-
-                                Calculate_Price();
-                            }
-                        }
-                    });
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    Bundle bundle=new Bundle();
-                    bundle.putString("grand_total",grandTotal);
-                    bundle.putString("rest_id",res_id);
-                    restaurantMenuItemsFragment.setArguments(bundle);
-                    transaction.addToBackStack(null);
-                    transaction.add(R.id.cart_main_container, restaurantMenuItemsFragment, "parent").commit();
-
+                   if(addressListModel!=null){
+                       openAddressDetail();
+                   }
+                   else {
+                       openAddressList();
+                   }
                 }
                 break;
 
 
             case R.id.cart_datetime_div:
-                Select_DateTime_F select_dateTime_f = new Select_DateTime_F(new Fragment_Callback() {
+                SelectDateTime_F select_dateTime_f = new SelectDateTime_F(new FragmentCallback() {
                     @Override
-                    public void Responce(Bundle bundle) {
+                    public void onResponce(Bundle bundle) {
                         if(bundle!=null){
-                            delivery_datetime_tv.setText(bundle.getString("datetime"));
+                            deliveryDatetimeTv.setText(bundle.getString("datetime"));
                         }
                     }
                 });
@@ -401,15 +382,14 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                 }
                 else {
-                    Fragment restaurantMenuItemsFragment = new AddPaymentFragment(new Fragment_Callback() {
+                    Fragment restaurantMenuItemsFragment = new AddPaymentFragment(new FragmentCallback() {
                         @Override
-                        public void Responce(Bundle bundle) {
+                        public void onResponce(Bundle bundle) {
                             if(bundle!=null){
 
-                                payment_id=bundle.getString("card_id");
                                 card_number=bundle.getString("card_number");
-                                credit_card_number_tv.setText(card_number);
-                                credit_card_number_tv.setTextColor(ContextCompat.getColor(context,R.color.black));
+                                creditCardNumberTv.setText(card_number);
+                                creditCardNumberTv.setTextColor(ContextCompat.getColor(context,R.color.colorBlack));
                             }
                         }
                     });
@@ -428,7 +408,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                 }
                 else {
-                    if (delivery_address_tv.getText().toString().equalsIgnoreCase(getString(R.string.select_delivery_address))) {
+                    if (deliveryAddressTv.getText().toString().equalsIgnoreCase(getString(R.string.select_delivery_address))) {
                         Toast.makeText(getContext(), R.string.delivery_address_can_not_empty, Toast.LENGTH_LONG).show();
                     } else {
                         placeOrder();
@@ -443,9 +423,63 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
 
         }
+
     }
 
 
+    AddressListModel addressListModel;
+    public void openAddressList(){
+        Fragment restaurantMenuItemsFragment = new AddressListFragment(new FragmentCallback() {
+            @Override
+            public void onResponce(Bundle bundle) {
+                if(bundle!=null){
+                    addressListModel=(AddressListModel)bundle.getSerializable("data");
+
+                    street =addressListModel.getStreet();
+                    city =addressListModel.getCity();
+                    state =addressListModel.getState();
+                    apartment =addressListModel.getApartment();
+                    addressId =addressListModel.getAddress_id();
+
+                    openAddressDetail();
+
+                    creditCardNumberTv.setTextColor(ContextCompat.getColor(context,R.color.colorBlack));
+                    deliveryAddressTv.setText(street + " " + city + " " + state);
+                    deliveryAddressTv.setTextColor(ContextCompat.getColor(context,R.color.colorBlack));
+                    feePrefernce =addressListModel.getDelivery_fee();
+                    totalDeliveryFeeTv.setText(symbol+ feePrefernce);
+
+                    calculatePrice();
+                }
+            }
+        });
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        Bundle bundle=new Bundle();
+        bundle.putString("grand_total",grandTotal);
+        bundle.putString("rest_id",res_id);
+        restaurantMenuItemsFragment.setArguments(bundle);
+        transaction.addToBackStack(null);
+        transaction.add(R.id.cart_main_container, restaurantMenuItemsFragment, "parent").commit();
+
+    }
+
+
+    public void openAddressDetail(){
+        DeliveryAddressDetail_F schedule_ride_f = new DeliveryAddressDetail_F(addressListModel,new FragmentCallback() {
+            @Override
+            public void onResponce(Bundle bundle) {
+
+                if(bundle!=null){
+                    addressListModel.setInstruction(bundle.getString("instruction"));
+                }
+                else {
+                    openAddressList();
+                }
+
+            }
+        });
+        schedule_ride_f.show(getFragmentManager(), "");
+    }
 
     public void showDialogCartDelete(){
 
@@ -459,9 +493,9 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                 .setMessage(R.string.are_you_sure_to_delete_cart)
                 .setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // continue with delete
+
                         mDatabase.setValue(null);
-                        no_cart_div.setVisibility(View.VISIBLE);
+                        noCartDiv.setVisibility(View.VISIBLE);
                         mainCartDiv.setVisibility(View.GONE);
                         SharedPreferences.Editor editor = sPref.edit();
                         editor.putInt(PreferenceClass.CART_COUNT,0);
@@ -501,7 +535,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
         transparent_layer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
         listDataHeader = new ArrayList<>();
-        ListChild = new ArrayList<>();
+        listChild = new ArrayList<>();
         DatabaseReference query = mDatabase;
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -538,7 +572,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                                res_id = allJsonObject.optString("restID");
                                rest_name = allJsonObject.optString("rest_name");
-                               rest_name_tv.setText(rest_name);
+                               restNameTv.setText(rest_name);
 
 
                                if (total.isEmpty() || total.equalsIgnoreCase("null")) {
@@ -552,8 +586,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                                grandTotal_ = grandTotal;
 
-                               tax_preference = allJsonObject.optString("mTax");
-                               instructions = allJsonObject.optString("instruction");
+                               taxPreference = allJsonObject.optString("mTax");
 
 
                                listDataHeader.add(cartFragParentModel);
@@ -561,7 +594,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                                if (!allJsonObject.has("extraItem")) {
                                    TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
-                                   ListChild.add(listChildData);
+                                   listChild.add(listChildData);
                                } else {
                                    JSONArray extraItemArray = allJsonObject.getJSONArray("extraItem");
 
@@ -578,54 +611,60 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                                        listChildData.add(cartFragChildModel);
                                    }
-                                   ListChild.add(listChildData);
+                                   listChild.add(listChildData);
 
                                }
                            }
-                           if (listDataHeader != null && listDataHeader.size() > 0) {
+                           if ((listDataHeader != null  && getView()!=null) && listDataHeader.size() > 0) {
 
                                (getView().findViewById(R.id.no_cart_div)).setVisibility(View.GONE);
                                (getView().findViewById(R.id.mainCartDiv)).setVisibility(View.VISIBLE);
 
-                               sub_total_price_tv.setText(symbol + grandTotal);
+                               subTotalPriceTv.setText(symbol + grandTotal);
 
-                               if (!tax_preference.isEmpty()) {
-                                   tax_tv.setText("(" + tax_preference + "%)");
+                               if (!taxPreference.isEmpty()) {
+                                   taxTv.setText("(" + taxPreference + "%)");
                                } else {
-                                   tax_preference = String.valueOf(0);
-                                   tax_tv.setText("(0%)");
+                                   taxPreference = String.valueOf(0);
+                                   taxTv.setText("(0%)");
                                }
 
 
-                               if (fee_prefernce != null) {
-                                   if (fee_prefernce.isEmpty()) {
-                                       fee_prefernce = String.valueOf(0);
+                               if (feePrefernce != null) {
+                                   if (feePrefernce.isEmpty()) {
+                                       feePrefernce = String.valueOf(0);
                                    }
+                               }else {
+                                   feePrefernce = "0";
                                }
-                               if (fee_prefernce == null) {
-                                   fee_prefernce = "0";
-                               }
+
 
 
                                if (grandTotal.isEmpty()) {
                                    grandTotal = "0.0";
                                }
 
-                               if (delivery_address_tv.getText().toString().equalsIgnoreCase("Select Delivery Address")) {
-                                   fee_prefernce = "" + 0.0;
+                               if (deliveryAddressTv.getText().toString().equalsIgnoreCase(getString(R.string.select_delivery_address))) {
+                                   feePrefernce = "" + 0.0;
                                }
-                               total_delivery_fee_tv.setText(symbol + fee_prefernce);
+                               totalDeliveryFeeTv.setText(symbol + feePrefernce);
 
 
-                               rider_tip_price_tv.setText(symbol + "0.0");
+                               if(discountTv.getText().toString().equalsIgnoreCase(getString(R.string.add_promo_code))){
+                                   discount="0";
+                                   discountAmount =0.0;
+                               }
 
-                               total_promo_tv.setText(symbol + "0.0");
-                               total_sum_tv.setText(total_sum);
 
-                               Calculate_Price();
+                               riderTipPriceTv.setText(symbol + "0.0");
 
-                               cartFragExpandable = new CartFragExpandable(getContext(), listDataHeader, ListChild);
-                               selected_item_list.setAdapter(cartFragExpandable);
+                               totalPromoTv.setText(symbol + "0.0");
+                               totalSumTv.setText(totalSum);
+
+                               calculatePrice();
+
+                               cartFragExpandable = new CartFragExpandable(getContext(), listDataHeader, listChild);
+                               selectedItemList.setAdapter(cartFragExpandable);
 
                                TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, true);
                                int itemCount = cartFragExpandable.getGroupCount();
@@ -634,12 +673,12 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                                for (int i = 0; i < cartFragExpandable.getGroupCount(); i++)
                                    try {
 
-                                       selected_item_list.expandGroup(i);
+                                       selectedItemList.expandGroup(i);
                                    } catch (IndexOutOfBoundsException e) {
                                        e.getCause();
                                    }
 
-                               selected_item_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                               selectedItemList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                                    @Override
                                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
@@ -650,7 +689,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                                    }
                                });
 
-                           } else {
+                           } else if(getView()!=null) {
                                (getView().findViewById(R.id.no_cart_div)).setVisibility(View.VISIBLE);
                                (getView().findViewById(R.id.mainCartDiv)).setVisibility(View.GONE);
                            }
@@ -660,36 +699,37 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
 
                        } catch (JSONException e) {
-                           No_data_found();
+                           noDataFound();
                           }
                    } else {
-                       No_data_found();
+                       noDataFound();
                       }
                }
                else {
-                     No_data_found();
+                     noDataFound();
                    }
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                No_data_found();
+                noDataFound();
             }
         });
 
     }
 
 
-    public void No_data_found(){
-
+    public void noDataFound(){
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
         transparent_layer.setVisibility(View.GONE);
         progressDialog.setVisibility(View.GONE);
-        (getView().findViewById(R.id.no_cart_div)).setVisibility(View.VISIBLE);
-        (getView().findViewById(R.id.mainCartDiv)).setVisibility(View.GONE);
 
+        if(getView()!=null) {
+            (getView().findViewById(R.id.no_cart_div)).setVisibility(View.VISIBLE);
+            (getView().findViewById(R.id.mainCartDiv)).setVisibility(View.GONE);
+        }
     }
 
     private void getDescText(String minimumOrderPrice, String grandTotal){
@@ -699,16 +739,16 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
             if (var3 >= Double.parseDouble(minimumOrderPrice)) {
 
-                free_delivery_tv.setText(R.string.you_have_reached_your_free_delivery_order);
+                freeDeliveryTv.setText(R.string.you_have_reached_your_free_delivery_order);
 
 
 
             } else {
                 if (String.valueOf(var3).contains("-")) {
-                    free_delivery_tv.setText(R.string.you_have_reached_your_free_delivery_order);
+                    freeDeliveryTv.setText(R.string.you_have_reached_your_free_delivery_order);
 
                 } else {
-                    free_delivery_tv.setText(getString(R.string.you_have_to_need_more) + symbol + var3 + getString(R.string.for_free_delivery_order));
+                    freeDeliveryTv.setText(getString(R.string.you_have_to_need_more) + symbol + var3 + getString(R.string.for_free_delivery_order));
                 }
             }
         }catch (Exception e){
@@ -742,10 +782,10 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                 riderTip = ed_text.getText().toString();
                 PICK_UP = false;
-                rider_tip_price_tv.setText(symbol+riderTip);
+                riderTipPriceTv.setText(symbol+riderTip);
                 rider_tip.setText(symbol+riderTip);
 
-                Calculate_Price();
+                calculatePrice();
 
                 dialog.dismiss();
                 }else {
@@ -766,6 +806,49 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
     }
 
+
+    public void addRestuarentInstruction(){
+
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.item_dialog_restaurent_instruction);
+
+        final EditText add_instructions_edit = dialog.findViewById(R.id.add_instructions_edit);
+
+        Button done_btn = (Button) dialog.findViewById(R.id.done_btn);
+        Button cancel_btn=dialog.findViewById(R.id.cancel_btn);
+
+
+        done_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!TextUtils.isEmpty(done_btn.getText().toString())){
+
+                    restuarentInstructionTv.setText(add_instructions_edit.getText().toString());
+                    restuarentInstructionTv.setSelected(true);
+                    dialog.cancel();
+                }
+                else {
+                    Toast.makeText(getContext(), "Please add instructions", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
     public void varifyCoupan(){
 
         final Dialog dialog = new Dialog(getContext());
@@ -784,8 +867,8 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(ed_text.getText().toString())) {
 
-                    coupan_code_ = ed_text.getText().toString();
-                    getCoupanRequest(coupan_code_);
+                    coupanCode = ed_text.getText().toString();
+                    getCoupanRequest(coupanCode);
 
                     TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout, false);
                     transparent_layer.setVisibility(View.VISIBLE);
@@ -811,8 +894,8 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
     }
 
     String discount="0";
-    Double discount_amount=0.0;
-    String coupon_id="0";
+    Double discountAmount =0.0;
+    String couponId ="0";
     public void getCoupanRequest(String coupan_code){
 
 
@@ -829,9 +912,9 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
 
 
-        ApiRequest.Call_Api(context, Config.VERIFY_COUPAN, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.VERIFY_COUPAN, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
                 transparent_layer.setVisibility(View.GONE);
@@ -841,14 +924,8 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                     JSONObject jsonObject1 = new JSONObject(resp);
 
                     int code = Integer.parseInt(jsonObject1.optString("code"));
-                    if(FLAG_COUPON){
-                        Toast.makeText(getContext(), R.string.coupon_already_been_added,Toast.LENGTH_SHORT).show();
-                        TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
+                    if (code == 200) {
 
-                    }
-                    else {
-                        if (code == 200) {
-                            FLAG_COUPON = true;
                             JSONArray jsonArray = jsonObject1.getJSONArray("msg");
                             for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -856,16 +933,16 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
                                 JSONObject jsonObject3 = jsonObject2.getJSONObject("RestaurantCoupon");
                                 discount = jsonObject3.optString("discount");
-                                coupon_id=jsonObject3.optString("id");
-                                promo_tv.setText("("+discount+"%)");
+                                couponId =jsonObject3.optString("id");
+                                promoTv.setText("("+discount+"%)");
 
-                                Calculate_Price();
+                                calculatePrice();
                             }
 
                         } else {
                             Toast.makeText(getContext(), resp.toString(), Toast.LENGTH_SHORT).show();
                         }
-                    }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -879,45 +956,47 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
     }
 
 
+    public void calculatePrice(){
 
-    public void Calculate_Price(){
-
-        total_sum=grandTotal_;
+        totalSum =grandTotal_;
 
 
         if(!PICK_UP){
-            total_sum = ""+(Double.parseDouble(total_sum) + Double.parseDouble(fee_prefernce));
+            totalSum = ""+(Double.parseDouble(totalSum) + Double.parseDouble(feePrefernce));
 
-            total_sum = ""+(Double.parseDouble(total_sum) + Double.parseDouble(riderTip));
+            totalSum = ""+(Double.parseDouble(totalSum) + Double.parseDouble(riderTip));
 
         }
 
 
-        float tax= (float) (Double.parseDouble(grandTotal) * Double.parseDouble(tax_preference) / 100);
+        float tax= (float) (Double.parseDouble(grandTotal) * Double.parseDouble(taxPreference) / 100);
 
-        tax_dues = get_roundoff_double(""+tax);
-        total_sum = ""+(Double.valueOf(Double.parseDouble(total_sum) + Double.parseDouble(tax_dues)));
-        total_tex_tv.setText(symbol + tax_dues);
-
-
-
-        float dis= (float) ((Double.parseDouble(discount)*Double.parseDouble(grandTotal_))/100);
-         discount_amount = Double.valueOf(get_roundoff_double(""+dis));
-
-        discount_tv.setText(symbol+" "+discount_amount+" ("+discount+"%)");
-        total_promo_tv.setText(symbol+" "+discount_amount);
-
-        total_sum = ""+(Double.parseDouble(total_sum)-discount_amount);
+        tax_dues = getRoundoffDouble(""+tax);
+        totalSum = ""+(Double.valueOf(Double.parseDouble(totalSum) + Double.parseDouble(tax_dues)));
+        totalTexTv.setText(symbol + tax_dues);
 
 
-        total_sum= get_roundoff_double(total_sum);
-        total_sum_tv.setText(symbol+get_roundoff_double(total_sum));
+
+         float dis= (float) ((Double.parseDouble(discount)*Double.parseDouble(grandTotal_))/100);
+         discountAmount = Double.valueOf(getRoundoffDouble(""+dis));
+
+       if(discountAmount >0) {
+           discountTv.setText(symbol + " " + discountAmount + " (" + discount + "%)");
+           totalPromoTv.setText(symbol + " " + discountAmount);
+       }
+
+
+        totalSum = ""+(Double.parseDouble(totalSum)- discountAmount);
+
+
+        totalSum = getRoundoffDouble(totalSum);
+        totalSumTv.setText(symbol+ getRoundoffDouble(totalSum));
 
 
     }
 
 
-    public String get_roundoff_double(String value){
+    public String getRoundoffDouble(String value){
 
         if(!value.contains(".")){
             return value;
@@ -930,11 +1009,16 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
     }
 
 
+
+    HashMap<String,Object> values_final;
+    ArrayList<HashMap<String,Object>> extraItemArray;
     public void placeOrder(){
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
         transparent_layer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
+
+        extraItemArray = new ArrayList<>();
 
         JSONArray menu_item=null;
         JSONArray valueArray = new JSONArray(values);
@@ -983,27 +1067,32 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("user_id",user_id);
-            jsonObject.put("price",total_sum);
+            jsonObject.put("price", totalSum);
             jsonObject.put("sub_total",grandTotal);
             jsonObject.put("tax",tax_dues);
             jsonObject.put("quantity",mQuantity);
-            if(delivery_address_tv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.pick_up)))
+            if(deliveryAddressTv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.pick_up)))
             {
                 jsonObject.put("address_id", "");
-            }else {
-                jsonObject.put("address_id", address_id);
             }
-            jsonObject.put("restaurant_id",res_id);
-            jsonObject.put("instructions",instructions);
+            else {
 
-            jsonObject.put("coupon_id",coupon_id);
-            jsonObject.put("discount",discount_amount);
+                jsonObject.put("address_id", addressId);
+                jsonObject.put("rider_instruction",addressListModel.getInstruction());
+
+            }
+
+            jsonObject.put("restaurant_id",res_id);
+            jsonObject.put("restaurant_instruction", restuarentInstructionTv.getText().toString());
+
+            jsonObject.put("coupon_id", couponId);
+            jsonObject.put("discount", discountAmount);
 
             jsonObject.put("order_time",formattedDate);
-            jsonObject.put("delivery_fee",fee_prefernce);
-            jsonObject.put("version",SplashScreen.VERSION_CODE);
+            jsonObject.put("delivery_fee", feePrefernce);
+            jsonObject.put("version",SplashScreen.versionCode);
 
-            if(delivery_address_tv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.pick_up))) {
+            if(deliveryAddressTv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.pick_up))) {
                 jsonObject.put("delivery","0");
             }
             else {
@@ -1011,15 +1100,15 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
             }
 
 
-            if(delivery_address_tv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.pick_up)))
+            if(deliveryAddressTv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.pick_up)))
             {
                 jsonObject.put("delivery_date_time","");
             }
-            else if(delivery_datetime_tv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.select_delivery_time))){
+            else if(deliveryDatetimeTv.getText().toString().equalsIgnoreCase(getResources().getString(R.string.select_delivery_time))){
                 jsonObject.put("delivery_date_time","");
             }
             else {
-                jsonObject.put("delivery_date_time",delivery_datetime_tv.getText());
+                jsonObject.put("delivery_date_time", deliveryDatetimeTv.getText());
             }
 
 
@@ -1035,8 +1124,6 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
             jsonObject.put("cod","1");
             jsonObject.put("payment_id","0");
-
-
 
             jsonObject.put("menu_item",menu_item);
 
@@ -1054,25 +1141,24 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                 jsonObject.put("lang","english");
             }
 
-
-
         } catch (JSONException e) {
             e.printStackTrace();
 
         }
-
         Log.d(AllConstants.tag,jsonObject.toString());
 
-      /*  Gson userGson=new GsonBuilder().create();
-        String jsonstring=userGson.toJson(jsonObject.toString());
+
+        /*
+         Gson userGson=new GsonBuilder().create();
+         String jsonstring=userGson.toJson(jsonObject.toString());
         */
 
        Log.d(AllConstants.tag,jsonObject.toString());
 
 
-        ApiRequest.Call_Api(context, Config.addOrderSession, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.addOrderSession, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
                 transparent_layer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
@@ -1085,7 +1171,9 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                         if(msg!=null){
                             JSONObject OrderSession=msg.optJSONObject("OrderSession");
                             String id=OrderSession.optString("id");
-                            Open_Checkout_Fragment(id);
+
+                            Log.d(AllConstants.tag,Config.payment_link);
+                            openCheckoutFragment(id);
                         }
                     }
                 } catch (JSONException e) {
@@ -1094,16 +1182,14 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
 
             }
         });
-        Log.d(AllConstants.tag,Config.payment_link);
-
 
     }
 
 
-    public void Open_Checkout_Fragment(String id){
-        Checkout_F checkout_f = new Checkout_F(new Fragment_Callback() {
+    public void openCheckoutFragment(String id){
+        Checkout_F checkout_f = new Checkout_F(new FragmentCallback() {
             @Override
-            public void Responce(Bundle bundle) {
+            public void onResponce(Bundle bundle) {
 
                 mDatabase.setValue(null);
                 Intent intent = new Intent();
@@ -1115,9 +1201,7 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                 editor.putInt("count",0)
                         .commit();
                 ORDER_PLACED = true;
-
                 FLAG_CLEAR_ORDER = true;
-                OrderDetailFragment.CALLBACK_ORDERFRAG = true;
 
                 getCartData();
 
@@ -1216,15 +1300,29 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
                String name = dataSnapshot.child("key").getValue(String.class);
 
 
-                   if(name.equalsIgnoreCase(key)){
+                   if(name!=null && name.equalsIgnoreCase(key)){
                        deleteNode.setValue(null);
-                       getCartData();
 
                        int getCartCount = sPref.getInt("count",0);
-
+                       getCartCount=getCartCount-1;
                        SharedPreferences.Editor editor = sPref.edit();
-                       editor.putInt("count",getCartCount-1).commit();
+                       editor.putInt("count",getCartCount).commit();
                        getActivity().sendBroadcast(new Intent("AddToCart"));
+
+
+                       if(getCartCount<=0) {
+                           mDatabase.setValue(null);
+                           noCartDiv.setVisibility(View.VISIBLE);
+                           mainCartDiv.setVisibility(View.GONE);
+
+                           AdapterPager a = (AdapterPager) PagerMainActivity.viewPager.getAdapter();
+                           a.destroyItem(PagerMainActivity.viewPager, 2, a.instantiateItem(PagerMainActivity.viewPager, 2));
+                           CartFragment f = (CartFragment) a.instantiateItem(PagerMainActivity.viewPager, 2);
+
+                           FLAG_CLEAR_ORDER = true;
+                       }else {
+                           getCartData();
+                       }
 
                    }
 
@@ -1288,9 +1386,6 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
             }
         });
 
-
-
     }
-
 
 }

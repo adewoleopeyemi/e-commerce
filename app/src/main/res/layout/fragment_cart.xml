@@ -8,10 +8,9 @@
     android:background="@color/colorWhite">
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:background="@color/colorWhite"
-            android:layout_height="55dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="@dimen/toolbar_height"
             android:id="@+id/cart_header_div"
             android:paddingStart="5dp">
 
@@ -21,9 +20,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="@string/cart"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/bg_top_color"
                 android:id="@+id/rastaurant_menu_item_title_tv"
-                android:textSize="18sp"/>
+                android:textSize="15sp"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -38,7 +37,7 @@
                 android:id="@+id/clear_btn"
                 android:fontFamily="@font/verdana"
                 android:textStyle="normal"
-                android:textColor="@color/colorPrimaryDark"/>
+                android:textColor="@color/bg_top_color"/>
 
         </RelativeLayout>
 
@@ -46,13 +45,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mainCartDiv"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/colorBG"
+            android:background="@color/colorBg"
             >
 
             <TextView
@@ -63,7 +62,7 @@
                 android:layout_marginStart="15dp"
                 android:textSize="10sp"
                 android:id="@+id/rest_name_tv"
-                android:textColor="@color/or_color_name"/>
+                android:textColor="@color/color_light_black"/>
 
         </RelativeLayout>
 
@@ -85,7 +84,7 @@
                 android:textSize="10sp"
                 android:layout_marginEnd="15dp"
                 android:id="@+id/free_delivery_tv"
-                android:textColor="@color/colorWhite"/>
+                android:textColor="@color/bg_top_color"/>
 
         </RelativeLayout>
 
@@ -145,8 +144,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/cart_address_div">
+                android:layout_height="@dimen/_32sdp"
+                android:id="@+id/cart_address_div"
+                android:background="@drawable/d_bottom_gray_line">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -158,12 +158,8 @@
                     android:layout_toStartOf="@+id/rightArrow"
                     android:layout_alignParentStart="true"
                     android:singleLine="true"
+                    android:textColor="@color/color_light_black"
                     />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorEditTextBG"/>
 
                 <ImageView
                     android:layout_width="30dp"
@@ -180,8 +176,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/cart_datetime_div">
+                android:layout_height="@dimen/_32sdp"
+                android:id="@+id/cart_datetime_div"
+                android:background="@drawable/d_bottom_gray_line">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -192,12 +189,8 @@
                     android:id="@+id/delivery_datetime_tv"
                     android:layout_alignParentStart="true"
                     android:singleLine="true"
+                    android:textColor="@color/color_light_black"
                     />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorEditTextBG"/>
 
                 <ImageView
                     android:layout_width="30dp"
@@ -210,10 +203,42 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_32sdp"
+                android:id="@+id/restuarent_instruction_div"
+                android:background="@drawable/d_bottom_gray_line">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:id="@+id/title"
+                    android:layout_marginStart="15dp"
+                    android:text="Restaurant instructions"
+                    android:textColor="@color/color_light_black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="15dp"
+                    android:id="@+id/restuarent_instruction_tv"
+                    android:layout_toEndOf="@+id/title"
+                    android:gravity="center|end"
+                    android:ellipsize="marquee"
+                    android:scrollHorizontally="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:textColor="@color/color_light_black"
+                    />
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp">
+                android:layout_height="@dimen/toolbar_height">
 
 
                 <LinearLayout
@@ -233,7 +258,7 @@
                         android:layout_height="40dp"
                         android:background="@drawable/round_shape_btn_login"
                         android:layout_weight="1"
-                        android:id="@+id/accept_div"
+                        android:id="@+id/delivery_div"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="3dp"
                         >
@@ -246,7 +271,7 @@
                             android:textStyle="normal"
                             android:layout_centerInParent="true"
                             android:id="@+id/accept_tv"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="@color/bg_top_color"
                             />
 
                     </RelativeLayout>
@@ -258,7 +283,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="3dp"
                         android:layout_gravity="center_vertical"
-                        android:id="@+id/decline_div">
+                        android:id="@+id/pickup_div">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -267,7 +292,7 @@
                             android:textSize="14sp"
                             android:textStyle="normal"
                             android:layout_centerInParent="true"
-                            android:textColor="@color/or_color_name"
+                            android:textColor="@color/color_light_black"
                             android:id="@+id/decline_tv"
                             />
 
@@ -288,8 +313,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/tip_div">
+                android:layout_height="@dimen/_32sdp"
+                android:id="@+id/tip_div"
+                android:background="@drawable/d_bottom_gray_line">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -298,12 +324,8 @@
                     android:layout_marginStart="15dp"
                     android:text="@string/add_rider_tip"
                    android:id="@+id/rider_tip"
+                    android:textColor="@color/color_light_black"
                     />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorEditTextBG"/>
 
                 <ImageView
                     android:layout_width="30dp"
@@ -318,8 +340,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/promo_code_div">
+                android:layout_height="@dimen/_32sdp"
+                android:id="@+id/promo_code_div"
+                android:background="@drawable/d_bottom_gray_line">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -328,12 +351,8 @@
                     android:layout_marginStart="15dp"
                     android:text="@string/add_promo_code"
                     android:id="@+id/discount_tv"
+                    android:textColor="@color/color_light_black"
                     />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorEditTextBG"/>
 
                 <ImageView
                     android:layout_width="30dp"
@@ -349,7 +368,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_32sdp"
                 android:layout_marginTop="1dp"
                 android:id="@+id/rider_tip_div"
                 android:layout_below="@+id/toolbar_sign_in"
@@ -363,7 +382,7 @@
                     android:textSize="14sp"
                     android:paddingStart="15dp"
                     android:id="@+id/rider_tip_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -376,7 +395,7 @@
                     android:layout_alignParentRight="true"
                     android:paddingEnd="15dp"
                     android:text="0.0"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:textSize="14sp" />
 
 
@@ -384,7 +403,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_32sdp"
                 android:layout_marginTop="1dp"
                 android:id="@+id/sub_total_div"
                 android:layout_below="@+id/toolbar_sign_in"
@@ -398,7 +417,7 @@
                     android:textSize="14sp"
                     android:paddingStart="15dp"
                     android:id="@+id/sub_total_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -410,13 +429,13 @@
                     android:paddingEnd="15dp"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/sub_total_price_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_32sdp"
                 android:id="@+id/tax_div"
                 android:layout_below="@+id/toolbar_sign_in"
                 >
@@ -429,7 +448,7 @@
                     android:textSize="14sp"
                     android:paddingStart="15dp"
                     android:id="@+id/tax"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -441,6 +460,7 @@
                     android:paddingStart="15dp"
                     android:layout_marginStart="3dp"
                     android:layout_toEndOf="@+id/tax"
+                    android:textColor="@color/color_light_black"
                     />
 
                 <TextView
@@ -452,7 +472,7 @@
                     android:paddingEnd="15dp"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/total_tex_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
 
@@ -461,7 +481,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_32sdp"
                 android:id="@+id/promo_div"
                 android:layout_below="@+id/toolbar_sign_in"
                 >
@@ -474,7 +494,7 @@
                     android:textSize="14sp"
                     android:paddingStart="15dp"
                     android:id="@+id/promo"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -486,6 +506,7 @@
                     android:paddingStart="15dp"
                     android:layout_marginStart="3dp"
                     android:layout_toEndOf="@+id/promo"
+                    android:textColor="@color/color_light_black"
                     />
 
                 <TextView
@@ -497,7 +518,7 @@
                     android:paddingEnd="15dp"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/total_promo_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
 
@@ -506,9 +527,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_32sdp"
                 android:layout_marginTop="1dp"
                 android:id="@+id/delivery_fee_div"
+                android:background="@drawable/d_bottom_gray_line"
                 android:layout_below="@+id/toolbar_sign_in"
                 >
 
@@ -520,7 +542,7 @@
                     android:textSize="14sp"
                     android:paddingStart="15dp"
                     android:id="@+id/deals_delivery_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -532,27 +554,19 @@
                     android:paddingEnd="15dp"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/total_delivery_fee_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorEditTextBG"
-                    />
-
 
             </RelativeLayout>
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="@dimen/_32sdp"
                 android:layout_marginTop="1dp"
                 android:id="@+id/total_bil_div"
-                android:layout_below="@+id/toolbar_sign_in"
-                >
+                android:background="@drawable/d_bottom_gray_line"
+                android:layout_below="@+id/toolbar_sign_in">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -562,7 +576,7 @@
                     android:textSize="14sp"
                     android:paddingStart="15dp"
                     android:id="@+id/deals_total_tv"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -574,14 +588,7 @@
                     android:paddingEnd="15dp"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/total_sum_tv"
-                    android:textColor="@color/black"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorEditTextBG"
+                    android:textColor="@color/colorBlack"
                     />
 
 
@@ -609,28 +616,25 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/check_out"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/bg_top_color" />
 
 
     </RelativeLayout>
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar_div"
         android:id="@+id/no_cart_div"
-        android:layout_marginTop="55dp"
-        android:visibility="gone"
-        android:background="@color/colorBG">
+        android:layout_marginTop="@dimen/toolbar_height"
+        android:background="@color/colorBg">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/_120sdp"
             android:id="@+id/img_no_job"
             android:layout_centerInParent="true"
-            android:src="@drawable/no_job_today"
-            app:layout_widthPercent = "40%"
-            app:layout_heightPercent = "40%"/>
+            android:src="@drawable/no_job_today" />
 
         <TextView
             android:layout_height="wrap_content"
@@ -638,6 +642,7 @@
             android:layout_below="@+id/img_no_job"
             android:layout_centerHorizontal="true"
             android:text="@string/whoops"
+            android:textColor="@color/color_light_black"
             android:id="@+id/whoops"
             android:textSize="22sp"/>
 
@@ -650,9 +655,10 @@
             android:layout_marginStart="55dp"
             android:layout_marginEnd="55dp"
             android:text="@string/there_is_no_cart_data"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:textColor="@color/color_light_black"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
     <RelativeLayout

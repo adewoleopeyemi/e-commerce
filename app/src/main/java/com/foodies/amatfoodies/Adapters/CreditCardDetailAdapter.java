@@ -5,26 +5,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.foodies.amatfoodies.Models.CardDetailModel;
 import com.foodies.amatfoodies.R;
+import com.foodies.amatfoodies.ViewHolders.CreditCardViewHolder;
 
 
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class CreditCardDetailAdapter extends RecyclerView.Adapter<CreditCardDetailAdapter.ViewHolder>  {
+public class CreditCardDetailAdapter extends RecyclerView.Adapter<CreditCardViewHolder>  {
 
     ArrayList<CardDetailModel> getDataAdapter;
     Context context;
-    ImageLoader imageLoader1;
     OnItemClickListner onItemClickListner;
 
     public CreditCardDetailAdapter(ArrayList<CardDetailModel> getDataAdapter, Context context){
@@ -34,31 +30,31 @@ public class CreditCardDetailAdapter extends RecyclerView.Adapter<CreditCardDeta
     }
 
     @Override
-    public CreditCardDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CreditCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item_payment_details, parent, false);
 
-        CreditCardDetailAdapter.ViewHolder viewHolder = new CreditCardDetailAdapter.ViewHolder(v);
+        CreditCardViewHolder viewHolder = new CreditCardViewHolder(v);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(CreditCardViewHolder holder, final int position) {
 
         CardDetailModel getDataAdapter1 =  getDataAdapter.get(position);
 
         String card_name = getDataAdapter1.getCard_name();
-        holder.card_number.setText("**** **** **** "+getDataAdapter1.getCard_number());
-        holder.card_image.setImageResource(getDataAdapter1.getCard_image());
+        holder.cardNumber.setText("**** **** **** "+getDataAdapter1.getCard_number());
+        holder.cardImage.setImageResource(getDataAdapter1.getCard_image());
 
         if(card_name.equalsIgnoreCase("visa")){
-            holder.card_image.setImageResource(R.drawable.visa);
+            holder.cardImage.setImageResource(R.drawable.visa);
         }
         else if (card_name.equalsIgnoreCase("master")){
-            holder.card_image.setImageResource(R.drawable.master_card);
+            holder.cardImage.setImageResource(R.drawable.master_card);
         }
 
-        holder.payment_main_div.setOnClickListener(new View.OnClickListener() {
+        holder.paymentMainDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -76,24 +72,6 @@ public class CreditCardDetailAdapter extends RecyclerView.Adapter<CreditCardDeta
     }
 
 
-
-    class ViewHolder extends RecyclerView.ViewHolder{
-
-        public TextView card_number;
-        public ImageView card_image;
-        public RelativeLayout payment_main_div;
-
-        public ViewHolder(View itemView) {
-
-            super(itemView);
-
-
-            card_image = itemView.findViewById(R.id.card_image);
-            card_number = itemView.findViewById(R.id.credit_card_number_tv);
-            payment_main_div = itemView.findViewById(R.id.payment_main_div);
-
-        }
-    }
 
     public interface OnItemClickListner {
         void OnItemClicked(View view, int position);

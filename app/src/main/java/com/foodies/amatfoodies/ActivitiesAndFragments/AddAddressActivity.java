@@ -1,22 +1,32 @@
 package com.foodies.amatfoodies.ActivitiesAndFragments;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.R;
 
 
-public class AddAddressActivity extends AppCompatActivity {
+public class AddAddressActivity extends AppCompatActivity implements View.OnClickListener {
 
-    RelativeLayout  add_address_div,add_address_layout,select_address_layout;
-    Button cancle_address_btn,cancle_add_address_btn;
+    RelativeLayout addAddressDiv, addAddressLayout, selectAddressLayout;
+    Button cancleAddressBtn, cancleAddAddressBtn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_address);
         initUI();
@@ -24,39 +34,43 @@ public class AddAddressActivity extends AppCompatActivity {
     }
 
     private void initUI(){
-        add_address_div = findViewById(R.id.add_address_div);
-        select_address_layout = findViewById(R.id.select_add_layout);
-        add_address_layout = findViewById(R.id.add_address_layout);
-        cancle_add_address_btn = findViewById(R.id.cancle_add_address_btn);
-        add_address_div.setOnClickListener(new View.OnClickListener() {
+        addAddressDiv = findViewById(R.id.add_address_div);
+        selectAddressLayout = findViewById(R.id.select_add_layout);
+        addAddressLayout = findViewById(R.id.add_address_layout);
+        cancleAddAddressBtn = findViewById(R.id.cancle_add_address_btn);
+        addAddressDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                select_address_layout.setVisibility(View.GONE);
-                add_address_layout.setVisibility(View.VISIBLE);
+                selectAddressLayout.setVisibility(View.GONE);
+                addAddressLayout.setVisibility(View.VISIBLE);
 
             }
         });
 
 
-        cancle_add_address_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                select_address_layout.setVisibility(View.VISIBLE);
-                add_address_layout.setVisibility(View.GONE);
-            }
-        });
+        cancleAddAddressBtn.setOnClickListener(this::onClick);
 
 
 
-        cancle_address_btn = findViewById(R.id.cancle_address_btn);
-        cancle_address_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        cancleAddressBtn = findViewById(R.id.cancle_address_btn);
+        cancleAddressBtn.setOnClickListener(this::onClick);
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.cancle_add_address_btn:
+                selectAddressLayout.setVisibility(View.VISIBLE);
+                addAddressLayout.setVisibility(View.GONE);
+                break;
+
+            case R.id.cancle_address_btn:
                 finish();
-            }
-        });
-
-
+                break;
+        }
     }
 }

@@ -26,7 +26,7 @@ import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Models.SpecialityModel;
 
@@ -44,36 +44,36 @@ import java.util.ArrayList;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class RestaurantSpecialityFrag extends RootFragment {
 
-    ImageView close_country;
-    TextView title_city_tv;
+    ImageView closeCountry;
+    TextView titleCityTv;
 
     ArrayList<SpecialityModel> specialityArray;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     RestSpecialityAdapter recyclerViewadapter;
-    RecyclerView card_recycler_view;
+    RecyclerView cardRecyclerView;
 
     CamomileSpinner pbHeaderProgress;
     SharedPreferences sharedPreferences;
     SearchView searchView;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
-
+    String lat,lon;
 
     public RestaurantSpecialityFrag (){
 
     }
 
-    Fragment_Callback fragment_callback;
-    public RestaurantSpecialityFrag (Fragment_Callback fragment_callback){
-        this.fragment_callback=fragment_callback;
+    FragmentCallback fragmentCallback;
+    public RestaurantSpecialityFrag (FragmentCallback fragmentCallback){
+        this.fragmentCallback = fragmentCallback;
     }
 
     @Nullable
@@ -102,14 +102,24 @@ public class RestaurantSpecialityFrag extends RootFragment {
 
         ((LinearLayout.LayoutParams) searchEditFrame.getLayoutParams()).leftMargin = 5;
         search(searchView);
-        card_recycler_view = view.findViewById(R.id.countries_list);
+        cardRecyclerView = view.findViewById(R.id.countries_list);
         recyclerViewlayoutManager = new LinearLayoutManager(getContext());
-        card_recycler_view.setLayoutManager(recyclerViewlayoutManager);
+        cardRecyclerView.setLayoutManager(recyclerViewlayoutManager);
         sharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
+        lat = sharedPreferences.getString(PreferenceClass.LATITUDE,"");
+        lon = sharedPreferences.getString(PreferenceClass.LONGITUDE,"");
+
+        if(lat.isEmpty() || lon.isEmpty()){
+            lat = "31.4904023";
+            lon = "74.2906989";
+        }
+
         pbHeaderProgress = view.findViewById(R.id.pbHeaderProgress);
         pbHeaderProgress.start();
 
         init(view);
+
+
         return view;
 
     }
@@ -118,17 +128,17 @@ public class RestaurantSpecialityFrag extends RootFragment {
 
 
         progressDialog = v.findViewById(R.id.progressDialog);
-        transparent_layer = v.findViewById(R.id.transparent_layer);
+        transparentLayer = v.findViewById(R.id.transparent_layer);
 
         specialityArray = new ArrayList<>();
-        title_city_tv = v.findViewById(R.id.title_city_tv);
+        titleCityTv = v.findViewById(R.id.title_city_tv);
 
 
-        title_city_tv.setText(R.string.select_speciality);
+        titleCityTv.setText(R.string.select_speciality);
 
 
-        close_country = v.findViewById(R.id.close_country);
-        close_country.setOnClickListener(new View.OnClickListener() {
+        closeCountry = v.findViewById(R.id.close_country);
+        closeCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -145,15 +155,27 @@ public class RestaurantSpecialityFrag extends RootFragment {
     public void getRestSpecialityList(){
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_REST_SPECIALITY_LIST, null, new Callback() {
+
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("lat", lat);
+            jsonObject.put("long", lon);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(AllConstants.tag,lat+" "+lon);
+
+
+        ApiRequest.callApi(context, Config.SHOW_REST_SPECIALITY_LIST, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
                 try {
@@ -185,7 +207,7 @@ public class RestaurantSpecialityFrag extends RootFragment {
 
                         if(specialityArray!=null) {
                             recyclerViewadapter = new RestSpecialityAdapter(specialityArray, getActivity());
-                            card_recycler_view.setAdapter(recyclerViewadapter);
+                            cardRecyclerView.setAdapter(recyclerViewadapter);
                             recyclerViewadapter.notifyDataSetChanged();
                         }
 
@@ -195,10 +217,10 @@ public class RestaurantSpecialityFrag extends RootFragment {
 
 
 
-                                if(fragment_callback!=null){
+                                if(fragmentCallback !=null){
                                     Bundle bundle=new Bundle();
                                     bundle.putString("speciality",specialityArray.get(position).getName());
-                                    fragment_callback.Responce(bundle);
+                                    fragmentCallback.onResponce(bundle);
                                 }
                                 getActivity().onBackPressed();
 
@@ -208,6 +230,7 @@ public class RestaurantSpecialityFrag extends RootFragment {
 
 
                 }
+
                 catch (JSONException e){
                     e.getMessage();
 

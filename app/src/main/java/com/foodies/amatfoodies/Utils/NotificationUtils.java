@@ -34,12 +34,10 @@ import java.util.List;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 public class NotificationUtils {
 
-
-    private static String TAG = NotificationUtils.class.getSimpleName();
 
     private Context mContext;
     String channelId;
@@ -53,14 +51,10 @@ public class NotificationUtils {
     public void showNotificationMessage(String title, String message, String timeStamp, Intent intent) {
         showNotificationMessage(title, message, timeStamp, intent, null);
     }
-    @SuppressWarnings("deprecation")
+
     public void showNotificationMessage(final String title, final String message, final String timeStamp, Intent intent, String imageUrl) {
-        // Check for empty push message
         if (TextUtils.isEmpty(message))
             return;
-
-
-        // notification icon
         final int icon = R.drawable.app_icon;
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

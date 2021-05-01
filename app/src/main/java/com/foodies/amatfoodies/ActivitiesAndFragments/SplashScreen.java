@@ -10,7 +10,6 @@ import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -19,29 +18,30 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.foodies.amatfoodies.BuildConfig;
-import com.foodies.amatfoodies.Constants.GpsUtils;
+import com.foodies.amatfoodies.Constants.AllConstants;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
+import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.GoogleMapWork.MapsActivity;
 import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.Utils.ContextWrapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -52,32 +52,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by RaoMudassar on 12/4/17.
- */
 
-public class SplashScreen extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks {
+
+public class SplashScreen extends AppCompatActivity {
 
 
 
-    public static String VERSION_CODE;
+    public static String versionCode;
 
-    // Splash screen timer
-    private static int SPLASH_TIME_OUT = 3000;
 
-    TextView welcome_location_txt;
-    private RelativeLayout main_welcome_screen_layout, main_splash_layout, welcome_search_div;
+    private final int SPLASH_TIME_OUT = 3000;
 
-    //  ProgressDialog pd;
+    TextView welcomeLocationTxt;
+    private RelativeLayout mainWelcomeScreenLayout, mainSplashLayout, welcomeSearchDiv;
+
+
     String getCurrentLocationAddress;
 
 
 
     SharedPreferences sharedPreferences;
     double latitude, longitude;
-    private Button welcome_show_restaurants_btn;
+    private Button welcomeShowRestaurantsBtn;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSION_DATA_ACCESS_CODE = 2;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
@@ -112,6 +108,14 @@ public class SplashScreen extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
 
         try {
@@ -123,11 +127,10 @@ public class SplashScreen extends AppCompatActivity implements
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                set_language_local();
+                setLanguageLocal();
             }
 
             setContentView(R.layout.splash);
-
             // Video View for Splash Screen
             videoView = (VideoView) findViewById(R.id.videoView);
 
@@ -144,7 +147,9 @@ public class SplashScreen extends AppCompatActivity implements
 
             // End Video View for Splash Screen
 
-            VERSION_CODE = BuildConfig.VERSION_NAME;
+//            VERSION_CODE = BuildConfig.VERSION_NAME;
+
+            versionCode = BuildConfig.VERSION_NAME;
 
             final String android_id = Settings.Secure.getString(getContentResolver(),
                     Settings.Secure.ANDROID_ID);
@@ -152,19 +157,17 @@ public class SplashScreen extends AppCompatActivity implements
             editor2.putString(PreferenceClass.UDID, android_id).commit();
 
 
-            buildGoogleApiClient();
-            LocationRequest locationRequest = LocationRequest.create();
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            locationRequest.setInterval(5000);
-            locationRequest.setFastestInterval(1000);
+
+            createLocationRequest();
+            startLocationUpdates();
 
 
-            welcome_location_txt = findViewById(R.id.welcome_location_txt);
-            main_welcome_screen_layout = findViewById(R.id.main_welcome_screen_layout);
-            main_splash_layout = findViewById(R.id.main_splash_layout);
-            welcome_search_div = findViewById(R.id.welcome_search_div);
-            welcome_show_restaurants_btn = findViewById(R.id.welcome_show_restaurants_btn);
-            welcome_show_restaurants_btn.setOnClickListener(new View.OnClickListener() {
+            welcomeLocationTxt = findViewById(R.id.welcome_location_txt);
+            mainWelcomeScreenLayout = findViewById(R.id.main_welcome_screen_layout);
+            mainSplashLayout = findViewById(R.id.main_splash_layout);
+            welcomeSearchDiv = findViewById(R.id.welcome_search_div);
+            welcomeShowRestaurantsBtn = findViewById(R.id.welcome_show_restaurants_btn);
+            welcomeShowRestaurantsBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     startActivity(new Intent(SplashScreen.this, MainActivity.class));
@@ -174,7 +177,7 @@ public class SplashScreen extends AppCompatActivity implements
             });
 
 
-            welcome_search_div.setOnClickListener(new View.OnClickListener() {
+            welcomeSearchDiv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -187,8 +190,8 @@ public class SplashScreen extends AppCompatActivity implements
 
             if (!getCurrentLocationAddress.isEmpty()) {
 
-                main_welcome_screen_layout.setVisibility(View.GONE);
-                main_splash_layout.setVisibility(View.VISIBLE);
+                mainWelcomeScreenLayout.setVisibility(View.GONE);
+                mainSplashLayout.setVisibility(View.VISIBLE);
 
                 new Handler().postDelayed(new Runnable() {
 
@@ -216,15 +219,13 @@ public class SplashScreen extends AppCompatActivity implements
 
             } else {
 
-                displayLocation();
+                checkLocationPermission();
 
             }
 
-        }catch (Exception e){
-
         }
-
-
+        catch (Exception e){
+        }
 
     }
 
@@ -237,7 +238,7 @@ public class SplashScreen extends AppCompatActivity implements
     }
 
 
-    public void set_language_local(){
+    public void setLanguageLocal(){
         String [] language_array=getResources().getStringArray(R.array.language_code);
         List <String> language_code= Arrays.asList(language_array);
 
@@ -261,34 +262,15 @@ public class SplashScreen extends AppCompatActivity implements
 
 
 
-    private void displayLocation() {
+    private void checkLocationPermission() {
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        boolean GpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if(!GpsStatus) {
+        if(Functions.checkLocationStatus(this)){
 
-            new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
-                @Override
-                public void gpsStatus(boolean isGPSEnable) {
-
-                }
-            });
-
-
-        }
-        else if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            buildGoogleApiClient();
             createLocationRequest();
-
-        } else {
-
-            ActivityCompat.requestPermissions(SplashScreen.this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
+            startLocationUpdates();
+        }
+        else {
+            startActivityForResult(new Intent(this,Enable_location_A.class),AllConstants.Request_code_Location);
         }
 
     }
@@ -304,9 +286,6 @@ public class SplashScreen extends AppCompatActivity implements
                 googleAPI.getErrorDialog(this, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Toast.makeText(getApplicationContext(),
-                        "This device is not supported.", Toast.LENGTH_LONG)
-                        .show();
                 finish();
             }
 
@@ -318,13 +297,6 @@ public class SplashScreen extends AppCompatActivity implements
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -338,14 +310,13 @@ public class SplashScreen extends AppCompatActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == PERMISSION_DATA_ACCESS_CODE) {
 
             if(resultCode == RESULT_OK) {
                 latitude = Double.parseDouble(data.getStringExtra("lat"));
                 longitude = Double.parseDouble(data.getStringExtra("lng"));
 
-
-                //  Geocoder gcd = new Geocoder(this, Locale.getDefault());
                 Address locationAddress;
 
                 locationAddress=getAddress(latitude,longitude);
@@ -367,8 +338,8 @@ public class SplashScreen extends AppCompatActivity implements
                     editor.putString(PreferenceClass.LONGITUDE,String.valueOf(longitude));
                     editor.commit();
 
-                    welcome_location_txt.setText(getCurrentLocationAddress);
-                    welcome_location_txt.setText(city+" " +country);
+                    welcomeLocationTxt.setText(getCurrentLocationAddress);
+                    welcomeLocationTxt.setText(city+" " +country);
 
                 }
 
@@ -377,12 +348,18 @@ public class SplashScreen extends AppCompatActivity implements
 
 
         }
+
         else if(requestCode==3){
-            displayLocation();
+            checkLocationPermission();
+        }
+
+        else if(requestCode== AllConstants.Request_code_Location){
+            Log.d(AllConstants.tag,"Request_code_Location");
+            checkLocationPermission();
         }
 
 
-        }
+    }
 
     public Address getAddress(double latitude,double longitude) {
         Geocoder geocoder;
@@ -411,7 +388,7 @@ public class SplashScreen extends AppCompatActivity implements
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    displayLocation();
+                    checkLocationPermission();
                 }
             }
         }
@@ -420,22 +397,11 @@ public class SplashScreen extends AppCompatActivity implements
 
 
 
-    private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private int UPDATE_INTERVAL = 3000;
     private int FATEST_INTERVAL = 3000;
     private int DISPLACEMENT = 0;
     private FusedLocationProviderClient mFusedLocationClient;
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
 
     protected void createLocationRequest() {
         mLocationRequest = LocationRequest.create();
@@ -448,16 +414,8 @@ public class SplashScreen extends AppCompatActivity implements
 
     LocationCallback locationCallback;
     protected void startLocationUpdates() {
-        mGoogleApiClient.connect();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -489,7 +447,7 @@ public class SplashScreen extends AppCompatActivity implements
 
 
                                 if (!getCurrentLocationAddress.isEmpty()) {
-                                    welcome_location_txt.setText(getCurrentLocationAddress);
+                                    welcomeLocationTxt.setText(getCurrentLocationAddress);
                                 } else {
 
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -499,15 +457,15 @@ public class SplashScreen extends AppCompatActivity implements
                                     editor.putString(PreferenceClass.LONGITUDE, String.valueOf(longitude));
                                     editor.commit();
 
-                                    welcome_location_txt.setText(getCurrentLocationAddress);
-                                    welcome_location_txt.setText(city + " " + country);
+                                    welcomeLocationTxt.setText(getCurrentLocationAddress);
+                                    welcomeLocationTxt.setText(city + " " + country);
                                 }
 
                             }
 
                         } else {
 
-                            welcome_location_txt
+                            welcomeLocationTxt
                                     .setText("Kalma Chowk, Lahore");
 
                         }
@@ -534,27 +492,11 @@ public class SplashScreen extends AppCompatActivity implements
 
     @Override
     public void onDestroy() {
-        if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
-            mGoogleApiClient.disconnect();
-        }
+
         super.onDestroy();
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-
-    }
-
-    @Override
-    public void onConnected(Bundle arg0) {
-        startLocationUpdates();
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-        mGoogleApiClient.connect();
-    }
 
 
 }

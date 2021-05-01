@@ -2,6 +2,9 @@ package com.foodies.amatfoodies.ActivitiesAndFragments;
 
 import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,41 +15,47 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.gmail.samehadar.iosdialog.CamomileSpinner;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.DarkModePrefManager;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class RestReveiwActivity extends AppCompatActivity {
     SharedPreferences sPref;
-    TextView rest_name;
-    String restaurant_id,restaurant_name,imageUrl,order_id,user_id;
+    TextView restName;
+    String restaurantId, restaurantName,imageUrl, orderId, userId;
     RatingBar reviewRatingBar;
-    EditText ed_message;
+    EditText edMessage;
     RelativeLayout submitBtn;
-    private static boolean RIDER_REVIEW;
-    float rating_;
-    ImageView clos_menu_items_detail;
-    CircleImageView rest_img;
+    float rating;
+    ImageView closMenuItemsDetail;
+    SimpleDraweeView rest_img;
     CamomileSpinner progress;
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (new DarkModePrefManager(this).isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rating_review_alert);
         initUI();
@@ -55,23 +64,23 @@ public class RestReveiwActivity extends AppCompatActivity {
     public void initUI(){
         sPref = getSharedPreferences(PreferenceClass.user,MODE_PRIVATE);
         submitBtn = findViewById(R.id.submitBtn);
-        ed_message = findViewById(R.id.ed_message);
+        edMessage = findViewById(R.id.ed_message);
         reviewRatingBar = findViewById(R.id.reviewRatingBar);
-        clos_menu_items_detail = findViewById(R.id.clos_menu_items_detail);
+        closMenuItemsDetail = findViewById(R.id.clos_menu_items_detail);
         rest_img = findViewById(R.id.rest_img);
 
         progressDialog = findViewById(R.id.progressDialog);
-        transparent_layer = findViewById(R.id.transparent_layer);
+        transparentLayer = findViewById(R.id.transparent_layer);
 
         progress = findViewById(R.id.addToCartProgress);
         progress.start();
 
-        user_id = sPref.getString(PreferenceClass.pre_user_id,"");
+        userId = sPref.getString(PreferenceClass.pre_user_id,"");
         String type = sPref.getString(PreferenceClass.REVIEW_TYPE,"");
 
         Log.d(AllConstants.tag,type);
 
-        clos_menu_items_detail.setOnClickListener(new View.OnClickListener() {
+        closMenuItemsDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RestReveiwActivity.this.finish();
@@ -81,28 +90,27 @@ public class RestReveiwActivity extends AppCompatActivity {
         });
 
         if(type.equalsIgnoreCase("order_review")){
-            RIDER_REVIEW = false;
-            restaurant_name = sPref.getString(PreferenceClass.RESTAURANT_NAME_NOTIFY,"");
-            restaurant_id = sPref.getString(PreferenceClass.RESTAURANT_ID_NOTIFY,"");
+            restaurantName = sPref.getString(PreferenceClass.RESTAURANT_NAME_NOTIFY,"");
+            restaurantId = sPref.getString(PreferenceClass.RESTAURANT_ID_NOTIFY,"");
             imageUrl = sPref.getString(PreferenceClass.REVIEW_IMG_PIC,"");
-            order_id=sPref.getString(PreferenceClass.ORDER_ID_NOTIFY,"");
+            orderId =sPref.getString(PreferenceClass.ORDER_ID_NOTIFY,"");
 
-            rest_name = findViewById(R.id.rest_name);
-            rest_name.setText(restaurant_name);
+            restName = findViewById(R.id.rest_name);
+            restName.setText(restaurantName);
 
-            Picasso.with(this).load(Config.imgBaseURL+imageUrl).
-                    fit().centerCrop()
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.drawable.unknown_deal).into(rest_img);
 
-            Log.d(AllConstants.tag,restaurant_name);
+            Uri uri = Uri.parse(Config.imgBaseURL+imageUrl);
+            rest_img.setImageURI(uri);
+
+
+            Log.d(AllConstants.tag, restaurantName);
             Log.d(AllConstants.tag,Config.imgBaseURL+imageUrl);
         }
 
         reviewRatingBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rating_ = reviewRatingBar.getRating();
+                rating = reviewRatingBar.getRating();
             }
         });
 
@@ -115,7 +123,7 @@ public class RestReveiwActivity extends AppCompatActivity {
 
                 }
                 else {
-                    Toast.makeText(RestReveiwActivity.this,"Please select at-least ONE star.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RestReveiwActivity.this, R.string.please_select_your_rating_star,Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -125,15 +133,15 @@ public class RestReveiwActivity extends AppCompatActivity {
 
     public void postReview(){
 
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
         JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("user_id",""+user_id);
-                jsonObject.put("restaurant_id",""+restaurant_id);
-                jsonObject.put("comment",""+ed_message.getText().toString());
-                jsonObject.put("order_id",""+order_id);
+                jsonObject.put("user_id",""+ userId);
+                jsonObject.put("restaurant_id",""+ restaurantId);
+                jsonObject.put("comment",""+ edMessage.getText().toString());
+                jsonObject.put("order_id",""+ orderId);
                 jsonObject.put("star",""+reviewRatingBar.getRating());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -141,11 +149,11 @@ public class RestReveiwActivity extends AppCompatActivity {
 
 
 
-        ApiRequest.Call_Api(this, Config.AddRestaurantRating, jsonObject, new Callback() {
+        ApiRequest.callApi(this, Config.AddRestaurantRating, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
                 try {

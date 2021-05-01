@@ -14,18 +14,16 @@ import com.foodies.amatfoodies.ActivitiesAndFragments.CartFragment;
 import com.foodies.amatfoodies.ActivitiesAndFragments.OrdersFragment;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 public class AdapterPager extends FragmentPagerAdapter {
 
-    private final Resources resources;
 
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
 
     public AdapterPager(final Resources resources, FragmentManager fm) {
-        super(fm);
-        this.resources = resources;
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     @Override

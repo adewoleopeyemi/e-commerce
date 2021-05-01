@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.fragment.app.FragmentTransaction;
+
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +29,7 @@ import com.foodies.amatfoodies.Constants.AllConstants;
 import com.foodies.amatfoodies.Constants.ApiRequest;
 import com.foodies.amatfoodies.Constants.Callback;
 import com.foodies.amatfoodies.Constants.Config;
+import com.foodies.amatfoodies.Constants.Functions;
 import com.foodies.amatfoodies.Constants.PreferenceClass;
 import com.foodies.amatfoodies.Utils.FontHelper;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
@@ -41,13 +44,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.foodies.amatfoodies.R;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -56,55 +56,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
-public class LoginAcitvity extends RootFragment implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,
-            GoogleApiClient.ConnectionCallbacks{
+public class LoginAcitvity extends RootFragment implements View.OnClickListener {
 
     SharedPreferences sPref;
-    RelativeLayout fb_div;
-
-
-    FrameLayout login_main_div;
-
+    RelativeLayout fbDiv;
+    FrameLayout loginMainDiv;
     CamomileSpinner logInProgress;
-    RelativeLayout transparent_layer,progressDialog,google_sign_in_div;
-
-    Button log_in_now;
-    TextView fb_btn;
-
-    TextView loginText,tv_email,tv_pass,sign_up_txt,tv_forget_password,tv_signed_up_now,tv_sign_up;
-
-    EditText ed_email,ed_password;
-    LoginButton login_button_fb;
-
-    ImageView back_icon;
-
-
-    public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
-            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-                    "\\@" +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                    "(" +
-                    "\\." +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                    ")+"
-    );
-
+    RelativeLayout transparentLayer,progressDialog, googleSignInDiv;
+    Button logInNow;
+    TextView fbBtn;
+    TextView loginText, tvEmail, tvPass, signUpTxt, tvForgetPassword, tvSignedUpNow, tvSignUp;
+    EditText edEmail, edPassword;
+    LoginButton loginButtonFb;
+    ImageView backIcon;
     CallbackManager callbackManager;
-    public static GoogleSignInClient  mGoogleSignInClient;
+    public GoogleSignInClient  mGoogleSignInClient;
 
     View view;
     Context context;
 
-    @SuppressWarnings("deprecation")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -115,12 +93,10 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
         sPref = getContext().getSharedPreferences(PreferenceClass.user,Context.MODE_PRIVATE);
 
 
-        ed_email = (EditText)view.findViewById(R.id.ed_email);
-        ed_password =(EditText)view.findViewById(R.id.ed_password);
-        log_in_now = (Button)view.findViewById(R.id.btn_login);
+        edEmail = (EditText)view.findViewById(R.id.ed_email);
+        edPassword =(EditText)view.findViewById(R.id.ed_password);
+        logInNow = (Button)view.findViewById(R.id.btn_login);
 
-
-      
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                  .requestEmail()
@@ -128,19 +104,17 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
 
 
+        tvSignUp = view.findViewById(R.id.tv_sign_up);
+        tvSignedUpNow = view.findViewById(R.id.tv_signed_up_now);
+        FontHelper.applyFont(getContext(), tvSignUp, AllConstants.verdana);
 
+        fbBtn = view.findViewById(R.id.fb_btn);
+        fbDiv = view.findViewById(R.id.fb_div);
+        fbDiv.setOnClickListener(this);
+        fbBtn.setOnClickListener(this);
 
-        tv_sign_up = view.findViewById(R.id.tv_sign_up);
-        tv_signed_up_now = view.findViewById(R.id.tv_signed_up_now);
-        FontHelper.applyFont(getContext(),tv_sign_up, AllConstants.verdana);
-
-        fb_btn = view.findViewById(R.id.fb_btn);
-        fb_div = view.findViewById(R.id.fb_div);
-        fb_div.setOnClickListener(this);
-        fb_btn.setOnClickListener(this);
-
-        back_icon = view.findViewById(R.id.back_icon);
-        back_icon.setOnClickListener(new View.OnClickListener() {
+        backIcon = view.findViewById(R.id.back_icon);
+        backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -159,8 +133,8 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
         });
 
 
-        login_main_div = view.findViewById(R.id.login_main_div);
-        login_main_div.setOnTouchListener(new View.OnTouchListener() {
+        loginMainDiv = view.findViewById(R.id.login_main_div);
+        loginMainDiv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
@@ -171,8 +145,8 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
             }
         });
 
-        google_sign_in_div = view.findViewById(R.id.google_sign_in_div);
-        google_sign_in_div.setOnClickListener(new View.OnClickListener() {
+        googleSignInDiv = view.findViewById(R.id.google_sign_in_div);
+        googleSignInDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
               GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
@@ -180,7 +154,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
                     String Email = acct.getEmail();
                     String password=acct.getId();
 
-                    ed_email.setText(Email);
+                    edEmail.setText(Email);
 
 
                 }
@@ -193,45 +167,49 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
 
 
 
-        tv_email = (TextView)view.findViewById(R.id.tv_email);
-        tv_pass = (TextView)view.findViewById(R.id.tv_password);
-        sign_up_txt = (TextView)view.findViewById(R.id.tv_sign_up);
+        tvEmail = (TextView)view.findViewById(R.id.tv_email);
+        tvPass = (TextView)view.findViewById(R.id.tv_password);
+        signUpTxt = (TextView)view.findViewById(R.id.tv_sign_up);
 
         logInProgress = view.findViewById(R.id.logInProgress);
         logInProgress.start();
         progressDialog = view.findViewById(R.id.progressDialog);
-        transparent_layer = view.findViewById(R.id.transparent_layer);
+        transparentLayer = view.findViewById(R.id.transparent_layer);
 
         loginText = (TextView)view.findViewById(R.id.login_title);
-        tv_forget_password = view.findViewById(R.id.tv_forget_password);
-        tv_forget_password.setOnClickListener(this);
-        FontHelper.applyFont(getContext(),tv_forget_password, AllConstants.arial);
+        tvForgetPassword = view.findViewById(R.id.tv_forget_password);
+        tvForgetPassword.setOnClickListener(this);
+        FontHelper.applyFont(getContext(), tvForgetPassword, AllConstants.arial);
 
 
-        log_in_now.setOnClickListener(new View.OnClickListener() {
+        logInNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                boolean valid = checkEmail(ed_email.getText().toString());
+                boolean valid = Functions.isValidEmail(edEmail.getText().toString());
 
-                if (ed_email.getText().toString().trim().equals("")) {
-
-                    Toast.makeText(getContext(), "Enter Email!", Toast.LENGTH_SHORT).show();
-
-                } else if (ed_password.getText().toString().trim().equals("")) {
-
-                    Toast.makeText(getContext(), "Enter Password!", Toast.LENGTH_SHORT).show();
-                }else if (ed_password.getText().toString().length()<6) {
-
-                    Toast.makeText(getContext(), "Enter Password Atleat 6 Charaters!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(edEmail.getText().toString())) {
+                    Toast.makeText(getContext(), getString(R.string.please_enter_email), Toast.LENGTH_SHORT).show();
                 }
+                else if (TextUtils.isEmpty(edPassword.getText().toString())) {
+
+                    Toast.makeText(getContext(),  getString(R.string.please_enter_password), Toast.LENGTH_SHORT).show();
+                }
+
+                else if (edPassword.getText().toString().length()<6) {
+
+                    Toast.makeText(getContext(),  getString(R.string.enter_password_atleast_characters), Toast.LENGTH_SHORT).show();
+                }
+
                 else if (!valid) {
 
-                    Toast.makeText(getContext(), "Enter Valid Email!", Toast.LENGTH_SHORT).show();
-                }else {
+                    Toast.makeText(getContext(),  getString(R.string.enter_valid_email), Toast.LENGTH_SHORT).show();
+                }
 
-                    String this_email = ed_email.getText().toString();
-                    String this_password = ed_password.getText().toString();
+                else {
+
+                    String this_email = edEmail.getText().toString();
+                    String this_password = edPassword.getText().toString();
                     AddressListFragment.CART_NOT_LOAD = true;
                     login(this_email,this_password);
 
@@ -240,7 +218,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
         });
 
 
-        tv_signed_up_now.setOnClickListener(new View.OnClickListener() {
+        tvSignedUpNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -260,20 +238,17 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
 
     public void fb_init(){
 
-        FacebookSdk.sdkInitialize(getContext());
-
-
         callbackManager = CallbackManager.Factory.create();
 
 
-        login_button_fb = (LoginButton) view.findViewById(R.id.login_button_fb);
-        login_button_fb.setReadPermissions(Arrays.asList("email"));
+        loginButtonFb = (LoginButton) view.findViewById(R.id.login_button_fb);
+        loginButtonFb.setReadPermissions(Arrays.asList("email"));
 
 
-        login_button_fb.setFragment(this);
+        loginButtonFb.setFragment(this);
 
 
-        login_button_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        loginButtonFb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
@@ -283,7 +258,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
                     public void onCompleted(JSONObject user, GraphResponse graphResponse) {
                         String useremail = user.optString("email");
 
-                        ed_email.setText(useremail);
+                        edEmail.setText(useremail);
 
                     }
                 });
@@ -297,14 +272,10 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
 
             @Override
             public void onCancel() {
-                // App code
-                Toast.makeText(getContext(),"Cancle",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException exception) {
-                // App code
-                Toast.makeText(getContext(),"Error",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -314,7 +285,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
     private void login(String email,String pass){
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
 
@@ -346,11 +317,11 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
         }
 
 
-        ApiRequest.Call_Api(context,  Config.LOGIN_URL, jsonObject, new Callback() {
+        ApiRequest.callApi(context,  Config.LOGIN_URL, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
 
 
@@ -361,7 +332,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
 
                     if(code_id == 200) {
                         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                        transparent_layer.setVisibility(View.GONE);
+                        transparentLayer.setVisibility(View.GONE);
                         progressDialog.setVisibility(View.GONE);
                         JSONObject json = new JSONObject(jsonResponse.toString());
                         JSONObject resultObj = json.getJSONObject("msg");
@@ -370,23 +341,19 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
                         JSONObject resultObj2 = json1.getJSONObject("User");
 
                         SharedPreferences.Editor editor = sPref.edit();
-                        editor.putString(PreferenceClass.pre_email, ed_email.getText().toString());
-                        editor.putString(PreferenceClass.pre_pass, ed_password.getText().toString());
+                        editor.putString(PreferenceClass.pre_email, edEmail.getText().toString());
+                        editor.putString(PreferenceClass.pre_pass, edPassword.getText().toString());
                         editor.putString(PreferenceClass.pre_first, resultObj1.optString("first_name"));
                         editor.putString(PreferenceClass.pre_last, resultObj1.optString("last_name"));
                         editor.putString(PreferenceClass.pre_contact, resultObj1.optString("phone"));
                         editor.putString(PreferenceClass.pre_user_id, resultObj1.optString("user_id"));
 
                         editor.putBoolean(PreferenceClass.IS_LOGIN, true);
-                        editor.commit();
-
-                        OrderDetailFragment.CALLBACK_ORDERFRAG = true;
-
                         editor.putString(PreferenceClass.USER_TYPE,resultObj2.optString("role"));
                         editor.commit();
 
-                            startActivity(new Intent(getContext(), MainActivity.class));
-                            getActivity().finish();
+                        startActivity(new Intent(getContext(), MainActivity.class));
+                        getActivity().finish();
 
 
                     }else{
@@ -411,34 +378,31 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
     }
 
 
-    private boolean checkEmail(String email) {
-        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
-    }
 
 
     @Override
     public void onClick(View view) {
 
-        if(view == fb_div){
+        if(view == fbDiv){
 
             fb_init();
 
             LoginManager.getInstance().logOut();
 
-            login_button_fb.performClick();
+            loginButtonFb.performClick();
         }
 
-        if(view==fb_btn){
+        if(view== fbBtn){
 
             fb_init();
 
             LoginManager.getInstance().logOut();
 
-            login_button_fb.performClick();
+            loginButtonFb.performClick();
         }
 
 
-        else if(view==tv_forget_password){
+        else if(view== tvForgetPassword){
             startActivity(new Intent(getActivity(),RecoverPasswordActivity.class));
         }
 
@@ -456,7 +420,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
 
             String Email = acct.getEmail();
 
-            ed_email.setText(Email);
+            edEmail.setText(Email);
 
 
         }
@@ -477,7 +441,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
 
         }
         else {
-            login_button_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            loginButtonFb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
 
@@ -487,43 +451,24 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener,
                         public void onCompleted(JSONObject user, GraphResponse graphResponse) {
                             String useremail = user.optString("email");
 
-                            ed_email.setText(useremail);
+                            edEmail.setText(useremail);
 
-                            Toast.makeText(getContext(), "Successfull", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
 
                 @Override
                 public void onCancel() {
-                    // App code
-                    Toast.makeText(getContext(),"Cancle",Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onError(FacebookException exception) {
-                    // App code
-                    Toast.makeText(getContext(),"Error",Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
 
 
 

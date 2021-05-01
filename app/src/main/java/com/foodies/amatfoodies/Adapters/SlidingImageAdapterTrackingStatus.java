@@ -8,27 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.foodies.amatfoodies.Models.ImageSliderModel;
 import com.foodies.amatfoodies.R;
 
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class SlidingImageAdapterTrackingStatus extends PagerAdapter {
 
-    private ArrayList<ImageSliderModel> IMAGES;
+    private ArrayList<ImageSliderModel> images;
     private LayoutInflater inflater;
-    private Context context;
-    ImageLoader imageLoader1;
 
 
-    public SlidingImageAdapterTrackingStatus(Context context,ArrayList<ImageSliderModel> IMAGES) {
-        this.context = context;
-        this.IMAGES=IMAGES;
+    public SlidingImageAdapterTrackingStatus(Context context,ArrayList<ImageSliderModel> images) {
+        this.images = images;
         inflater = LayoutInflater.from(context);
     }
 
@@ -39,7 +35,7 @@ public class SlidingImageAdapterTrackingStatus extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return IMAGES.size();
+        return images.size();
     }
 
     @Override
@@ -48,7 +44,7 @@ public class SlidingImageAdapterTrackingStatus extends PagerAdapter {
 
         final TextView textView = (TextView) imageLayout
                 .findViewById(R.id.status_slider);
-        ImageSliderModel imageSliderModel = IMAGES.get(position);
+        ImageSliderModel imageSliderModel = images.get(position);
 
         textView.setText(imageSliderModel.getSliderImageUrl());
 

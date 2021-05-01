@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class RestaurantDealsFragment extends RootFragment {
@@ -50,32 +50,33 @@ public class RestaurantDealsFragment extends RootFragment {
     SharedPreferences dealsSharedPreferences;
     ImageView back_icon;
     String lat,lon;
-   RelativeLayout no_job_div;
+   RelativeLayout noJobDiv;
 
-    public static boolean RESTAUNT_DEALS_FRAG;
+    public boolean RESTAUNT_DEALS_FRAG;
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
 
     View view;
     Context context;
 
-    RestaurantsModel item_model;
+    RestaurantsModel itemModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
          view = inflater.inflate(R.layout.deals_fragment, container, false);
          context=getContext();
 
         Bundle bundle=getArguments();
         if(bundle!=null){
-            item_model=(RestaurantsModel) bundle.get("data");
+            itemModel =(RestaurantsModel) bundle.get("data");
         }
 
 
         dealsSharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
 
         progressDialog = view.findViewById(R.id.progressDialog);
-        transparent_layer = view.findViewById(R.id.transparent_layer);
+        transparentLayer = view.findViewById(R.id.transparent_layer);
         deals_recyclerview = view.findViewById(R.id.deals_recyclerview);
         dealsProgressBar = view.findViewById(R.id.dealsProgress);
         dealsProgressBar.start();
@@ -94,7 +95,7 @@ public class RestaurantDealsFragment extends RootFragment {
     }
 
     private void initUI(View v){
-        no_job_div = v.findViewById(R.id.no_job_div);
+        noJobDiv = v.findViewById(R.id.no_job_div);
         back_icon = v.findViewById(R.id.back_icon);
 
         if(RESTAUNT_DEALS_FRAG){
@@ -135,7 +136,7 @@ public class RestaurantDealsFragment extends RootFragment {
         try {
 
 
-            jsonObject.put("id",item_model.restaurant_id);
+            jsonObject.put("id", itemModel.restaurant_id);
             jsonObject.put("lat", lat);
             jsonObject.put("long", lon);
 
@@ -146,12 +147,12 @@ public class RestaurantDealsFragment extends RootFragment {
         }
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_RESTAURANT_DEALS, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_RESTAURANT_DEALS, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -216,7 +217,7 @@ public class RestaurantDealsFragment extends RootFragment {
                             });
                         }
                         else {
-                               no_job_div.setVisibility(View.VISIBLE);
+                               noJobDiv.setVisibility(View.VISIBLE);
                         }
 
 
@@ -228,7 +229,7 @@ public class RestaurantDealsFragment extends RootFragment {
                 }
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
             }
         });

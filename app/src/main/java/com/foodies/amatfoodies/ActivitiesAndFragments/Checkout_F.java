@@ -4,7 +4,6 @@ package com.foodies.amatfoodies.ActivitiesAndFragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,7 @@ import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 
-import com.foodies.amatfoodies.Constants.AllConstants;
-import com.foodies.amatfoodies.Constants.Fragment_Callback;
+import com.foodies.amatfoodies.Constants.FragmentCallback;
 import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.Utils.RelateToFragment_OnBack.RootFragment;
 
@@ -29,15 +27,15 @@ public class Checkout_F extends RootFragment {
     View view;
     Context context;
 
-    ProgressBar progress_bar;
+    ProgressBar progressBar;
     WebView webView;
     String url="www.google.com";
     public Checkout_F() {
 
     }
 
-    Fragment_Callback fragment_callback;
-    public Checkout_F(Fragment_Callback fragment_callback) {
+    FragmentCallback fragment_callback;
+    public Checkout_F(FragmentCallback fragment_callback) {
         this.fragment_callback=fragment_callback;
     }
 
@@ -53,28 +51,23 @@ public class Checkout_F extends RootFragment {
             url=bundle.getString("url");
         }
 
-        Log.d(AllConstants.tag,url);
 
         view.findViewById(R.id.back_icon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(max_handler!=null && max_runable!=null){
 
-                   if(fragment_callback!=null)
-                       fragment_callback.Responce(new Bundle());
-                }
-               getActivity().onBackPressed();
+                getActivity().onBackPressed();
             }
         });
 
 
         webView=view.findViewById(R.id.webview);
-        progress_bar=view.findViewById(R.id.progress_bar);
+        progressBar =view.findViewById(R.id.progress_bar);
         webView.setWebChromeClient(new WebChromeClient(){
 
             public void onProgressChanged(WebView view, int progress) {
                 if(progress>=80){
-                    progress_bar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -108,8 +101,7 @@ public class Checkout_F extends RootFragment {
         max_runable=new Runnable() {
             @Override
             public void run() {
-                if(fragment_callback!=null)
-                    fragment_callback.Responce(new Bundle());
+
                 getActivity().onBackPressed();
 
             }
@@ -117,13 +109,17 @@ public class Checkout_F extends RootFragment {
         max_handler.postDelayed(max_runable,10000);
     }
 
-
     @Override
     public void onDetach() {
         super.onDetach();
         if(max_handler!=null && max_runable!=null){
+
+            if(fragment_callback!=null)
+                fragment_callback.onResponce(new Bundle());
+
             max_handler.removeCallbacks(max_runable);
         }
+
     }
 
 

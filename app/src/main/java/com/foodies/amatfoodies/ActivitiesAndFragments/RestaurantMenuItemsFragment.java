@@ -55,34 +55,34 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by qboxus on 10/18/2019.
+ * Created by foodies on 10/18/2019.
  */
 
 public class RestaurantMenuItemsFragment extends RootFragment {
 
-    ImageView backIcon,about_icon,close_suggestion;
-    RelativeLayout about_restaurant_div,review_restaurant_div,suggestion_div,suggestion_txt,rest_open_div;
-    CustomExpandableListView expandableListView,restaurant_menu_item_list_suggestion;
-    TextView rastaurant_menu_item_title_tv,restaurant_name_tv,salogon_tv,miles_desc_tv;
+    ImageView backIcon, aboutIcon, closeSuggestion;
+    RelativeLayout aboutRestaurantDiv, reviewRestaurantDiv, suggestionDiv, suggestionTxt, restOpenDiv;
+    CustomExpandableListView expandableListView, restaurantMenuItemListSuggestion;
+    TextView rastaurantMenuItemTitleTv, restaurantNameTv, salogonTv, milesDescTv;
 
-    SimpleDraweeView restaurant_img,cover_image;
+    SimpleDraweeView restaurantImg, coverImage;
 
     SharedPreferences sharedPreferences;
     RestaurantMenuAdapter restaurantMenuAdapter;
     ArrayList<RestaurantParentModel> listDataHeader;
     ArrayList<RestaurantChildModel> listChildData;
-    private ArrayList<ArrayList<RestaurantChildModel>> ListChild;
-    CamomileSpinner res_menu_item_progress;
+    private ArrayList<ArrayList<RestaurantChildModel>> listChild;
+    CamomileSpinner resMenuItemProgress;
     RatingBar rating;
     SearchView searchView;
     RelativeLayout upper_header;
     LinearLayout about_div;
-    String udid, key;
+    String udid;
 
-    public static boolean FLAG_RES_MENU_FRAG,FLAG_SUGGESTION;
+    public static boolean FLAG_SUGGESTION;
 
 
-    RelativeLayout transparent_layer,progressDialog;
+    RelativeLayout transparentLayer,progressDialog;
     public static final int  PERMISSION_DATA_CART_ADED = 5;
     String restarant_open;
 
@@ -121,12 +121,12 @@ public class RestaurantMenuItemsFragment extends RootFragment {
         expandableListView.setExpanded(true);
         expandableListView.setGroupIndicator(null);
 
-        restaurant_menu_item_list_suggestion = (CustomExpandableListView)view.findViewById(R.id.restaurant_menu_item_list_suggestion);
-        restaurant_menu_item_list_suggestion.setExpanded(true);
-        restaurant_menu_item_list_suggestion.setGroupIndicator(null);
+        restaurantMenuItemListSuggestion = (CustomExpandableListView)view.findViewById(R.id.restaurant_menu_item_list_suggestion);
+        restaurantMenuItemListSuggestion.setExpanded(true);
+        restaurantMenuItemListSuggestion.setGroupIndicator(null);
 
 
-       restaurantMenuDetail_for_listview();
+       restaurantMenuDetailForListview();
 
 
 
@@ -137,44 +137,44 @@ public class RestaurantMenuItemsFragment extends RootFragment {
     public void initUI(View v){
 
      progressDialog = v.findViewById(R.id.progressDialog);
-     transparent_layer = v.findViewById(R.id.transparent_layer);
+     transparentLayer = v.findViewById(R.id.transparent_layer);
 
 
-        suggestion_txt = v.findViewById(R.id.suggestion_txt);
-        close_suggestion = v.findViewById(R.id.close_suggestion);
-        suggestion_div = v.findViewById(R.id.suggestion_div);
-        suggestion_div.setOnClickListener(new View.OnClickListener() {
+        suggestionTxt = v.findViewById(R.id.suggestion_txt);
+        closeSuggestion = v.findViewById(R.id.close_suggestion);
+        suggestionDiv = v.findViewById(R.id.suggestion_div);
+        suggestionDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                  FLAG_SUGGESTION = true;
 
-                restaurantMenuDetail_for_listview();
+                restaurantMenuDetailForListview();
 
-                close_suggestion.setVisibility(View.VISIBLE);
-                suggestion_txt.setVisibility(View.VISIBLE);
-                suggestion_div.setVisibility(View.GONE);
+                closeSuggestion.setVisibility(View.VISIBLE);
+                suggestionTxt.setVisibility(View.VISIBLE);
+                suggestionDiv.setVisibility(View.GONE);
 
                 upper_header.setVisibility(View.GONE);
-                review_restaurant_div.setVisibility(View.GONE);
-                about_restaurant_div.setVisibility(View.GONE);
+                reviewRestaurantDiv.setVisibility(View.GONE);
+                aboutRestaurantDiv.setVisibility(View.GONE);
                 about_div.setVisibility(View.GONE);
             }
         });
 
-        close_suggestion.setOnClickListener(new View.OnClickListener() {
+        closeSuggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 FLAG_SUGGESTION = false;
                 upper_header.setVisibility(View.VISIBLE);
-                review_restaurant_div.setVisibility(View.VISIBLE);
-                about_restaurant_div.setVisibility(View.VISIBLE);
+                reviewRestaurantDiv.setVisibility(View.VISIBLE);
+                aboutRestaurantDiv.setVisibility(View.VISIBLE);
                 about_div.setVisibility(View.VISIBLE);
-                close_suggestion.setVisibility(View.GONE);
-                suggestion_txt.setVisibility(View.GONE);
-                suggestion_div.setVisibility(View.VISIBLE);
+                closeSuggestion.setVisibility(View.GONE);
+                suggestionTxt.setVisibility(View.GONE);
+                suggestionDiv.setVisibility(View.VISIBLE);
 
-                restaurantMenuDetail_for_listview();
+                restaurantMenuDetailForListview();
 
 
 
@@ -182,7 +182,7 @@ public class RestaurantMenuItemsFragment extends RootFragment {
         });
 
 
-     miles_desc_tv = v.findViewById(R.id.miles_desc_tv);
+     milesDescTv = v.findViewById(R.id.miles_desc_tv);
      searchView = v.findViewById(R.id.floating_search_view);
      String txt="<font color = #dddddd>" + getString(R.string.search_restuarents_menu) + "</font>";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -201,37 +201,37 @@ public class RestaurantMenuItemsFragment extends RootFragment {
      upper_header = v.findViewById(R.id.upper_header);
      about_div = v.findViewById(R.id.about_div);
 
-     about_icon = v.findViewById(R.id. about_icon);
+     aboutIcon = v.findViewById(R.id. about_icon);
 
-     res_menu_item_progress = v.findViewById(R.id.res_menu_item_progress);
-     res_menu_item_progress.start();
+     resMenuItemProgress = v.findViewById(R.id.res_menu_item_progress);
+     resMenuItemProgress.start();
      rating = v.findViewById(R.id.rating);
-     rastaurant_menu_item_title_tv = v.findViewById(R.id.rastaurant_menu_item_title_tv);
-     restaurant_name_tv = v.findViewById(R.id.restaurant_name_tv);
-     salogon_tv = v.findViewById(R.id.salogon_tv);
-     restaurant_img = v.findViewById(R.id.restaurant_image);
-     cover_image = v.findViewById(R.id.cover_image);
+     rastaurantMenuItemTitleTv = v.findViewById(R.id.rastaurant_menu_item_title_tv);
+     restaurantNameTv = v.findViewById(R.id.restaurant_name_tv);
+     salogonTv = v.findViewById(R.id.salogon_tv);
+     restaurantImg = v.findViewById(R.id.restaurant_image);
+     coverImage = v.findViewById(R.id.cover_image);
 
 
      rating.setRating(Float.parseFloat(item_model.restaurant_avgRating));
 
-     rastaurant_menu_item_title_tv.setText(item_model.restaurant_name);
-     restaurant_name_tv.setText(item_model.restaurant_name);
-     salogon_tv.setText(item_model.restaurant_salgon);
+     rastaurantMenuItemTitleTv.setText(item_model.restaurant_name);
+     restaurantNameTv.setText(item_model.restaurant_name);
+     salogonTv.setText(item_model.restaurant_salgon);
 
      if(item_model.deliveryFee_Range.equalsIgnoreCase("0")){
-         miles_desc_tv.setText(item_model.restaurant_currency + " " + item_model.delivery_fee_per_km + " /km");
+         milesDescTv.setText(item_model.restaurant_currency + " " + item_model.delivery_fee_per_km + " /km");
      }
         else {
-         miles_desc_tv.setText(item_model.restaurant_currency + " " + item_model.delivery_fee_per_km + " /km- free delivery over " + item_model.restaurant_currency + " " + item_model.min_order_price + " within " + item_model.deliveryFee_Range + " km");
+         milesDescTv.setText(item_model.restaurant_currency + " " + item_model.delivery_fee_per_km + " /km- free delivery over " + item_model.restaurant_currency + " " + item_model.min_order_price + " within " + item_model.deliveryFee_Range + " km");
      }
 
 
         Uri uri = Uri.parse(Config.imgBaseURL+item_model.restaurant_image);
-        restaurant_img.setImageURI(uri);
+        restaurantImg.setImageURI(uri);
 
 
-     about_icon.setOnClickListener(new View.OnClickListener() {
+     aboutIcon.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
              new MaterialDialog.Builder(getContext())
@@ -252,12 +252,11 @@ public class RestaurantMenuItemsFragment extends RootFragment {
             }
         });
 
-        about_restaurant_div = (RelativeLayout)v.findViewById(R.id.about_restaurant_div);
-        about_restaurant_div.setOnClickListener(new View.OnClickListener() {
+        aboutRestaurantDiv = (RelativeLayout)v.findViewById(R.id.about_restaurant_div);
+        aboutRestaurantDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                FLAG_RES_MENU_FRAG = true;
                 RestaurantDealsFragment restaurantDealsFragment = new RestaurantDealsFragment();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
@@ -269,8 +268,8 @@ public class RestaurantMenuItemsFragment extends RootFragment {
             }
         });
 
-     review_restaurant_div = (RelativeLayout)v.findViewById(R.id.review_restaurant_div);
-     review_restaurant_div.setOnClickListener(new View.OnClickListener() {
+     reviewRestaurantDiv = (RelativeLayout)v.findViewById(R.id.review_restaurant_div);
+     reviewRestaurantDiv.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
              Fragment reviewListFragment = new ReviewListFragment();
@@ -285,11 +284,11 @@ public class RestaurantMenuItemsFragment extends RootFragment {
 
 
      upper_header.setVisibility(View.VISIBLE);
-     review_restaurant_div.setVisibility(View.VISIBLE);
-     about_restaurant_div.setVisibility(View.VISIBLE);
+     reviewRestaurantDiv.setVisibility(View.VISIBLE);
+     aboutRestaurantDiv.setVisibility(View.VISIBLE);
      about_div.setVisibility(View.VISIBLE);
 
-        rest_open_div = v.findViewById(R.id.rest_open_div);
+     restOpenDiv = v.findViewById(R.id.rest_open_div);
 
 
 
@@ -300,8 +299,8 @@ public class RestaurantMenuItemsFragment extends RootFragment {
     public void onResume() {
         super.onResume();
         upper_header.setVisibility(View.VISIBLE);
-        review_restaurant_div.setVisibility(View.VISIBLE);
-        about_restaurant_div.setVisibility(View.VISIBLE);
+        reviewRestaurantDiv.setVisibility(View.VISIBLE);
+        aboutRestaurantDiv.setVisibility(View.VISIBLE);
         about_div.setVisibility(View.VISIBLE);
     }
 
@@ -324,21 +323,21 @@ public class RestaurantMenuItemsFragment extends RootFragment {
                 if(newText.equalsIgnoreCase("")){
                     FLAG_SUGGESTION = false;
                     upper_header.setVisibility(View.VISIBLE);
-                    review_restaurant_div.setVisibility(View.VISIBLE);
-                    about_restaurant_div.setVisibility(View.VISIBLE);
+                    reviewRestaurantDiv.setVisibility(View.VISIBLE);
+                    aboutRestaurantDiv.setVisibility(View.VISIBLE);
                     about_div.setVisibility(View.VISIBLE);
 
-                    restaurantMenuDetail_for_listview();
+                    restaurantMenuDetailForListview();
                 }
                 else {
                     if (restaurantMenuAdapter != null)
                         restaurantMenuAdapter.getFilter().filter(newText);
                     upper_header.setVisibility(View.GONE);
-                    review_restaurant_div.setVisibility(View.GONE);
-                    about_restaurant_div.setVisibility(View.GONE);
+                    reviewRestaurantDiv.setVisibility(View.GONE);
+                    aboutRestaurantDiv.setVisibility(View.GONE);
                     about_div.setVisibility(View.GONE);
-                    close_suggestion.setVisibility(View.GONE);
-                    suggestion_txt.setVisibility(View.GONE);
+                    closeSuggestion.setVisibility(View.GONE);
+                    suggestionTxt.setVisibility(View.GONE);
 
 
                 }
@@ -355,8 +354,8 @@ public class RestaurantMenuItemsFragment extends RootFragment {
                 Log.i("SearchView:", "onClose");
                 searchView.onActionViewCollapsed();
                 upper_header.setVisibility(View.VISIBLE);
-                review_restaurant_div.setVisibility(View.VISIBLE);
-                about_restaurant_div.setVisibility(View.VISIBLE);
+                reviewRestaurantDiv.setVisibility(View.VISIBLE);
+                aboutRestaurantDiv.setVisibility(View.VISIBLE);
                 about_div.setVisibility(View.VISIBLE);
                 for(int m=0; m < restaurantMenuAdapter.getGroupCount(); m++)
                     expandableListView.expandGroup(m);
@@ -388,7 +387,7 @@ public class RestaurantMenuItemsFragment extends RootFragment {
     }
 
 
-    public void restaurantMenuDetail_for_listview(){
+    public void restaurantMenuDetailForListview(){
 
         if(FLAG_SUGGESTION){
             expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -412,7 +411,7 @@ public class RestaurantMenuItemsFragment extends RootFragment {
 
         expandableListView.setVisibility(View.VISIBLE);
         listDataHeader = new ArrayList<>();
-        ListChild = new ArrayList<>();
+        listChild = new ArrayList<>();
 
         Calendar c = Calendar.getInstance();
         System.out.println("Current time => "+c.getTime());
@@ -430,12 +429,12 @@ public class RestaurantMenuItemsFragment extends RootFragment {
         }
 
         TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,false);
-        transparent_layer.setVisibility(View.VISIBLE);
+        transparentLayer.setVisibility(View.VISIBLE);
         progressDialog.setVisibility(View.VISIBLE);
 
-        ApiRequest.Call_Api(context, Config.SHOW_RESTAURANT_MENU, jsonObject, new Callback() {
+        ApiRequest.callApi(context, Config.SHOW_RESTAURANT_MENU, jsonObject, new Callback() {
             @Override
-            public void Responce(String resp) {
+            public void onResponce(String resp) {
 
                 try {
                     JSONObject jsonResponse = new JSONObject(resp);
@@ -459,7 +458,7 @@ public class RestaurantMenuItemsFragment extends RootFragment {
 
 
                             Uri uri = Uri.parse(Config.imgBaseURL+coverImgURL);
-                            cover_image.setImageURI(uri);
+                            RestaurantMenuItemsFragment.this.coverImage.setImageURI(uri);
 
 
                             final JSONArray resMenuArray = allJsonObject1.getJSONArray("RestaurantMenu");
@@ -498,13 +497,13 @@ public class RestaurantMenuItemsFragment extends RootFragment {
 
 
                                 }
-                                ListChild.add(listChildData);
+                                listChild.add(listChildData);
 
                             }
 
 
-                            restaurant_menu_item_list_suggestion.setVisibility(View.GONE);
-                            restaurantMenuAdapter = new RestaurantMenuAdapter(getContext(), listDataHeader, ListChild);
+                            restaurantMenuItemListSuggestion.setVisibility(View.GONE);
+                            restaurantMenuAdapter = new RestaurantMenuAdapter(getContext(), listDataHeader, listChild);
                             expandableListView.setAdapter(restaurantMenuAdapter);
 
 
@@ -546,8 +545,8 @@ public class RestaurantMenuItemsFragment extends RootFragment {
                                 });
                             }
                             else {
-                                rest_open_div.setVisibility(View.VISIBLE);
-                                about_restaurant_div.setClickable(false);
+                                restOpenDiv.setVisibility(View.VISIBLE);
+                                aboutRestaurantDiv.setClickable(false);
                                 expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
                                     @Override
                                     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -572,7 +571,7 @@ public class RestaurantMenuItemsFragment extends RootFragment {
                 }
 
                 TabLayoutUtils.enableTabs(PagerMainActivity.tabLayout,true);
-                transparent_layer.setVisibility(View.GONE);
+                transparentLayer.setVisibility(View.GONE);
                 progressDialog.setVisibility(View.GONE);
             }
         });
