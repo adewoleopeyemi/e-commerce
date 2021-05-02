@@ -9,33 +9,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:clickable="true"
         android:id="@+id/verification_main_div"
-        android:background="@color/colorBG">
+        android:background="@color/colorBg">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp">
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height">
 
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:paddingEnd="50dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/back_arrow"
-            android:id="@+id/back_icon_verification"
-            android:layout_marginStart="5dp"/>
+            android:paddingEnd="50dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
+            android:id="@+id/back_icon_verification" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/verification"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:id="@+id/verification_title"
             android:layout_centerInParent="true"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/bg_top_color"
             android:gravity="center_horizontal|center_vertical" />
 
         <Button
@@ -44,12 +47,12 @@
             android:background="@null"
             android:layout_alignParentEnd="true"
             android:text="@string/done_label"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textAllCaps="false"
             android:textStyle="normal"
-            android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/btn_done"
-            />
+            android:textColor="@color/bg_top_color"
+            android:id="@+id/btn_done" />
+
     </RelativeLayout>
 
 
@@ -72,7 +75,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:textSize="14sp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:id="@+id/desc_text_verification"
             />
 

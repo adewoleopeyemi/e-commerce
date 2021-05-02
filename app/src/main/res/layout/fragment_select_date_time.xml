@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ActivitiesAndFragments.Select_DateTime_F">
+    tools:context=".ActivitiesAndFragments.SelectDateTime_F">
 
 
     <RelativeLayout
@@ -13,30 +14,32 @@
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/toolbar_height"
             app:contentInsetStart="0dp"
             android:id="@+id/toolbar"
             android:background="@color/colorWhite">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@color/colorWhite">
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent">
 
 
                 <ImageView
-                    android:layout_marginStart="10dp"
-                    android:layout_width="48dp"
-                    android:layout_height="28dp"
-                    android:scaleType="fitStart"
-                    android:id="@+id/Goback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/back_arrow"/>
+                    android:paddingEnd="50dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:id="@+id/Goback"
+                     android:scaleType="fitStart"
+                    app:srcCompat="@drawable/back_icon"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/bg_top_color"
                     android:layout_centerVertical="true"
                     android:textSize="18dp"
                     android:layout_centerHorizontal="true"
@@ -44,10 +47,6 @@
 
 
             </RelativeLayout>
-
-
-
-
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -95,7 +94,7 @@
                     android:paddingStart="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:gravity="center_vertical"
                     android:textSize="16dp"
                     android:text="@string/delivery_date"/>
@@ -105,7 +104,7 @@
                     android:paddingStart="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:gravity="center_vertical"
                     android:textSize="16dp"
                     android:id="@+id/date_txt"
@@ -119,7 +118,7 @@
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_calender"
-                    android:tint="@color/colorAccent"/>
+                    app:tint="@color/colorAccent"/>
 
             </RelativeLayout>
 
@@ -134,7 +133,7 @@
                 android:background="@color/colorAccent"
                 android:text="@string/edit_date"
                 android:textAllCaps="false"
-                android:textColor="@color/colorWhite" />
+                android:textColor="@color/bg_top_color" />
 
             <RelativeLayout
                 android:id="@+id/rl_delivery_time"
@@ -151,7 +150,7 @@
                     android:paddingStart="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:gravity="center_vertical"
                     android:textSize="16dp"
                     android:text="@string/delivery_time"/>
@@ -160,7 +159,7 @@
                     android:paddingStart="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     android:gravity="center_vertical"
                     android:textSize="16dp"
                     android:text="00:00:00"
@@ -174,7 +173,7 @@
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_time_clock"
-                    android:tint="@color/colorAccent"/>
+                    app:tint="@color/colorAccent"/>
 
             </RelativeLayout>
 
@@ -189,7 +188,7 @@
                 android:background="@color/colorAccent"
                 android:text="@string/edit_time"
                 android:textAllCaps="false"
-                android:textColor="@color/colorWhite" />
+                android:textColor="@color/bg_top_color" />
 
             <Button
                 android:layout_width="match_parent"
@@ -199,7 +198,7 @@
                 android:text="@string/continue_txt"
                 android:textAllCaps="false"
                 android:id="@+id/continue_btn"
-                android:textColor="@color/colorWhite" />
+                android:textColor="@color/bg_top_color" />
 
         </RelativeLayout>
 

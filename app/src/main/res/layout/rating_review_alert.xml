@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorWhite">
 
@@ -10,8 +11,8 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height"
         android:id="@+id/menu_item_div"
         android:paddingStart="5dp">
 
@@ -21,15 +22,15 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/give_your_reviews"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/cart_title_tv"
-            android:textSize="18sp"/>
+            android:textSize="15sp"/>
 
         <ImageView
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/cancel"
+            android:src="@drawable/close"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
             android:padding="5dp"
@@ -37,20 +38,23 @@
 
     </RelativeLayout>
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/menu_item_div">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            app:layout_widthPercent="40%"
-            app:layout_heightPercent="40%"
-            app:layout_marginTopPercent="2%"
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/unknown_img"
-            android:id="@+id/rest_img">
+            android:id="@+id/rest_img"
+            fresco:roundAsCircle="true"
+            app:placeholderImageScaleType="centerCrop"
+            app:actualImageScaleType="fitCenter"
+            fresco:placeholderImage="@drawable/unknown_deal"
+            />
 
-        </de.hdodenhof.circleimageview.CircleImageView>
 
         <TextView
             android:layout_height="wrap_content"
@@ -59,7 +63,8 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/rest_name"
             android:text="@string/user_name"
-            android:layout_marginTop="-20dp"
+            android:textColor="@color/colorBlack"
+            android:layout_marginTop="5dp"
             android:textSize="18sp"
             />
 
@@ -70,13 +75,13 @@
             android:isIndicator="false"
             android:layout_below="@+id/rest_name"
             android:layout_centerHorizontal="true"
-            android:progressTint="@color/ratingBar"
-            android:backgroundTint="@color/ratingBar"
+            android:progressTint="@color/colorRatingBar"
+            android:backgroundTint="@color/colorRatingBar"
             android:layout_toEndOf="@+id/profile_image_restaurant"
             style="?android:attr/ratingBarStyle"
+            android:theme="@style/RatingBar"
             android:scaleX="0.5"
             android:scaleY="0.5"
-            android:layout_marginTop="-10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -84,7 +89,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            app:layout_heightPercent="30%"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/reviewRatingBar"
             android:layout_marginTop="-20dp"
             android:id="@+id/code_div">
@@ -102,14 +107,14 @@
                 android:paddingStart="15dp"
                 android:paddingTop="15dp"
                 android:textColor="@color/colorBlack"
-                android:textColorHint="@color/colorEditTextBG"
+                android:textColorHint="@color/color_light_black"
                 android:textSize="16sp"/>
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/toolbar_height"
             android:background="@drawable/round_shape_btn_login"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
@@ -121,13 +126,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/submit"
                 android:layout_centerInParent="true"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/bg_top_color"
                 />
 
 
         </RelativeLayout>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -5,12 +5,17 @@ package com.foodies.amatfoodies.Constants;
  */
 public class Config {
 
-    public static String baseURL = "https://panel.amatnow.com/mobileapp_api/api/";
+   public static String baseURL = "https://panel.amatnow.com/mobileapp_api/api/";
    public static String imgBaseURL = "https://panel.amatnow.com/mobileapp_api/";
 
- 
+    public static final String Privacy_policy="https://panel.amatnow.com/privacy-policy";
 
-    public static final String Privacy_policy="https://amatnow.com/privacy-policy";
+    /*
+    public static String baseURL = "http://domain.com/foodies/mobileapp_api/api/";
+   public static String imgBaseURL = "http://domain.com/foodies/mobileapp_api/";
+
+    public static final String Privacy_policy="https://foodies.com/privacy-policy";
+     */
 
     public static final String LOGIN_URL = baseURL+"login";
 

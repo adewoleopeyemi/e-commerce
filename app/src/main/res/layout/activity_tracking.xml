@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_lay"
     android:clickable="true"
-    android:background="@android:color/white"
+    android:background="@color/colorWhite"
     tools:context="com.foodies.amatfoodies.GoogleMapWork.MapsActivity">
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -31,13 +31,10 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_heightPercent = "15%"
-            app:layout_marginLeftPercent = "15%"
+            android:layout_height="@dimen/_100sdp"
             android:background="@drawable/map_border_bg"
             android:layout_alignParentBottom="true"
-            app:layout_marginBottomPercent="6%"
-            app:layout_marginRightPercent = "15%">
+            android:layout_margin="@dimen/_20sdp">
 
             <androidx.viewpager.widget.ViewPager
                 android:layout_width="fill_parent"
@@ -72,10 +69,10 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:id="@+id/close"
-            android:tint="@color/colorRed"
+            app:tint="@color/colorRed"
             />
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>

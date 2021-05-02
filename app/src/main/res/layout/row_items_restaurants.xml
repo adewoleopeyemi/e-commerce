@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
 android:layout_height="105dp"
+android:background="@color/colorWhite"
 android:id="@+id/restaurant_row_main"
 xmlns:fresco="http://schemas.android.com/apk/res-auto"
 xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -30,6 +31,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_height="wrap_content"
         android:text="0.0KM"
         android:textSize="10sp"
+        android:textColor="@color/color_light_black"
         app:layout_marginLeftPercent = "6%"
         android:layout_marginTop="2dp"
         android:layout_below="@+id/profile_image_restaurant"
@@ -46,7 +48,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         app:layout_marginLeftPercent = "3%"
         android:id="@+id/title_restaurants"
         android:layout_toEndOf="@+id/profile_image_restaurant"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         />
 
     <TextView
@@ -60,6 +62,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         app:layout_marginLeftPercent = "3%"
         android:layout_marginTop="2dp"
         android:maxLines="1"
+        android:textColor="@color/color_light_black"
         android:layout_toEndOf="@+id/profile_image_restaurant"
         />
 
@@ -72,14 +75,14 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_below="@+id/salogon_restaurants"
         app:layout_marginLeftPercent = "3%"
         android:layout_marginTop="2dp"
-        android:progressTint="@color/ratingBar"
-        android:backgroundTint="@color/ratingBar"
+        android:progressTint="@color/colorRatingBar"
+        android:backgroundTint="@color/colorRatingBar"
         android:layout_toEndOf="@+id/profile_image_restaurant"
         style="?android:attr/ratingBarStyleSmall"
+        android:theme="@style/RatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
-
 
 
     <TextView
@@ -90,6 +93,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:singleLine="true"
         android:layout_toEndOf="@+id/profile_image_restaurant"
         android:text="$30"
+        android:layout_toStartOf="@+id/baked_icon"
+        android:textColor="@color/color_light_black"
         android:layout_marginStart="10dp"
         android:layout_marginTop="3dp"
         android:textSize="12sp"
@@ -116,6 +121,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_alignParentEnd="true"
         android:text="$30"
         android:textSize="12sp"
+        android:textColor="@color/color_light_black"
 
         />
 
@@ -137,7 +143,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_alignParentEnd="true"
         android:text="$30"
         android:textSize="12sp"
-
+        android:textColor="@color/color_light_black"
         />
 
     <ImageView
@@ -157,11 +163,12 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_width="40dp"
         android:src="@drawable/featured"
         android:id="@+id/featured"/>
-<View
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
-    android:layout_alignParentBottom="true"
-    android:background="@color/colorEditTextBG" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorEditTextBG" />
 
 
 

@@ -36,7 +36,9 @@
                     android:layout_height="match_parent"
                     android:hint="@string/search"
                     android:singleLine="true"
-                   
+
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
                     android:imeOptions="actionSearch"
                     android:background="@drawable/search_background"
                     android:drawableStart="@drawable/search_icon"
@@ -67,7 +69,7 @@
                     android:textAllCaps="false"
                     android:text="@string/cancel"
                     android:id="@+id/cancel_places"
-                    android:textColor="@color/colorWhite"/>
+                    android:textColor="@color/bg_top_color"/>
             </RelativeLayout>
 
 

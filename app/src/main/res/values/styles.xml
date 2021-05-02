@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
         <item name="searchViewStyle">@style/SearchViewMy</item>
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/transparent_tint</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorBlack</item>
     </style>
 
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
@@ -71,7 +71,7 @@
     </style>
 
     <style name="TextInputLayoutList" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/colorAccent</item>
+         <item name="boxStrokeColor">@color/colorAccent</item>
         <item name="boxCornerRadiusBottomEnd">5dp</item>
         <item name="boxCornerRadiusBottomStart">5dp</item>
         <item name="boxCornerRadiusTopEnd">5dp</item>
@@ -88,5 +88,4 @@
         <item name="boxStrokeWidth">1dp</item>
     </style>
 
-    <dimen name="_3sdp">3dp</dimen>
 </resources>

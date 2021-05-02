@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
+    android:layout_height="@dimen/toolbar_height"
     android:id="@+id/main_view">
 
 
@@ -15,7 +15,7 @@
         android:id="@+id/country_name_tv"
          android:layout_marginStart="15dp"
         android:text="Pakistan"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:textSize="14sp"
         />
 

@@ -14,11 +14,11 @@
     android:background="@color/colorWhite">
 
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp">
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height">
 
 
         <TextView
@@ -27,10 +27,9 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/add_address"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/title_city_tv"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -42,7 +41,7 @@
             android:textSize="14sp"
             android:fontFamily="@font/verdana"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/bg_top_color"/>
 
 
         <Button
@@ -56,19 +55,22 @@
             android:textAllCaps="false"
             android:textSize="14sp"
             android:fontFamily="@font/verdana"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/bg_top_color"/>
 
         <ImageView
-            android:layout_height="match_parent"
-            android:paddingEnd="50dp"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/back_icon"
+            android:paddingEnd="50dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
             android:visibility="gone"
             android:id="@+id/back_icon"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
     <ScrollView
@@ -85,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:paddingStart="15dp"
-        android:background="@color/colorBG"
+        android:background="@color/colorBg"
 
         >
 
@@ -108,6 +110,8 @@
             android:paddingStart="15dp"
             android:textSize="14sp"
             android:inputType="text"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:id="@+id/st_address"
             android:imeOptions="actionNext"
             android:hint="@string/house_hint"/>
@@ -145,7 +149,9 @@
                 android:inputType="text"
                 android:id="@+id/add_city"
                 android:imeOptions="actionNext"
-                android:hint="@string/city_hint"/>
+                android:hint="@string/city_hint"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_light_black"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -157,104 +163,9 @@
 
         </RelativeLayout>
 
-      <!--  <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:textSize="14sp"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:id="@+id/add_state"
-                android:hint="@string/state_hint"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="2dp"
-                android:background="@color/colorEditTextBG"
-                />
-
-        </RelativeLayout>-->
-
 
     </LinearLayout>
 
-   <!-- <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="1dp"
-        android:layout_below="@+id/toolbar_sign_in"
-        >
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@null"
-            android:paddingLeft="15dp"
-            android:textSize="14sp"
-            android:inputType="number"
-            android:id="@+id/add_zip"
-            android:imeOptions="actionNext"
-            android:hint="@string/zip_hint"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorEditTextBG"
-            />
-
-
-    </RelativeLayout>-->
-
-
- <!--   <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:weightSum="2"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        >
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/country_div">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingLeft="15dp"
-                android:background="@null"
-                android:id="@+id/add_country"
-                android:textSize="14sp"
-                android:text="Country"
-                android:gravity="center_vertical"
-                android:layout_centerVertical="true" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorEditTextBG"
-                android:layout_marginRight="5dp"
-                />
-
-        </RelativeLayout>
-
-
-
-
-    </LinearLayout>-->
 
 
     <RelativeLayout
@@ -269,6 +180,7 @@
             android:id="@+id/add_loc_tv"
             android:layout_centerVertical="true"
             android:paddingStart="15dp"
+            android:textColor="@color/color_light_black"
             android:text="@string/add_loc"/>
 
         <TextView
@@ -295,6 +207,8 @@
             android:paddingStart="15dp"
             android:textSize="14sp"
             android:inputType="text"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:imeOptions="actionDone"
             android:id="@+id/add_instructions"
             android:hint="@string/inst_hint"/>

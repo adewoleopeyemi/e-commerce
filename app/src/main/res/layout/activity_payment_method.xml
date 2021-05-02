@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBG"
+    android:background="@color/colorBg"
     android:clickable="true"
     tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.PaymentMethodActivity">
 
@@ -15,11 +14,11 @@
         android:orientation="vertical"
         android:id="@+id/select_payment_method_layout">
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_height="55dp">
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="@dimen/toolbar_height">
 
 
         <TextView
@@ -28,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/select_payment_method"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/title_city_tv"
             android:textSize="15sp"/>
 
@@ -39,9 +38,9 @@
             android:background="@android:color/transparent"
             android:text="@string/cancel"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/bg_top_color"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -53,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_payment_method"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:paddingStart="15dp"
             android:textAllCaps="true"
             android:layout_centerVertical="true"/>
@@ -78,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_payment_method"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:layout_centerVertical="true"/>
 
     </RelativeLayout>
@@ -98,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cash_on_delivery"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:layout_centerVertical="true"/>
 
         <ImageView
@@ -127,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_payment_method"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:layout_centerVertical="true"/>
 
         <ImageView

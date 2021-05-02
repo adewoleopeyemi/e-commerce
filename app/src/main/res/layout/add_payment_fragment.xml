@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBG"
+    android:background="@color/colorBg"
     android:clickable="true"
     android:id="@+id/add_payment_main_container"
     tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.PaymentMethodActivity">
@@ -18,8 +18,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:background="@color/colorWhite"
-            android:layout_height="55dp">
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="@dimen/toolbar_height">
 
 
             <TextView
@@ -28,20 +28,23 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="@string/select_payment_method"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/bg_top_color"
                 android:id="@+id/title_city_tv"
-                android:textSize="17sp"/>
+                android:textSize="15sp"/>
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="38dp"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingEnd="50dp"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:id="@+id/back_arrow"
-                android:scaleType="fitCenter"
+                android:id="@+id/back_icon"
                 android:background="@android:color/transparent"
-                android:src="@drawable/back_arrow"
-                android:layout_centerVertical="true"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/back_icon"
                 android:textColor="@color/colorWhite"/>
 
         </RelativeLayout>
@@ -65,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/select_payment_method"
                         android:paddingStart="15dp"
-                        android:textColor="@color/or_color_name"
+                        android:textColor="@color/color_light_black"
                         android:textSize="10sp"
                         android:textAllCaps="true"
                         android:layout_centerVertical="true"/>
@@ -105,7 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_payment_method"
-                        android:textColor="@color/or_color_name"
+                        android:textColor="@color/color_light_black"
                         android:textSize="10sp"
                         android:layout_centerVertical="true"/>
 
@@ -123,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cash_on_delivery"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         android:layout_centerVertical="true"/>
 
                     <ImageView
@@ -154,7 +157,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_payment_method"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorBlack"
                         android:layout_centerVertical="true"/>
 
                     <ImageView

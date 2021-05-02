@@ -77,7 +77,6 @@ public class SplashScreen extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSION_DATA_ACCESS_CODE = 2;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
     //Video View for Splash Screen
     VideoView videoView;
 
@@ -131,6 +130,7 @@ public class SplashScreen extends AppCompatActivity {
             }
 
             setContentView(R.layout.splash);
+
             // Video View for Splash Screen
             videoView = (VideoView) findViewById(R.id.videoView);
 
@@ -146,8 +146,6 @@ public class SplashScreen extends AppCompatActivity {
             videoView.start();
 
             // End Video View for Splash Screen
-
-//            VERSION_CODE = BuildConfig.VERSION_NAME;
 
             versionCode = BuildConfig.VERSION_NAME;
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_main_div"
-    android:background="@color/colorBG"
+    android:background="@color/colorBg"
     android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.LoginAcitvity">
@@ -12,14 +12,14 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBG"
+    android:background="@color/colorBg"
     android:orientation="vertical">
 
         <RelativeLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:background="@color/colorWhite"
-            android:layout_height="55dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="@dimen/toolbar_height"
             android:clickable="true">
 
 
@@ -27,20 +27,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 android:id="@+id/login_title"
                 android:layout_centerInParent="true"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/bg_top_color"
                 android:gravity="center_horizontal|center_vertical" />
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:paddingEnd="50dp"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/back_arrow"
-                android:id="@+id/back_icon"
-                android:layout_marginStart="5dp"/>
+                android:paddingEnd="50dp"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/back_icon"
+                android:id="@+id/back_icon"/>
 
         </RelativeLayout>
 
@@ -53,7 +56,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorBG">
+            android:background="@color/colorBg">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -100,7 +103,9 @@
                 android:background="@color/colorWhite"
                 android:hint="@string/email_hint"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp" />
+                android:paddingEnd="10dp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_light_black"/>
 
             <TextView
                 android:id="@+id/tv_password"
@@ -128,7 +133,9 @@
                 android:background="@color/colorWhite"
                 android:hint="@string/password_hint"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp" />
+                android:paddingEnd="10dp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_light_black" />
 
 
 
@@ -163,13 +170,13 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/round_shape_btn_login"
                 android:text="@string/login"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/bg_top_color"
                 android:textStyle="normal"
                 android:fontFamily="@font/verdana"
                 style="?android:attr/borderlessButtonStyle"
                 android:textSize="13sp"/>
 
-                <androidx.percentlayout.widget.PercentRelativeLayout
+                <RelativeLayout
                     android:id="@+id/btn_sign_up_now"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -181,10 +188,11 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text="@string/don_t_have_an_account"
-                        android:textColor="@color/or_color_name"
+                        android:textColor="@color/color_light_black"
                         android:textSize="13sp"
                         app:layout_marginLeftPercent="18%" />
 
+                    <!--
                     <TextView
                         android:id="@+id/tv_signed_up_now"
                         android:layout_width="wrap_content"
@@ -194,10 +202,26 @@
                         android:text="@string/sign_up_now"
                         android:textColor="@color/colorRed"
                         android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+                    -->
 
 
-                </androidx.percentlayout.widget.PercentRelativeLayout>
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/tv_signed_up_now"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/tv_forget_password"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/round_shape_btn_login"
+                    android:text="@string/sign_up_now"
+                    android:textColor="@color/bg_top_color"
+                    android:textStyle="normal"
+                    android:fontFamily="@font/verdana"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:textSize="13sp"/>
 
 
             <ImageView
@@ -231,7 +255,7 @@
                             android:background="@null"
                             android:onClick="onClick"
                             android:text="@string/login_with_facebook"
-                            android:textColor="#ffffff"
+                            android:textColor="@color/bg_top_color"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/verdana"
                             android:textAllCaps="false"
@@ -269,7 +293,7 @@
                         android:textSize="13sp"
                        android:fontFamily="@font/verdana"
                         android:layout_centerInParent="true"
-                        android:textColor="@color/colorWhite" />
+                        android:textColor="@color/bg_top_color" />
 
                     <ImageView
                         android:layout_width="45dp"

@@ -13,6 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="15sp"
         android:textSize="14sp"
+        android:textColor="@color/colorBlack"
         android:id="@+id/menu_item_name_tv"/>
 
 
@@ -24,6 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="15sp"
         android:textSize="14sp"
+        android:textColor="@color/colorBlack"
         android:id="@+id/menu_item_amount_tv"/>
 
 </RelativeLayout>

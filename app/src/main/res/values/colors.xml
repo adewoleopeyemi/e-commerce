@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<color name="colorPrimary">#E93821</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <color name="colorPrimary">#E93821</color>
     <color name="colorPrimaryDark">#E93821</color>
     <color name="colorAccent">#E93821</color>
     <color name="color_icon">#E93821</color>
@@ -26,19 +28,9 @@
     <color name="transparent_tint">#47000000</color>
     <color name="light_blue">#01b6cb</color>
 
-    <color name="lightBG">#FFF5F5F5</color>
-    <color name="colorBG">#EBEBEB</color>
-    <color name="transparentColor">#7f000000</color>
-    <color name="ratingBar">#F7CA41</color>
-    <color name="or_color_name">#636262</color>
-    <color name="img_bg">#EBEBEB</color>
-
-    <!--
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#d34836</color>
     <color name="mtrl_textinput_hovered_box_stroke_color" tools:override="true">#d34836</color>
-    -->
 
-    <color name="mtrl_textinput_default_box_stroke_color">#d34836</color>
-    <color name="mtrl_textinput_hovered_box_stroke_color">#d34836</color>
-	
+
+
 </resources>

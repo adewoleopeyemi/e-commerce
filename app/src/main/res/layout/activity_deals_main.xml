@@ -17,7 +17,7 @@
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/deals_item_div"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/toolbar_height"
             android:background="@color/colorPrimaryDark">
 
 
@@ -28,32 +28,36 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="@string/options"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/bg_top_color"
                 android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/back_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="32dp"
                 android:paddingEnd="50dp"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="5dp"
-                android:src="@drawable/back_icon"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/back_icon"
               />
 
             <ImageView
                 android:id="@+id/clos_menu_deals_detail"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
+                android:paddingEnd="50dp"
+                android:paddingTop="5dp"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
+                android:paddingBottom="5dp"
+                android:layout_alignParentEnd="true"
                 android:src="@drawable/close"
                 android:visibility="gone"/>
 
         </RelativeLayout>
 
-        <androidx.percentlayout.widget.PercentRelativeLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorWhite"
@@ -63,8 +67,7 @@
             <RelativeLayout
                 android:id="@+id/deals_bg"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_heightPercent="50%">
+                android:layout_height="@dimen/_200sdp">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:layout_width="match_parent"
@@ -99,7 +102,7 @@
                     android:layout_marginStart="15sp"
                     android:text="@string/food_name"
                     android:textSize="15sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
                 <TextView
@@ -132,7 +135,7 @@
                     android:layout_marginStart="15sp"
                     android:text="@string/hotel_name"
                     android:textSize="15sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
 
@@ -157,7 +160,7 @@
                     android:layout_marginStart="15sp"
                     android:text="@string/food_description"
                     android:textSize="15sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
                     />
 
             </RelativeLayout>
@@ -165,7 +168,7 @@
                 </RelativeLayout>
 
             </ScrollView>
-        </androidx.percentlayout.widget.PercentRelativeLayout>
+        </RelativeLayout>
 
 
 
@@ -192,7 +195,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="1"
-                android:textColor="@color/black"
+                android:textColor="@color/colorBlack"
                 android:gravity="center_vertical|center_horizontal"
                 android:textSize="16dp"
                 android:id="@+id/inc_dec_tv"
@@ -229,7 +232,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/order_now"
-                android:textColor="@color/colorWhite" />
+                android:textColor="@color/bg_top_color" />
 
 
         </RelativeLayout>

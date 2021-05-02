@@ -13,11 +13,11 @@
     android:background="@color/colorWhite">
 
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:background="@color/colorPrimaryDark"
-        android:layout_height="55dp">
+        android:layout_height="@dimen/toolbar_height">
 
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/add_payment"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/title_city_tv"
             android:textSize="15sp"/>
 
@@ -37,19 +37,22 @@
             android:background="@android:color/transparent"
             android:text="@string/cancel"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorWhite"/>
+            android:textColor="@color/bg_top_color"/>
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:paddingEnd="50dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:id="@+id/back_icon"
-           android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
             android:focusable="true"
             android:clickable="true"
             android:visibility="gone"
-            android:src="@drawable/back_icon"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
              />
 
 
@@ -61,9 +64,9 @@
             android:text="@string/save"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorWhite"/>
+            android:textColor="@color/bg_top_color"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 
     <ScrollView
@@ -79,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:paddingStart="15dp"
-        android:background="@color/colorBG"
+        android:background="@color/colorBg"
         android:layout_below="@+id/toolbar_sign_in"
         >
 
@@ -101,6 +104,8 @@
             android:textSize="14sp"
             android:inputType="phone"
             android:maxLength="19"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:imeOptions="actionNext"
             android:id="@+id/card_number_editText"
             android:hint="@string/card_hint"/>
@@ -114,7 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_marginTop="1dp"
-        android:background="@color/colorBG"
+        android:background="@color/colorBg"
         android:layout_below="@+id/toolbar_sign_in"
         >
         <TextView
@@ -148,6 +153,8 @@
             android:paddingStart="15dp"
             android:textSize="14sp"
             android:inputType="text"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:id="@+id/name_on_card"
             android:imeOptions="actionNext"
             android:hint="@string/card_name_hint"/>
@@ -185,6 +192,8 @@
                 android:inputType="number"
                 android:id="@+id/cvv"
                 android:maxLength="4"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/color_light_black"
                 android:imeOptions="actionNext"
                 android:hint="@string/cvc_hint"/>
 
@@ -210,6 +219,8 @@
             android:textSize="14sp"
             android:imeOptions="actionNext"
             android:inputType="date"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:id="@+id/card_validity"
             android:hint="@string/date_hint"/>
 
@@ -240,6 +251,8 @@
             android:paddingStart="15dp"
             android:textSize="14sp"
             android:inputType="text"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:id="@+id/billing_address_card"
             android:imeOptions="actionNext"
             android:hint="@string/billing_address_hint"/>
@@ -278,6 +291,8 @@
             android:imeOptions="actionNext"
             android:id="@+id/city_card"
             android:textSize="14sp"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:hint="@string/city_hint"/>
 
             <TextView
@@ -304,6 +319,8 @@
             android:imeOptions="actionNext"
             android:inputType="text"
             android:background="@null"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"
             android:hint="@string/state_hint"/>
 
             <TextView
@@ -335,7 +352,9 @@
             android:inputType="text"
             android:imeOptions="actionDone"
             android:id="@+id/card_zip"
-            android:hint="@string/zip_hint"/>
+            android:hint="@string/zip_hint"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/color_light_black"/>
 
         <TextView
             android:layout_width="match_parent"

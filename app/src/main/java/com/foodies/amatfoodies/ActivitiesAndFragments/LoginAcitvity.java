@@ -71,9 +71,9 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener 
     FrameLayout loginMainDiv;
     CamomileSpinner logInProgress;
     RelativeLayout transparentLayer,progressDialog, googleSignInDiv;
-    Button logInNow;
+    Button logInNow, tvSignedUpNow;
     TextView fbBtn;
-    TextView loginText, tvEmail, tvPass, signUpTxt, tvForgetPassword, tvSignedUpNow, tvSignUp;
+    TextView loginText, tvEmail, tvPass, signUpTxt, tvForgetPassword, tvSignUp;
     EditText edEmail, edPassword;
     LoginButton loginButtonFb;
     ImageView backIcon;
@@ -96,6 +96,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener 
         edEmail = (EditText)view.findViewById(R.id.ed_email);
         edPassword =(EditText)view.findViewById(R.id.ed_password);
         logInNow = (Button)view.findViewById(R.id.btn_login);
+        tvSignedUpNow = (Button)view.findViewById(R.id.tv_signed_up_now);
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -105,7 +106,7 @@ public class LoginAcitvity extends RootFragment implements View.OnClickListener 
 
 
         tvSignUp = view.findViewById(R.id.tv_sign_up);
-        tvSignedUpNow = view.findViewById(R.id.tv_signed_up_now);
+//        tvSignedUpNow = view.findViewById(R.id.tv_signed_up_now);
         FontHelper.applyFont(getContext(), tvSignUp, AllConstants.verdana);
 
         fbBtn = view.findViewById(R.id.fb_btn);

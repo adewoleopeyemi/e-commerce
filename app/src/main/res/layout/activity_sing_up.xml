@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_sign_up_div"
-    android:background="@color/colorBG"
+    android:background="@color/colorBg"
     android:clickable="true"
     tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.SingUpActivity">
 
@@ -13,34 +13,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBG"
+        android:background="@color/colorBg"
         android:id="@+id/main_sign_up"
         android:orientation="vertical">
 
         <RelativeLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:background="@color/colorWhite"
-            android:layout_height="55dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="@dimen/toolbar_height"
             android:clickable="true">
 
             <ImageView
+
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:paddingEnd="50dp"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/back_arrow"
+                android:paddingEnd="50dp"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/back_icon"
                 android:id="@+id/back_icon"
-                android:layout_marginStart="5dp"/>
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sign_up"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 android:id="@+id/signup_title"
                 android:layout_centerInParent="true"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/bg_top_color"
                 android:gravity="center_horizontal|center_vertical" />
         </RelativeLayout>
 
@@ -76,7 +81,9 @@
                     android:imeOptions="actionNext"
                     android:inputType="textWebEmailAddress"
                     android:paddingEnd="10dp"
-                    android:paddingStart="10dp"/>
+                    android:paddingStart="10dp"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"/>
 
                 <TextView
                     android:id="@+id/tv_lname"
@@ -104,7 +111,9 @@
                     android:imeOptions="actionNext"
                     android:inputType="textWebEmailAddress"
                     android:paddingStart="10dp"
-                    android:paddingEnd="10dp"/>
+                    android:paddingEnd="10dp"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"/>
 
                 <TextView
                     android:id="@+id/tv_email"
@@ -130,6 +139,8 @@
                     android:inputType="textWebEmailAddress"
                     android:imeOptions="actionNext"
                     android:layout_marginTop="1dp"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
                     android:layout_toEndOf="@+id/tv_email"
                     android:background="@color/colorWhite"
                     android:hint="@string/email_hint"
@@ -160,6 +171,8 @@
                     android:layout_marginTop="1dp"
                     android:inputType="textWebPassword"
                     android:imeOptions="actionDone"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
                     android:layout_toEndOf="@+id/tv_password"
                     android:background="@color/colorWhite"
                     android:hint="@string/password_hint" />
@@ -173,7 +186,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/round_shape_btn_login"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/bg_top_color"
                     android:textSize="13sp"
                     android:fontFamily="@font/verdana"
                     style="@style/Base.Widget.AppCompat.Button.Borderless"
@@ -226,7 +239,7 @@
                             android:layout_centerInParent="true"
                             android:background="@null"
                             android:text="@string/sign_up_fb"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="@color/bg_top_color"
                             android:textSize="13sp"
                             android:fontFamily="@font/verdana"
                             android:textStyle="normal" />
@@ -264,7 +277,7 @@
                             android:textStyle="normal"
                             android:fontFamily="@font/verdana"
                             android:layout_centerInParent="true"
-                            android:textColor="@color/colorWhite" />
+                            android:textColor="@color/bg_top_color" />
 
                         <ImageView
                             android:layout_width="45dp"

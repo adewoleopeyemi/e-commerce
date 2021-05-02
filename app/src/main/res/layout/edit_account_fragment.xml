@@ -3,38 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:background="@color/colorBg"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/edit_account_main_container">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBG"
         android:id="@+id/main_sign_up"
         android:orientation="vertical">
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:background="@color/colorWhite"
-            android:layout_height="55dp">
+             android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="@dimen/toolbar_height">
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingEnd="50dp"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/back_arrow"
-                android:id="@+id/back_icon"
-                android:layout_marginStart="5dp"/>
+                android:paddingEnd="50dp"
+                android:layout_marginStart="@dimen/toolbar_margin_left"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/back_icon"
+                android:id="@+id/back_icon"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/edit_account"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 android:id="@+id/signup_title"
                 android:layout_centerInParent="true"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/bg_top_color"
                 android:gravity="center_horizontal|center_vertical" />
 
             <Button
@@ -46,15 +49,12 @@
                 android:textAllCaps="false"
                 android:fontFamily="@font/verdana"
                 android:id="@+id/btn_edit_done"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:background="@color/transparent"
-                android:textColor="@color/colorPrimaryDark"/>
+                android:textColor="@color/bg_top_color"/>
 
         </RelativeLayout>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -70,9 +70,9 @@
                     android:background="@color/colorWhite"
                     android:hint="@string/first_name"
                     android:textSize="14sp"
-                    android:textColorHint="@color/colorEditTextBG"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
                     android:imeOptions="actionNext"
-                    android:textColor="@color/black"
                     android:inputType="textWebEmailAddress"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"/>
@@ -88,9 +88,9 @@
                     android:layout_toEndOf="@+id/tv_lname"
                     android:background="@color/colorWhite"
                     android:hint="@string/last_name"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
                     android:textSize="14sp"
-                    android:textColorHint="@color/colorEditTextBG"
                     android:imeOptions="actionDone"
                     android:inputType="textWebEmailAddress"
                     android:paddingStart="15dp"
@@ -111,9 +111,9 @@
                     android:layout_toEndOf="@+id/tv_email"
                     android:background="@color/colorWhite"
                     android:hint="******"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
                     android:textSize="14sp"
-                    android:textColorHint="@color/colorEditTextBG"
-                    android:textColor="@color/black"
 
                     />
 
@@ -132,14 +132,13 @@
                     android:layout_toEndOf="@+id/tv_email"
                     android:background="@color/colorWhite"
                     android:hint="******"
-                    android:textColorHint="@color/colorEditTextBG"
-                    android:textColor="@color/black"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/color_light_black"
 
                     />
 
             </RelativeLayout>
 
-        </ScrollView>
 
 
     </LinearLayout>

@@ -15,7 +15,7 @@
         android:layout_marginEnd="22dp"
         android:background="@drawable/round_shape_btn_login"
         android:text="@string/show_restaurant"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/bg_top_color"
         android:id="@+id/welcome_show_restaurants_btn"
         android:textSize="15sp"/>
 
@@ -51,7 +51,7 @@
             android:layout_centerVertical="true"
             android:text="@string/your_location_here"
             android:textSize="15sp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             />
 
     </RelativeLayout>
@@ -63,7 +63,7 @@
         android:layout_marginEnd="35dp"
         android:text="@string/welcome_txt"
         android:textSize="17sp"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:layout_above="@+id/welcome_search_div"
         android:layout_marginBottom="15dp"
         android:textAlignment="center"

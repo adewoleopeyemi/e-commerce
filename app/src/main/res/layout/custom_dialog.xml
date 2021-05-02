@@ -36,9 +36,9 @@
             android:inputType="text"
             android:paddingStart="15dp"
             android:paddingTop="15dp"
+            android:textSize="16sp"
             android:textColor="@color/colorBlack"
-            android:textColorHint="@color/colorEditTextBG"
-            android:textSize="16sp"/>
+            android:textColorHint="@color/color_light_black"/>
 
 
 
@@ -64,6 +64,7 @@
                 android:layout_height="38dp"
                 android:text="@string/cancel"
                 android:id="@+id/cancel_btn"
+                android:textColor="@color/bg_light_top_color"
                 android:background="@color/colorEditTextBG"
                 android:layout_alignParentEnd="true"
                 style="?android:attr/borderlessButtonStyle"
@@ -82,7 +83,7 @@
                 android:layout_height="38dp"
                 android:text="@string/done_label"
                 android:background="@color/colorRed"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/bg_top_color"
                 android:id="@+id/done_btn"
                 style="?android:attr/borderlessButtonStyle"
 

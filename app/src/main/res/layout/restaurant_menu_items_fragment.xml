@@ -26,6 +26,7 @@
             android:layout_centerVertical="true"
             android:text="@string/options"
             android:textColor="@color/bg_top_color"
+            android:maxLength="20"
             android:id="@+id/rastaurant_menu_item_title_tv"
             android:textSize="15sp"/>
 
@@ -64,9 +65,8 @@
             app:iconifiedByDefault="false"
             android:paddingLeft="-10dp"
             android:paddingStart="-10dp"
-            android:queryBackground="@android:color/transparent"
-
-            />
+            android:layout_margin="5dp"
+            android:queryBackground="@android:color/transparent" />
 
         <RelativeLayout
             android:layout_width="match_parent"

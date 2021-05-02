@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:id="@+id/weekly_earning_main_container"
-    android:background="@color/colorBG">
+    android:background="@color/colorBg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:background="@color/colorPrimaryDark"
-            android:layout_height="55dp">
+            android:layout_height="@dimen/toolbar_height">
 
 
             <TextView
@@ -26,7 +26,7 @@
                 android:textSize="15sp"
                 android:id="@+id/rider_jobs"
                 android:layout_centerInParent="true"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/bg_top_color"
                 android:gravity="center_horizontal|center_vertical" />
 
 

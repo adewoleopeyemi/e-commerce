@@ -13,7 +13,7 @@
         android:text="**** **** **** **** 4242"
        android:layout_centerVertical="true"
         android:paddingStart="15dp"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         />
 
     <ImageView

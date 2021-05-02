@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:id="@+id/address_list_container"
-    android:background="@color/colorBG"
+    android:background="@color/colorBg"
     android:clickable="true"
     tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.AddAddressActivity">
 
@@ -19,11 +19,11 @@
         android:layout_height="match_parent"
         android:id="@+id/select_add_layout">
 
-    <androidx.percentlayout.widget.PercentRelativeLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:background="@color/colorPrimaryDark"
-        android:layout_height="55dp"
+        android:layout_height="@dimen/toolbar_height"
         android:id="@+id/toolbar_add_address">
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/add_address"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/bg_top_color"
             android:id="@+id/title_city_tv"
             android:textSize="15sp"/>
 
@@ -46,19 +46,22 @@
             android:textSize="14sp"
             android:fontFamily="@font/verdana"
             android:layout_centerVertical="true"
-            android:textColor="@color/colorWhite"/>
+            android:textColor="@color/bg_top_color"/>
 
         <ImageView
-            android:layout_height="match_parent"
-            android:paddingEnd="20dp"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/back_icon"
+            android:paddingEnd="50dp"
+            android:paddingTop="5dp"
+            android:layout_marginStart="@dimen/toolbar_margin_left"
+            android:paddingBottom="5dp"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/back_icon"
             android:visibility="gone"
             android:id="@+id/back_icon"/>
 
-    </androidx.percentlayout.widget.PercentRelativeLayout>
+    </RelativeLayout>
 
 <ScrollView
     android:layout_width="match_parent"
@@ -98,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_new_address"
-            android:textColor="@color/black"
+            android:textColor="@color/colorBlack"
             android:layout_toEndOf="@+id/text_plus2"
             android:layout_marginStart="10dp"
             android:layout_centerVertical="true"/>
@@ -147,4 +150,6 @@
             app:spinnerColor="@color/colorRed"
             />
     </RelativeLayout>
+
+
 </FrameLayout>

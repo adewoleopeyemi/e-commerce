@@ -6,7 +6,7 @@
     android:paddingStart="15dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:background="@color/colorBG">
+    android:background="@color/colorBg">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,7 +14,7 @@
         android:text="SIZE(Required)"
         android:textSize="12sp"
         android:layout_centerVertical="true"
-        android:textColor="@color/black"
+        android:textColor="@color/colorBlack"
         android:id="@+id/parent_tv"
         />
 

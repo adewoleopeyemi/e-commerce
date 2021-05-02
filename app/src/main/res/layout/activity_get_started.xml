@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".ActivitiesAndFragments.GetStartedActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/enable_location_txt">
+
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_location"
+            android:textSize="35dp"
+            android:id="@+id/enable_location_txt"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorBlack"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_below="@+id/enable_location_txt"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="15dp"
+                android:layout_weight="1"
+                android:paddingBottom="20dp"
+                android:gravity="center"
+                android:lineSpacingExtra="6dp"
+                android:text="@string/skip"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_weight="1"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:orientation="vertical"
+                android:gravity="center">
+
+
+
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="@string/sign_up_now"
+                    android:textAllCaps="true"
+                    android:textColor="@color/bg_top_color"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/round_shape_btn_login"
+                    android:id="@+id/enable_location_btn"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorDeal"
+                    android:textSize="15dp"
+                    android:layout_weight="1"
+                    android:paddingTop="10dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="6dp"
+                    android:textStyle="bold"
+                    android:text="@string/login_statement"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</FrameLayout>
