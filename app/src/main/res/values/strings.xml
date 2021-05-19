@@ -52,6 +52,7 @@
 
     <string name="sign_up_fb">SIGN UP WITH FACEBOOK</string>
 
+    <string name="theme4_font_bold" translatable="false">theme4fonts/googlesansbold.ttf</string>
     <string name="sign_up_google">SIGN UP WITH GOOGLE</string>
 
 
@@ -102,7 +103,6 @@
     <string name="password_hint"><font size="14">At least 6 character</font></string>
     <string name="f_name"><font size="14">John</font></string>
     <string name="l_name"><font size="14">Smith</font></string>
-    <string name="location">Location</string>
     <string name="deal_content">Sorry. This store doesn’t offer any deal at this moment.</string>
     <string name="privacy_policy">Privacy Policy</string>
 
@@ -337,5 +337,273 @@
         <item>tr</item>
     </string-array>
 
+    <string name="theme4_lbl_calories" translatable="false">Calories</string>
+    <string name="theme4_font_medium" translatable="false">theme4fonts/googlesansMedium.ttf</string>
+    <string name="theme3_font_bold" translatable="false">theme3fonts/googlesansbold.ttf</string>
+    <string name="theme3_font_medium">theme3fonts/googlesansMedium.ttf</string>
+    <string name="theme3_font_regular">theme3fonts/googlesansregular.ttf</string>
+    <string name="theme3_font_semi_bold">theme3fonts/googlesansMedium.ttf</string>
+    <string name="theme4_font_regular">theme4fonts/googlesansregular.ttf</string>
+
+
+    <string name="theme3_hint_password">Password</string>
+    <string name="theme3_lbl_remember">Remember</string>
+    <string name="theme3_hint_Email">Email Id</string>
+    <string name="theme3_lbl_sign_in">Sign In</string>
+    <string name="theme3_lbl_sign_in_link"><a href="#">Sign In</a></string>
+
+    <string name="theme3_lbl_forgot_password">Forgot Password?</string>
+    <string name="theme3_lbl_welcome">Welcome</string>
+    <string name="theme3_lbl_back">Back!</string>
+    <string name="theme3_lbl_dont_have_account">Don\'t have an account?</string>
+    <string name="theme3_lbl_sign_up">Sign Up</string>
+    <string name="theme3_lbl_sign_up_link"><a href="#">Sign Up</a></string>
+    <string name="theme3_lbl_create_account">Create Account</string>
+    <string name="theme3_lbl_recepie_for_happiness">Recipe for Happiness...</string>
+    <string name="theme3_hint_confirm_password">Confirm Password</string>
+    <string name="theme3_lbl_alredy_have_account">Already have an account?</string>
+    <string name="theme3_lbl_food_receipe">Food Recipe</string>
+    <string name="theme3_lbl_view_all">View all</string>
+    <string name="theme3_samplelong_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.dummy text of the printing and typesetting </string>
+    <string name="theme3_lbl_search_here">Search here</string>
+    <string name="txt_todo">TODO</string>
+    <string name="theme3_lbl_keywords">Keywords</string>
+    <string name="theme3_lbl_search">Search Your Favourite</string>
+    <string name="theme2_lbl_welcome_to_search_bar">Welcome to search</string>
+    <string name="theme3_slider_title">Image Slider</string>
+    <string name="theme3_lbl_bottom_naivgation">Bottom Navigation</string>
+    <string name="theme3_lbl_welcome_to_bottom_n_navigation_bar">Welcome to Bottom \nNavigation Bar</string>
+    <string name="theme3_lbl_dashboard">Dashboard</string>
+    <string name="theme3_user_name">John Doe</string>
+    <string name="Theme3_user_email">Video Maker</string>
+    <string name="theme3_lbl_bottom_sheet">Bottom Sheet</string>
+    <string name="theme3_lbl_review">Review</string>
+    <string name="theme3_lbl_setting">Settings</string>
+    <string name="theme3_lbl_receive_notification">Receive Notification</string>
+    <string name="theme3_lbl_receive_newletter">Receive Newsletter</string>
+    <string name="theme3_lbl_receive_special_news_offer">Receive special offer</string>
+    <string name="theme3_lbl_edit">Edit</string>
+    <string name="theme3_lbl_location">Location</string>
+    <string name="theme3_lbl_change">Change</string>
+    <string name="theme3_lbl_language">Language</string>
+    <string name="theme3_lbl_done">Done</string>
+    <string name="Theme3_lbl_max">Max</string>
+    <string name="Theme3_lbl_min">Min</string>
+    <string name="theme3_lbl_profile">Profile</string>
+    <string name="theme3_lbl_listing">Listing</string>
+    <string name="theme3_lbl_description">
+   1. Combine the cheese, salt, red chilli flakes and mixed oregano in a bowl. \n\n
+   2. Mix very well and make a soft mixture. \n\n
+   3. Slightly cut the edges of the bread slices and apply butter on it. \n\n
+        4. Put the prepared mixture on half side of the buttery bread and cover with the other side.\n\n
+   5. Make a tight roll by applying little amount of cornstarch.\n\n
+    6. Bake in preheated oven for about 20 minutes.
+</string>
+    <string name="theme3_lbl_logout"><a href="#">Logout</a></string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="theme3_lbl_my_videos">My Videos</string>
+    <string name="theme3_lbl_my_followers">My Followers</string>
+    <string name="theme3_lbl_new_recipe">New Recipe</string>
+    <string name="theme3_text_cheese_roll_done_by_john_doe">Cheese roll recipe by John Doe</string>
+    <string name="theme3_lbl_share_to">Share to</string>
+    <string name="theme3_lbl_recipe_steps">Recipe Steps</string>
+    <string name="theme3_lbl_check_video" translatable="false">Check Video</string>
+    <string name="theme3_lbl_Franch" translatable="false">French</string>
+    <string name="theme3_lbl_view_more_recipe" translatable="false">View more Recipe</string>
+    <string name="location">Location</string>
+
+
+    <string name="tb_font_bold">tbfonts/googlesansbold.ttf</string>
+    <string name="tb_font_medium">tbfonts/googlesansmedium.ttf</string>
+    <string name="tb_font_regular">tbfonts/googlesansregular.ttf</string>
+    <string name="tb_font_semi_bold">tbfonts/googlesansmedium.ttf</string>
+    <string name="tb_lbl_get_started">Get Started</string>
+    <string name="tb_hint_Email">Email</string>
+    <string name="tb_hint_password">Password</string>
+    <string name="tb_hint_confirm_password">Confirm Password</string>
+    <string name="tb_lbl_sign_up">Sign Up</string>
+    <string name="tb_lbl_already_member">Already have an account?</string>
+    <string name="tb_lbl_login">Login</string>
+    <string name="tb_lbl_need_an_account">Don\'t have an account?</string>
+    <string name="tb_lbl_forgot_your_password">Forgot Password?</string>
+    <string name="tb_lbl_retrieve">Retrieve</string>
+    <string name="tb_lbl_search">Search</string>
+    <string name="tb_lbl_bookmark">Bookmark</string>
+    <string name="tb_lbl_user">User</string>
+    <string name="tb_lbl_setting">Setting</string>
+    <string name="tb_lbl_featured_cities">Featured cities</string>
+    <string name="tb_lbl_popular_properties">Popular Properties</string>
+    <string name="tb_lbl_for_sale">For Sale</string>
+    <string name="tb_lbl_country">country</string>
+    <string name="tb_lbl_canada">Canada</string>
+    <string name="tb_lbl_currency">currency</string>
+    <string name="tb_lbl_cad">Cad</string>
+    <string name="tb_lbl_privacy_policy">privacy policy</string>
+    <string name="tb_lbl_support_amp_faqs"><![CDATA[support & faqs]]></string>
+    <string name="tb_lbl_change_password">Change Password</string>
+    <string name="tb_lbl_logout">Logout</string>
+    <string name="tb_lbl_apply">Apply</string>
+    <string name="tb_lbl_low_to_high_s">Low to high (s)</string>
+    <string name="tb_lbl_high_to_low_s">high to low (s)</string>
+    <string name="tb_lbl_date_posted_new_to_old">Date Posted (New to old)</string>
+    <string name="tb_lbl_date_posted_old_to_new">Date Posted (old to new)</string>
+    <string name="tb_lbl_distance_to_your_location">distance to your location</string>
+    <string name="tb_hint_city">City</string>
+    <string name="tb_hint_from">From</string>
+    <string name="tb_hint_to">To</string>
+    <string name="tb_lbl_update">Update</string>
+    <string name="tb_lbl_size">Size</string>
+    <string name="tb_lbl__1">1</string>
+    <string name="tb_lbl_bathrooms">Bathrooms (#)</string>
+    <string name="tb_lbl_bedrooms">Bedrooms (#)</string>
+    <string name="tb_lbl_types_of_property">Types of property</string>
+    <string name="tb_lbl_price">Price</string>
+    <string name="tb_lbl__13_miles">13 miles</string>
+    <string name="tb_lbl_search_within">Search within</string>
+    <string name="tb_lbl_call">Call</string>
+    <string name="tb_lbl_bookmarks">Bookmarks</string>
+    <string name="tb_lbl_last_watched">Last Watched</string>
+    <string name="tb_lbl_login_with">Login With</string>
+    <string name="tb_username">Jessica Doe</string>
+    <string name="tb_user_email">Jessica@gmail.com</string>
+    <string name="tb_lbl_properties">Properties</string>
+    <string name="tb_20">20</string>
+    <string name="tb_150">150</string>
+    <string name="tb_lbl_followers">Followers</string>
+    <string name="tb_lbl_sample_long">
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+    </string>
+    <string name="tb_lbl_simple_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="tb_lbl_address">Address</string>
+    <string name="tb_lbl_description">Description</string>
+    <string name="tb_lbl_types_of_properties">Types of properties</string>
+    <string name="tb_lbl_house">House</string>
+    <string name="tb_lbl_storeys">storeys</string>
+    <string name="tb_lbl_photos">photos</string>
+    <string name="tb_lbl_2">2</string>
+    <string name="tb_lbl_for_rent">For rent</string>
+    <string name="tb_lbl_profile">profile</string>
+    <string name="tb_lbl_filter">Filters</string>
+    <string name="tb_lbl_cards">Cards</string>
+    <string name="tb_lbl_list">List</string>
+    <string name="tb_lbl_buy">Buy</string>
+    <string name="tb_lbl_rent">Rent</string>
+    <string name="tb_lbl_bottom_navigation">Bottom Navigation</string>
+    <string name="tb_lbl_search_nearest_properties">Search Nearest Properties</string>
+    <string name="tb_lbl_last_search">Last Search</string>
+    <string name="tb_lbl_popular_cities">Popular cities</string>
+    <string name="tb_lbl_bali">Bali</string>
+    <string name="tb_lbl_3_bedroom">3 Bedroom</string>
+    <string name="tb_lbl_3_bathroom">3 Bathroom</string>
+    <string name="tb_lbl_owner">Owner</string>
+    <string name="tb_2_440">$2.440</string>
+    <string name="tb_lbl_green_house_nw_pool">Green House  \nw/Pool</string>
+    <string name="tb_lbl__3_beds">3 beds</string>
+    <string name="tb_lbl_1_baths">1 Baths</string>
+    <string name="tb_20_sqm">20 sqm</string>
+    <string name="tb_lbl_link_sign_up"><a href="#">Sign Up</a></string>
+    <string name="tb_lbl_link_login"><a href="#">Login</a></string>
+    <string name="tb_lbl_next">Next</string>
+    <string name="tb_sample_heading">Lorem ipsum dolor sir amet</string>
+    <string name="tb_forget_password">Forget Password?</string>
+    <string name="tb_welcome">Welcome!</string>
+    <string name="tb_login">Login</string>
+    <string name="tb_need_to_create_an_account">Need to create an account?</string>
+    <string name="tb_register_here">Register here</string>
+    <string name="tb_phone_number">Phone Number</string>
+    <string name="tb_register">Register</string>
+    <string name="tb_verify_number">Verify Number</string>
+    <string name="tb_lbl_continue">Continue</string>
+    <string name="tb_i_didn_t_get_code">I didn\'t get code</string>
+    <string name="tb_note_toc">Tap continue to accept Facebook\'s Terms ,Data Policy,Cookie use and the privacy policy of\nTransit</string>
+    <string name="tb_lbl_ok">OK</string>
+    <string name="tb_verification_complete">Verification Complete</string>
+    <string name="tb_phone_no">+918485652520</string>
+    <string name="tb_user_name">Bernard Alverdaro</string>
+    <string name="tb_lbl_yout_trips">Your Trip</string>
+    <string name="tb_lbl_wallet">Wallet</string>
+    <string name="tb_vehicle_management">Vehicle Management</string>
+    <string name="tb_document_management">Document Management</string>
+    <string name="tb_settings">Settings</string>
+    <string name="tb_notification_manager">Notification Manager</string>
+    <string name="tb_help">Help</string>
+    <string name="tb_share">Share</string>
+    <string name="tb_logout">Logout</string>
+    <string name="tb_make_money_driving">Make Money Driving</string>
+    <string name="tb_lbl_offers">Offers</string>
+    <string name="tb_lbl_payments">Payments</string>
+    <string name="tb_lbl_passbook">Passbook</string>
+    <string name="tb_become_driver">Become Driver</string>
+    <string-array name="months">
+        <item>MM </item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
+    <string-array name="year">
+        <item>YYYY</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+        <item>2024</item>
+        <item>2025</item>
+        <item>2026</item>
+        <item>2027</item>
+        <item>2028</item>
+        <item>2029</item>
+        <item>2030</item>
+    </string-array>
+    <string-array name="model">
+        <item>Camery</item>
+        <item>SUV</item>
+        <item>SX</item>
+        <item>GenX</item>
+    </string-array>
+    <string name="tb_lbl_cancel">Cancel</string>
+    <string name="title_activity_tbdriver_wallet">TBDriverWalletActivity</string>
+    <string name="tb_lbl_sample">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eleifend erat non nisl aliquet fermentum.
+    </string>
+    <string name="action_settings">Settings</string>
+    <string name="tb_money_transfer">Money Transfer</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="hello"><![CDATA[<b>The Awesome Sliding Up Panel</b><br/> Brought to you by<br/><a href="http://umanoapp.com">http://umanoapp.com</a>]]></string>
+    <string name="follow"><![CDATA[Follow us<br/>on <a href="http://twitter.com/umanoapp">Twitter</a>]]></string>
+    <string name="action_hide">Hide Panel</string>
+    <string name="action_show">Show Panel</string>
+    <string name="action_anchor_enable">Enable Anchor Point</string>
+    <string name="action_anchor_disable">Disable Anchor Point</string>
+    <string name="tb_ga_name">Good Afternoon , John</string>
+    <string name="tb_where_to">Where To?</string>
+    <string name="tb_your_pick_up_location">Your Pick up Location</string>
+    <string name="tb_demo_lcn">Gilbert Ferry Road</string>
+    <string name="tb_apply_coupan">Apply Coupon</string>
+    <string name="tb_driver_tax_note">Due to peack hours,Charges be vary based on the availability of providers</string>
+    <string name="tb_view_coupons">View Coupons</string>
+    <string name="tb_confirm_taxi">Confirm Taxi</string>
+    <string name="tb_lbl_ignore">Ignore</string>
+    <string name="tb_lbl_accept">Accept</string>
+    <string name="tb_lbl_arrived">Arrived</string>
+    <string name="tb_lbl_pickup">Picked Up</string>
+    <string name="tb_enter_amount">Enter Amount</string>
+    <string name="tb_login_as_rider">Login as Rider</string>
+    <string name="tb_login_as_driver">Login as Driver</string>
+    <string name="pickup">Pickup</string>
+    <string name="african_card_flutterwave">African Card (FlutterWave)</string>
+    <string name="card_stripe">Card (Stripe)</string>
+    <string name="card_on_delivery">Card on Delivery</string>
+    <string name="please_enter_instructions_upon_delivery">Please Enter instructions upon delivery</string>
+    <string name="please_enter_a_location">Please Enter a Location</string>
+    <string name="yyyy_mm_dd_hh_ss">YYYY-MM-DD HH:SS</string>
 
 </resources>

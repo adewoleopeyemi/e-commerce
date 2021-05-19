@@ -93,14 +93,14 @@
                 android:id="@+id/line_tv"
                 android:background="@color/colorEditTextBG"/>
 
-            <com.foodies.amatfoodies.Utils.CustomExpandableListView
+            <com.foodies.amatfoodies.utils.CustomExpandableListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:background="@color/colorWhite"
                 android:id="@+id/item_detail_list">
 
-            </com.foodies.amatfoodies.Utils.CustomExpandableListView>
+            </com.foodies.amatfoodies.utils.CustomExpandableListView>
 
             <RelativeLayout
                 android:layout_width="match_parent"

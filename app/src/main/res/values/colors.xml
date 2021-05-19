@@ -32,5 +32,52 @@
     <color name="mtrl_textinput_hovered_box_stroke_color" tools:override="true">#d34836</color>
 
 
+    <color name="Theme3_colorPrimary">#fc4a1a</color>
+    <color name="Theme3_colorPrimaryDark">#f7b733</color>
+    <color name="Theme3_colorAccent">#f7b733</color>
+    <color name="Theme3_color_red">#F12727</color>
+    <color name="Theme3_textColorPrimary">#333333</color>
+    <color name="Theme3_textColorSecondary">#9D9D9D</color>
+
+    <color name="Theme3_app_background">#f8f8f8</color>
+    <color name="Theme3_view_color">#DADADA</color>
+
+    <color name="Theme3_white">#ffffff</color>
+
+    <color name="Theme3_icon_color">#747474</color>
+    <color name="Theme3_color_green">#8BC34A</color>
+    <color name="theme3_edit_background">#F5F4F4</color>
+    <color name="theme3_light_gray">#CECACA</color>
+    <color name="theme3_color_tint">#F4704C</color>
+
+    <color name="Theme4_textColorPrimary">#464545</color>
+    <color name="Theme4_textColorSecondary">#747474</color>
+
+    <color name="tb_colorPrimary">#7A6EE9</color>
+    <color name="tb_colorPrimaryDark">#7A6EE9</color>
+    <color name="tb_colorAccent">#7A6EE9</color>
+    <color name="tb_colorPrimary_light">#207A6EE9</color>
+    <color name="tb_textColorPrimary">#33323D</color>
+    <color name="tb_textColorSecondary">#65605A</color>
+    <color name="tb_textColorSecondaryLight">#B1B1B1</color>
+    <color name="tb_textColorBlueDark">#7D7C8C</color>
+
+    <color name="tb_textColorThird">#F0F0F0</color>
+    <color name="tb_Grey">#E6E7E9</color>
+    <color name="tb_white">#FFFFFF</color>
+    <color name="tb_layout_background_white">#F6F7FA</color>
+    <color name="tb_view_color">#B4BBC2</color>
+    <color name="tb_blue_color">#15A9EB</color>
+    <color name="tb_dark_blue_color">#3D5895</color>
+    <color name="tb_edit_text_color">#EFF3F6</color>
+    <color name="tb_menu_background">#8BFFFFFF</color>
+    <color name="tb_matt_black">#252321</color>
+    <color name="tb_offer_back1">#7E72EB</color>
+    <color name="tb_offer_back2">#FFC94E</color>
+    <color name="tb_mattal_black">#7c7b88</color>
+    <color name="tb_mattal_pink">#DF71EB</color>
+    <color name="tb_background_color">#F4F4FA</color>
+    <color name="tb_switch_on_color">#611AB7</color>
+    <color name="tb_light_gray">#F8F8F9</color>
 
 </resources>

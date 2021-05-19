@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ActivitiesAndFragments.SelectDateTime_F">
+    tools:context=".activitiesAndFragments.SelectDateTime_F">
 
 
     <RelativeLayout

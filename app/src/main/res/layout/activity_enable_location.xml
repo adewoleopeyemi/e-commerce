@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.Enable_location_A">
+    tools:context="com.foodies.amatfoodies.activitiesAndFragments.Enable_location_A">
 
     <RelativeLayout
         android:layout_width="match_parent"

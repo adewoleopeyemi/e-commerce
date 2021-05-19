@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:clickable="true"
-    tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.PaymentMethodActivity">
+    tools:context="com.foodies.amatfoodies.activitiesAndFragments.PaymentMethodActivity">
 
 
     <RelativeLayout
@@ -86,12 +86,12 @@
 
                     </RelativeLayout>
 
-                    <com.foodies.amatfoodies.Utils.CustomExpandableListView
+                    <com.foodies.amatfoodies.utils.CustomExpandableListView
                         android:id="@+id/custon_list_order_items"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                    </com.foodies.amatfoodies.Utils.CustomExpandableListView>
+                    </com.foodies.amatfoodies.utils.CustomExpandableListView>
 
 
                     <RelativeLayout

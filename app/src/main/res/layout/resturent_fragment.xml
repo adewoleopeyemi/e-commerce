@@ -94,8 +94,6 @@
                 android:text=""
                 android:textColor="@color/bg_top_color"
                 android:textSize="15sp" />
-
-
         </RelativeLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"

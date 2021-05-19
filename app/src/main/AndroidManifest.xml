@@ -3,8 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.foodies.amatfoodies">
 
+    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.SET_DEBUG_APP"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
-        android:name=".Constants.Foodies"
+        android:name=".constants.Foodies"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,10 +32,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="allowBackup">
-        <activity android:name=".ActivitiesAndFragments.GetStartedActivity"></activity>
-
+        <activity android:name=".activitiesAndFragments.WebViewSellActivity"></activity>
+        <activity android:name=".activitiesAndFragments.WebviewDeliveryActivity" />
+        <activity android:name=".activitiesAndFragments.DeliveryActivity" />
+        <activity android:name=".activitiesAndFragments.HomeScreen" />
+        <activity android:name=".activitiesAndFragments.GetStartedActivity" />
         <activity
-            android:name=".ActivitiesAndFragments.SplashScreen"
+            android:name=".activitiesAndFragments.SplashScreen"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -30,22 +50,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".ActivitiesAndFragments.Enable_location_A"
+            android:name=".activitiesAndFragments.Enable_location_A"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ActivitiesAndFragments.MainActivity"
+            android:name=".activitiesAndFragments.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Chat_Module.Chat_A"
+            android:name=".chatModule.Chat_A"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
@@ -55,50 +74,50 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
-            android:name=".ActivitiesAndFragments.AddToCartActivity"
+            android:name=".activitiesAndFragments.AddToCartActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ActivitiesAndFragments.PaymentMethodActivity"
+            android:name=".activitiesAndFragments.PaymentMethodActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ActivitiesAndFragments.AddAddressActivity"
+            android:name=".activitiesAndFragments.AddAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".GoogleMapWork.MapsActivity"
+            android:name=".googleMapWork.MapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".GoogleMapWork.TrackingActivity"
+            android:name=".googleMapWork.TrackingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ActivitiesAndFragments.RiderReviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustPan"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ActivitiesAndFragments.RestReveiwActivity"
+            android:name=".activitiesAndFragments.RiderReviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".GoogleMapWork.SearchPlaces"
+            android:name=".activitiesAndFragments.RestReveiwActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".googleMapWork.SearchPlaces"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".GoogleMapWork.OrderTracking_A"
+            android:name=".googleMapWork.OrderTracking_A"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
@@ -115,12 +134,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivitiesAndFragments.RecoverPasswordActivity"
+            android:name=".activitiesAndFragments.RecoverPasswordActivity"
             android:theme="@style/AppTheme" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_appid" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
@@ -128,6 +147,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_debug" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -139,7 +161,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service android:name=".Notifications.MyFirebaseMessagingService">
+        <service android:name=".notifications.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -149,22 +171,5 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
-    <uses-feature android:name="android.hardware.location.gps" />
-    <uses-feature android:name="android.hardware.camera" />
-
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.SET_DEBUG_APP"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
 </manifest>

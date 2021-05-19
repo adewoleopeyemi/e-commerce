@@ -7,7 +7,7 @@
     android:background="@color/colorBg"
     android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.LoginAcitvity">
+    tools:context="com.foodies.amatfoodies.activitiesAndFragments.LoginAcitvity">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -224,14 +224,14 @@
                     android:textSize="13sp"/>
 
 
-            <ImageView
-                android:layout_marginStart="52dp"
-                android:layout_marginEnd="52dp"
-                android:id="@+id/or_image"
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                android:backgroundTint="@null"
-                android:background="@drawable/or" />
+                <ImageView
+                    android:id="@+id/or_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="10dp"
+                    android:layout_marginStart="52dp"
+                    android:layout_marginEnd="52dp"
+                    android:background="@drawable/or"
+                    android:backgroundTint="@null" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -314,8 +314,6 @@
         </RelativeLayout>
 
     </ScrollView>
-
-</LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -341,5 +339,7 @@
             app:spinnerColor="@color/colorRed"
             />
     </RelativeLayout>
+</LinearLayout>
+
 
 </FrameLayout>

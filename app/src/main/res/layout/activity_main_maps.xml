@@ -6,7 +6,7 @@
     android:id="@+id/drawer_lay"
     android:clickable="true"
     android:background="@color/colorWhite"
-    tools:context="com.foodies.amatfoodies.GoogleMapWork.MapsActivity">
+    tools:context="com.foodies.amatfoodies.googleMapWork.MapsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -107,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
-                tools:context="com.foodies.amatfoodies.GoogleMapWork.MapsActivity" />
+                tools:context="com.foodies.amatfoodies.googleMapWork.MapsActivity" />
 
             <ImageView
                 android:layout_width="45dp"

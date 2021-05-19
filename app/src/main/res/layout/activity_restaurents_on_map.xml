@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/RestaurentsOnMap_F"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ActivitiesAndFragments.RestaurentsOnMap_F">
+    tools:context=".activitiesAndFragments.RestaurentsOnMap_F">
 
 
     <RelativeLayout

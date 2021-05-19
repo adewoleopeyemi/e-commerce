@@ -288,14 +288,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/list_menu_layout">
 
-                <com.foodies.amatfoodies.Utils.CustomExpandableListView
+                <com.foodies.amatfoodies.utils.CustomExpandableListView
                     android:id="@+id/restaurant_menu_item_list"
                     android:layout_width="match_parent"
                     android:divider="@null"
                     android:dividerHeight="0dp"
                     android:layout_height="match_parent" />
 
-                <com.foodies.amatfoodies.Utils.CustomExpandableListView
+                <com.foodies.amatfoodies.utils.CustomExpandableListView
                     android:id="@+id/restaurant_menu_item_list_suggestion"
                     android:layout_width="match_parent"
                     android:divider="@null"

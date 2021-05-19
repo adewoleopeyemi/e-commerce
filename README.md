@@ -1,2 +1,2 @@
-# AmatNowAndroidFoodiesCustomer
- Android App for AmatNow Customers side
+#AmatNowAndroidFoodiesCustomer
+Android App for AmatNow Customers side

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBg"
     android:clickable="true"
-    tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.PaymentMethodActivity">
+    tools:context="com.foodies.amatfoodies.activitiesAndFragments.PaymentMethodActivity">
 
 
     <LinearLayout

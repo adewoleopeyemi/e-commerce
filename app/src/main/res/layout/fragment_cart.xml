@@ -101,13 +101,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <com.foodies.amatfoodies.Utils.CustomExpandableListView
+        <com.foodies.amatfoodies.utils.CustomExpandableListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/selected_item_list"
             android:minHeight="25dp">
 
-        </com.foodies.amatfoodies.Utils.CustomExpandableListView>
+        </com.foodies.amatfoodies.utils.CustomExpandableListView>
 
         <RelativeLayout
             android:layout_width="match_parent"

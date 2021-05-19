@@ -54,12 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/toolbar_height">
 
-    <com.foodies.amatfoodies.Utils.CustomExpandableListView
+    <com.foodies.amatfoodies.utils.CustomExpandableListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/custon_list_order_items">
 
-    </com.foodies.amatfoodies.Utils.CustomExpandableListView>
+    </com.foodies.amatfoodies.utils.CustomExpandableListView>
 
     </RelativeLayout>
 

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/Theme4_spacing_middle"
+    android:background="@drawable/theme4_card_shadow"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/Theme4_spacing_middle"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/restaurant_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_140sdp"
+                android:scaleType="centerCrop"
+                app:placeholderImage="@drawable/image_placeholder"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/Theme4_spacing_standard"
+                android:padding="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/Theme4_spacing_standard">
+
+                <TextView
+                    android:id="@+id/restaurant_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/item_delivery_time_tv"
+                    android:singleLine="true"
+                    android:textAppearance="@style/Theme4FontMedium"
+                    android:textColor="@color/Theme4_textColorPrimary"
+                    android:textSize="@dimen/Theme4_font_size_medium"
+                    tools:text="Workout"
+                    android:fontFamily="@font/amaranth_bold"/>
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/restaurant_name"
+                    android:layout_toStartOf="@id/item_delivery_time_tv"
+                    android:fontFamily="@font/verdana"
+                    android:singleLine="true"
+                    android:textColor="@color/Theme4_textColorSecondary"
+                    android:textSize="@dimen/Theme4_font_size_small"
+                    tools:text="Workout" />
+
+                <TextView
+                    android:id="@+id/item_delivery_time_tv"
+                    style="@style/Theme4SubHeading"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:drawablePadding="@dimen/Theme4_spacing_standard"
+                    android:textSize="@dimen/Theme4_font_size_small"
+                    tools:drawableTint="@color/Theme4_textColorSecondary"
+                    tools:text="20"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginRight="15dp"/>
+
+                <ImageView
+                    android:id="@+id/favourite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_favorite_24_blue"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="7dp"/>
+
+                <ImageView
+                    android:layout_height="22dp"
+                    android:layout_width="22dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="60dp"
+                    android:layout_toStartOf="@+id/item_delivery_time_tv"
+                    android:id="@+id/service_icon"
+                    android:src="@drawable/service_fee_icon"
+                    android:layout_marginTop="40dp"/>
+
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/baked_time_tv"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/service_icon"
+                    android:layout_marginEnd="15dp"
+                    android:text="$30"
+                    style="@style/Theme4SubHeading"
+                    android:textSize="12sp"
+                    android:textColor="@color/color_light_black"
+                    />
+
+                <ImageView
+                    android:layout_height="22dp"
+                    android:layout_width="22dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_toStartOf="@+id/baked_time_tv"
+                    android:id="@+id/baked_icon"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/service_icon"
+                    android:src="@drawable/baking"/>
+
+                <RatingBar
+                    android:id="@+id/ruleRatingBar"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:gravity="start"
+                    app:layout_marginLeftPercent = "3%"
+                    android:layout_marginTop="70dp"
+                    android:progressTint="@color/colorRatingBar"
+                    android:backgroundTint="@color/colorRatingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:theme="@style/RatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

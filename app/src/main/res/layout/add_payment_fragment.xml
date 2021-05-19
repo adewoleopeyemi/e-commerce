@@ -7,7 +7,7 @@
     android:background="@color/colorBg"
     android:clickable="true"
     android:id="@+id/add_payment_main_container"
-    tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.PaymentMethodActivity">
+    tools:context="com.foodies.amatfoodies.activitiesAndFragments.PaymentMethodActivity">
 
 
     <LinearLayout

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FoodiesCustomer.iml" filepath="$PROJECT_DIR$/.idea/modules/FoodiesCustomer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FoodiesCustomer.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FoodiesCustomer.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/FoodiesCustomer.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/FoodiesCustomer.library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AmatNowAndroidFoodiesCustomer.iml" filepath="$PROJECT_DIR$/.idea/modules/AmatNowAndroidFoodiesCustomer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AmatNowAndroidFoodiesCustomer.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AmatNowAndroidFoodiesCustomer.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/AmatNowAndroidFoodiesCustomer.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/AmatNowAndroidFoodiesCustomer.library.iml" />
     </modules>
   </component>
 </project>

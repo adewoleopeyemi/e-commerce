@@ -7,7 +7,7 @@
     android:id="@+id/main_sign_up_div"
     android:background="@color/colorBg"
     android:clickable="true"
-    tools:context="com.foodies.amatfoodies.ActivitiesAndFragments.SingUpActivity">
+    tools:context="com.foodies.amatfoodies.activitiesAndFragments.SingUpActivity">
 
 
     <LinearLayout
@@ -335,7 +335,6 @@
             android:layout_centerInParent="true"
             app:spinnerColor="@color/colorRed"
             app:clockwise="true"
-
             />
     </RelativeLayout>
 
