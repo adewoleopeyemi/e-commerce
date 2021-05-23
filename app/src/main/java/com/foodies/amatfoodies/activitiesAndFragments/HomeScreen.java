@@ -172,9 +172,9 @@ public class HomeScreen extends AppCompatActivity {
 
     }
 
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
 }
 

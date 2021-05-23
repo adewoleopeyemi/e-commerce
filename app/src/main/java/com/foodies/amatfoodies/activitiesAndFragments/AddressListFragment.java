@@ -122,6 +122,7 @@ public class AddressListFragment extends RootFragment {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
+
             }
         });
 

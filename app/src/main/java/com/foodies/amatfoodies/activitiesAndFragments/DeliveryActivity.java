@@ -102,6 +102,9 @@ public class DeliveryActivity extends AppCompatActivity {
     String apartment;
     String addressId;
 
+    Boolean onAddress = false;
+    Boolean onPayment = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +230,9 @@ public class DeliveryActivity extends AppCompatActivity {
                 );
                 Intent i = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList).build(getApplicationContext());
                 startActivityForResult(i, 101);*/
+                onAddress = true;
+                onPayment = false;
+                binding.addressListContainer.setVisibility(VISIBLE);
                 openAddressList(true);
             }
         });
@@ -242,6 +248,9 @@ public class DeliveryActivity extends AppCompatActivity {
                 );
                 Intent i = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList).build(getApplicationContext());
                 startActivityForResult(i, 102);*/
+                binding.addressListContainer.setVisibility(VISIBLE);
+                onAddress = true;
+                onPayment = false;
             }
         });
         binding.homeContent.pickUpTime.setFocusable(false);
@@ -295,8 +304,8 @@ public class DeliveryActivity extends AppCompatActivity {
                         binding.homeContent.edtDestinationLocation.setText(state+" , "+city+" , "+street + ", "+apartment);
                     }
                 }
-                binding.splashScreenRelLayout.setVisibility(GONE);
-                binding.drawerLayout.setVisibility(VISIBLE);
+                onAddress =false;
+                binding.addressListContainer.setVisibility(GONE);
             }
         });
 
@@ -308,7 +317,7 @@ public class DeliveryActivity extends AppCompatActivity {
         bundle.putString("forDelivery", "true");
         restaurantMenuItemsFragment.setArguments(bundle);
         transaction.addToBackStack(null);
-        transaction.add(R.id.user_frag_main_container, restaurantMenuItemsFragment, "parent").commit();
+        transaction.add(R.id.address_list_container, restaurantMenuItemsFragment, "parent").commit();
     }
 
     String time;
@@ -316,17 +325,14 @@ public class DeliveryActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void showDateAndTimeDialog() {
         Calendar calender = Calendar.getInstance();
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                calender.set(Calendar.YEAR, i);
-                calender.set(Calendar.MONTH, i1);
-                calender.set(Calendar.DAY_OF_MONTH, i2);
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, i, i1, i2) -> {
+            calender.set(Calendar.YEAR, i);
+            calender.set(Calendar.MONTH, i1);
+            calender.set(Calendar.DAY_OF_MONTH, i2);
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                time = simpleDateFormat.format(calender.getTime());
-                showTimeDialog();
-            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            time = simpleDateFormat.format(calender.getTime());
+            showTimeDialog();
         };
         new DatePickerDialog(DeliveryActivity.this, dateSetListener, calender.get(Calendar.YEAR), calender.get(Calendar.MONTH),calender.get(Calendar.DAY_OF_MONTH)).show();
     }
@@ -448,6 +454,7 @@ public class DeliveryActivity extends AppCompatActivity {
         binding.total.setText(deliveryDetails.total);
         binding.symbol.setText(deliveryDetails.symbol);
         binding.paymentLayout.setVisibility(VISIBLE);
+        onPayment = true;
     }
 
     private void hideSearchLayout() {
@@ -475,7 +482,19 @@ public class DeliveryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(DeliveryActivity.this, HomeScreen.class);
-        startActivity(i);
+        if (onAddress){
+            binding.addressListContainer.setVisibility(GONE);
+            onAddress = false;
+        }
+        if (onPayment){
+            binding.paymentLayout.setVisibility(GONE);
+            onPayment = false;
+            onAddress = true;
+        }
+
+        else{
+            Intent i = new Intent(DeliveryActivity.this, HomeScreen.class);
+            startActivity(i);
+        }
     }
 }
