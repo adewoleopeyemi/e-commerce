@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.foodies.amatfoodies.constants.PreferenceClass;
@@ -38,8 +39,14 @@ public class HomeScreen extends AppCompatActivity {
         ImageView view6 = findViewById(R.id.imageView6);
         ImageView view7 = findViewById(R.id.imageView7);
         ImageView view8 = findViewById(R.id.imageView8);
+        RelativeLayout searchRl = findViewById(R.id.search_div);
 
-
+        searchRl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeScreen.this, MapsActivity.class));
+            }
+        });
 
 
         delivery_screen.setOnClickListener(new View.OnClickListener() {
@@ -52,8 +59,8 @@ public class HomeScreen extends AppCompatActivity {
         sell_or_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dialogue alertDialoge = new Dialogue();
-                alertDialoge.showDialog(HomeScreen.this);
+                Intent i = new Intent(HomeScreen.this, WebViewSellActivity.class);
+                startActivity(i);
             }
         });
         location.setText(getCurrentLocationAddress.toString());
@@ -88,8 +95,7 @@ public class HomeScreen extends AppCompatActivity {
         locationTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent nextScreen = new Intent(HomeScreen.this, MainActivity.class);
+                Intent nextScreen = new Intent(HomeScreen.this, MapsActivity.class);
                 nextScreen.putExtra("search", "search");
                 startActivity(nextScreen);
 

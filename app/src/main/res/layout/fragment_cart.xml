@@ -12,7 +12,8 @@
             android:background="@color/colorPrimaryDark"
             android:layout_height="@dimen/toolbar_height"
             android:id="@+id/cart_header_div"
-            android:paddingStart="5dp">
+            android:paddingStart="5dp"
+            android:layout_marginTop="23dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -45,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mainCartDiv"
-        android:layout_marginTop="@dimen/toolbar_height"
+        android:layout_marginTop="100dp"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -626,7 +627,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar_div"
         android:id="@+id/no_cart_div"
-        android:layout_marginTop="@dimen/toolbar_height"
+        android:layout_marginTop="77dp"
         android:background="@color/colorBg">
 
         <ImageView

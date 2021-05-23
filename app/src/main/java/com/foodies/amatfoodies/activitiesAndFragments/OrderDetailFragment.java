@@ -170,6 +170,7 @@ public class OrderDetailFragment extends RootFragment implements View.OnClickLis
 
             case R.id.track_order_div:
                 if(pickUp ==1 || (order_status!=null && order_status.equals("2"))){
+                //
                 }
                 else {
                     Open_tracking();
@@ -263,7 +264,6 @@ public class OrderDetailFragment extends RootFragment implements View.OnClickLis
                             else {
                                 orderUserAddressTv.setText(street_user + ", " + city_user);
                             }
-
                             order_status=orderJsonObject.optString("status","");
                             if(orderUserAddressTv.getText().toString().equalsIgnoreCase("Pick Up")){
                                 trackOrderDiv.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.trackColor));

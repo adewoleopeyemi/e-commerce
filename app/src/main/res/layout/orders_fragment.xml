@@ -4,17 +4,19 @@
     android:layout_height="match_parent"
     android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/order_fragment_container">
+    android:id="@+id/order_fragment_container"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="23dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="@color/colorPrimaryDark"
-        android:layout_height="@dimen/toolbar_height">
+        android:layout_height="50dp">
 
         <TextView
             android:layout_height="wrap_content"
@@ -41,7 +43,8 @@
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
         android:orientation="vertical"
-        android:id="@+id/recycler_view_restaurant">
+        android:id="@+id/recycler_view_restaurant"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
