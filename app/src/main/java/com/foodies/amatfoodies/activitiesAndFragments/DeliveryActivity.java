@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,9 +41,11 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.foodies.amatfoodies.constants.ApiRequest;
 import com.foodies.amatfoodies.constants.Config;
 import com.foodies.amatfoodies.constants.DataParser;
+import com.foodies.amatfoodies.constants.FragmentCallback;
 import com.foodies.amatfoodies.constants.PreferenceClass;
 import com.foodies.amatfoodies.R;
 import com.foodies.amatfoodies.databinding.ActivityDeliveryBinding;
+import com.foodies.amatfoodies.models.AddressListModel;
 import com.foodies.amatfoodies.models.ModelDeliveryDetails;
 import com.foodies.amatfoodies.retrofit.client.Client;
 import com.foodies.amatfoodies.retrofit.endpoints.endpoint_request_list.apiDelivery;
@@ -92,6 +95,12 @@ public class DeliveryActivity extends AppCompatActivity {
     String instructions;
     String back = "front";
     String delivery_time;
+
+    String street;
+    String city;
+    String state;
+    String apartment;
+    String addressId;
 
 
     @Override
@@ -211,26 +220,28 @@ public class DeliveryActivity extends AppCompatActivity {
         binding.homeContent.edtSourceLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fieldList = Arrays.asList(
+                /*List<Place.Field> fieldList = Arrays.asList(
                         Place.Field.ADDRESS,
                         Place.Field.LAT_LNG,
                         Place.Field.NAME
                 );
                 Intent i = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList).build(getApplicationContext());
-                startActivityForResult(i, 101);
+                startActivityForResult(i, 101);*/
+                openAddressList(true);
             }
         });
 
         binding.homeContent.edtDestinationLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fieldList = Arrays.asList(
+                openAddressList(false);
+                /*List<Place.Field> fieldList = Arrays.asList(
                         Place.Field.ADDRESS,
                         Place.Field.LAT_LNG,
                         Place.Field.NAME
                 );
                 Intent i = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList).build(getApplicationContext());
-                startActivityForResult(i, 102);
+                startActivityForResult(i, 102);*/
             }
         });
         binding.homeContent.pickUpTime.setFocusable(false);
@@ -262,6 +273,42 @@ public class DeliveryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    AddressListModel addressListModel;
+    public void openAddressList(Boolean forPickUp){
+        Fragment restaurantMenuItemsFragment = new AddressListFragment(new FragmentCallback() {
+            @Override
+            public void onResponce(Bundle bundle) {
+                if(bundle!=null){
+                    addressListModel=(AddressListModel)bundle.getSerializable("data");
+
+                    street =addressListModel.getStreet();
+                    city =addressListModel.getCity();
+                    state =addressListModel.getState();
+                    apartment =addressListModel.getApartment();
+                    addressId =addressListModel.getAddress_id();
+                    if (forPickUp){
+                        binding.homeContent.edtSourceLocation.setText(state+" , "+city+" , "+street + ", "+apartment);
+                    }
+                    else{
+                        binding.homeContent.edtDestinationLocation.setText(state+" , "+city+" , "+street + ", "+apartment);
+                    }
+                }
+                binding.splashScreenRelLayout.setVisibility(GONE);
+                binding.drawerLayout.setVisibility(VISIBLE);
+            }
+        });
+
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Bundle bundle=new Bundle();
+        bundle.putString("grand_total", "0");
+        bundle.putString("rest_id","47");
+        bundle.putString("forDelivery", "true");
+        restaurantMenuItemsFragment.setArguments(bundle);
+        transaction.addToBackStack(null);
+        transaction.add(R.id.user_frag_main_container, restaurantMenuItemsFragment, "parent").commit();
     }
 
     String time;

@@ -65,6 +65,7 @@ public class AddressListFragment extends RootFragment {
     Context context;
 
     Bundle bundle;
+    String forDelivery = "false";
 
 
 
@@ -86,6 +87,7 @@ public class AddressListFragment extends RootFragment {
 
          bundle=getArguments();
 
+         forDelivery = bundle.getString("forDelivery");
          sharedPreferences = getContext().getSharedPreferences(PreferenceClass.user, Context.MODE_PRIVATE);
         addressListContainer = view.findViewById(R.id.address_list_container);
         addressListContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -94,9 +96,6 @@ public class AddressListFragment extends RootFragment {
                 return true;
             }
         });
-
-
-
 
         initUI(view);
 
@@ -235,7 +234,9 @@ public class AddressListFragment extends RootFragment {
                                         Bundle bundle = new Bundle();
                                         bundle.putSerializable("data",addressListModel);
                                         fragment_callback.onResponce(bundle);
-                                        getActivity().onBackPressed();
+                                        if (!forDelivery.equals("true")){
+                                            getActivity().onBackPressed();
+                                        }
                                     }
 
 

@@ -460,7 +460,6 @@ public class CartFragment extends RootFragment implements View.OnClickListener{
         restaurantMenuItemsFragment.setArguments(bundle);
         transaction.addToBackStack(null);
         transaction.add(R.id.cart_main_container, restaurantMenuItemsFragment, "parent").commit();
-
     }
 
 
