@@ -134,13 +134,14 @@ public class DeliveryActivity extends AppCompatActivity {
                         binding.drawerLayout.setVisibility(VISIBLE);
                     }
                     else{
+                        binding.loginContainer.setVisibility(VISIBLE);
                         Bundle bundle = new Bundle();
                         bundle.putString("forDelivery", "yes");
                         Fragment restaurantMenuItemsFragment = new LoginAcitvity();
                         restaurantMenuItemsFragment.setArguments(bundle);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
-                        transaction.add(R.id.user_frag_main_container, restaurantMenuItemsFragment,"ParentFragment").commit();
+                        transaction.add(R.id.login_container, restaurantMenuItemsFragment,"ParentFragment").commit();
                     }
                 }
             }.start();
